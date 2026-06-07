@@ -524,6 +524,260 @@ canvas{border-radius:8px}
   background:rgba(52,211,153,.08);
 }
 
+/* ===== NEW MODULES CSS ===== */
+
+/* Competitor table */
+.comp-tbl{width:100%;border-collapse:collapse;font-size:11px}
+.comp-tbl th{padding:8px 10px;background:var(--surf2);border:1px solid var(--brd);font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--tx4);text-align:left}
+.comp-tbl td{padding:5px 8px;border:1px solid var(--brd);vertical-align:top}
+.comp-tbl td input,.comp-tbl td textarea,.comp-tbl td select{background:transparent;border:none;width:100%;font-size:11px;color:var(--tx);font-family:var(--font-b);outline:none}
+.comp-tbl td input:focus,.comp-tbl td textarea:focus{background:rgba(233,30,140,.05);border-radius:4px}
+.comp-tbl .comp-our{background:rgba(233,30,140,.04);border-left:2px solid var(--pk)}
+.comp-tag{font-size:8px;font-weight:800;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.6px}
+.comp-tag-nos{background:var(--pklt);color:var(--pk);border:1px solid var(--pkbrd)}
+.comp-tag-c1{background:rgba(56,189,248,.1);color:var(--tl);border:1px solid var(--tlbrd)}
+.comp-tag-c2{background:rgba(245,158,11,.1);color:var(--or);border:1px solid var(--orbrd)}
+.comp-tag-c3{background:rgba(52,211,153,.1);color:var(--gn);border:1px solid var(--gnbrd)}
+
+/* Funnel */
+.funnel-stage{
+  position:relative;
+  margin-bottom:3px;
+  border-radius:8px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:all .2s;
+}
+.funnel-stage:hover{transform:translateX(3px)}
+.funnel-bar{
+  height:44px;
+  display:flex;align-items:center;
+  padding:0 16px;
+  justify-content:space-between;
+  border-radius:8px;
+}
+.funnel-lbl{font-weight:700;font-size:12px;color:#fff;display:flex;align-items:center;gap:8px}
+.funnel-val{font-family:var(--font-d);font-size:20px;color:#fff;font-weight:400}
+.funnel-conv{font-size:10px;color:rgba(255,255,255,.7);text-align:right}
+
+/* Launch Timeline */
+.lt-phase{
+  border-radius:10px;
+  overflow:hidden;
+  border:1px solid var(--brd);
+  margin-bottom:10px;
+}
+.lt-phase-head{
+  padding:10px 14px;
+  display:flex;align-items:center;gap:10px;
+  cursor:pointer;
+}
+.lt-phase-body{padding:12px 14px;border-top:1px solid var(--brd);display:none}
+.lt-phase.open .lt-phase-body{display:block}
+.lt-trigger{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 10px;
+  background:var(--surf2);border:1px solid var(--brd);border-radius:7px;
+  margin-bottom:6px;font-size:11px;color:var(--tx2);
+  cursor:pointer;transition:all .15s;
+}
+.lt-trigger:hover{border-color:var(--pk);color:var(--pk)}
+.lt-trigger input[type=checkbox]{accent-color:var(--pk);cursor:pointer}
+
+/* Pricing simulator */
+.price-cell{
+  background:var(--surf2);border:1px solid var(--brd);
+  border-radius:6px;padding:8px;text-align:center;
+  cursor:pointer;transition:all .2s;
+  position:relative;
+}
+.price-cell:hover{border-color:var(--brd2)}
+.price-cell.sold{background:rgba(52,211,153,.08);border-color:var(--gnbrd);opacity:.7}
+.price-cell.reserved{background:rgba(245,158,11,.08);border-color:var(--orbrd)}
+.price-cell.available{background:var(--surf2)}
+.price-andar{font-size:9px;color:var(--tx4);font-weight:700;letter-spacing:.5px}
+.price-val{font-family:var(--font-d);font-size:13px;color:var(--pk);margin:2px 0}
+.price-tag{font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px}
+
+/* Influencers */
+.inf-card{
+  background:var(--surf);border:1px solid var(--brd);border-radius:9px;
+  padding:12px;margin-bottom:8px;
+  display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;
+  transition:border-color .15s;
+}
+.inf-card:hover{border-color:var(--brd2)}
+.inf-avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pk),var(--or));
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.inf-type-badge{font-size:8px;font-weight:800;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.6px}
+
+/* Pos-venda / CRM régua */
+.regua-step{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:10px 0;border-bottom:1px solid var(--brd);
+  position:relative;
+}
+.regua-day{
+  width:48px;flex-shrink:0;text-align:center;
+  background:var(--surf2);border:1px solid var(--brd);border-radius:7px;
+  padding:6px 4px;
+}
+.regua-day-n{font-family:var(--font-d);font-size:16px;color:var(--pk);line-height:1}
+.regua-day-l{font-size:8px;color:var(--tx4);letter-spacing:.5px;text-transform:uppercase}
+
+/* Risk matrix */
+.risk-cell{
+  border-radius:7px;padding:8px 10px;
+  border:1px solid;cursor:pointer;
+  transition:all .18s;font-size:11px;
+  display:flex;flex-direction:column;gap:4px;
+}
+.risk-cell:hover{transform:translateY(-1px)}
+.risk-low{background:rgba(52,211,153,.07);border-color:var(--gnbrd);color:var(--gn)}
+.risk-med{background:rgba(245,158,11,.07);border-color:var(--orbrd);color:var(--or)}
+.risk-high{background:rgba(233,30,140,.07);border-color:var(--pkbrd);color:var(--pk)}
+
+/* Presentation mode */
+.pres-overlay{
+  position:fixed;inset:0;background:#000;z-index:800;
+  display:none;flex-direction:column;
+}
+.pres-overlay.on{display:flex}
+.pres-slide{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:60px;text-align:center;
+  background:var(--bg);
+  position:relative;overflow:hidden;
+}
+.pres-slide::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 30% 50%,rgba(233,30,140,.08),transparent 60%),
+             radial-gradient(ellipse at 70% 50%,rgba(245,158,11,.06),transparent 60%);
+  pointer-events:none;
+}
+.pres-nav{
+  height:52px;background:rgba(0,0,0,.9);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;border-top:1px solid var(--brd);flex-shrink:0;
+}
+
+/* ROI Calculator */
+.roi-output{
+  background:linear-gradient(135deg,rgba(52,211,153,.07),rgba(56,189,248,.04));
+  border:1px solid rgba(52,211,153,.2);border-radius:10px;padding:16px;
+  display:none;
+}
+.roi-output.on{display:block}
+.roi-kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.roi-kpi{text-align:center;padding:12px;background:rgba(0,0,0,.15);border-radius:8px}
+.roi-kpi-v{font-family:var(--font-d);font-size:22px;color:var(--gn);margin-bottom:2px}
+.roi-kpi-l{font-size:9px;color:var(--tx4);text-transform:uppercase;letter-spacing:.8px}
+
+/* Pitch deck preview */
+.pitch-slide{
+  background:var(--surf);border:1px solid var(--brd);border-radius:9px;
+  overflow:hidden;aspect-ratio:16/9;display:flex;flex-direction:column;
+  transition:all .2s;cursor:pointer;
+}
+.pitch-slide:hover{border-color:var(--pk);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.pitch-slide-head{
+  padding:10px 12px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--pk),var(--or));
+  font-size:10px;font-weight:800;color:#fff;letter-spacing:.5px;
+}
+.pitch-slide-body{flex:1;padding:10px 12px;display:flex;flex-direction:column;justify-content:center}
+
+/* Comparison panel (Prof) */
+.comp-group-col{background:var(--surf2);border:1px solid var(--brd);border-radius:9px;padding:12px;font-size:11px}
+
+/* ===== MEDIA HUB CSS ===== */
+.media-tabs{display:flex;gap:2px;margin-bottom:18px;background:var(--surf2);border-radius:10px;padding:4px;overflow-x:auto}
+.media-tab{
+  padding:8px 14px;border-radius:7px;font-size:11px;font-weight:700;
+  cursor:pointer;border:none;background:transparent;color:var(--tx3);
+  transition:all .2s;white-space:nowrap;font-family:var(--font-b);
+  display:flex;align-items:center;gap:6px;
+}
+.media-tab:hover{color:var(--tx2)}
+.media-tab.on{background:var(--surf);color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.media-tp{display:none}.media-tp.on{display:block;animation:fi .25s ease}
+
+/* Tool cards */
+.tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.tool-card{
+  background:var(--surf);border:1px solid var(--brd);border-radius:11px;
+  padding:14px;transition:all .2s;cursor:pointer;position:relative;overflow:hidden;
+}
+.tool-card::before{
+  content:'';position:absolute;inset:0;opacity:0;transition:opacity .2s;
+  background:radial-gradient(ellipse at top left,rgba(233,30,140,.06),transparent 60%);
+}
+.tool-card:hover{border-color:var(--brd2);transform:translateY(-2px);box-shadow:var(--shm)}
+.tool-card:hover::before{opacity:1}
+.tool-logo{
+  width:40px;height:40px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;margin-bottom:10px;flex-shrink:0;
+}
+.tool-name{font-weight:800;font-size:13px;color:var(--tx);margin-bottom:2px;font-family:var(--font-b)}
+.tool-desc{font-size:10px;color:var(--tx3);line-height:1.5;margin-bottom:8px}
+.tool-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}
+.tool-tag{font-size:8px;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.5px}
+.tool-tag-free{background:rgba(52,211,153,.1);color:var(--gn);border:1px solid var(--gnbrd)}
+.tool-tag-paid{background:rgba(245,158,11,.1);color:var(--or);border:1px solid var(--orbrd)}
+.tool-tag-api{background:rgba(167,139,250,.1);color:var(--pu);border:1px solid var(--pubrd)}
+.tool-tag-br{background:rgba(233,30,140,.1);color:var(--pk);border:1px solid var(--pkbrd)}
+.tool-actions{display:flex;gap:6px;flex-wrap:wrap}
+.tool-btn{
+  font-size:10px;font-weight:700;padding:5px 10px;border-radius:6px;
+  cursor:pointer;border:none;font-family:var(--font-b);transition:all .15s;
+  text-decoration:none;display:inline-flex;align-items:center;gap:4px;
+}
+.tool-btn-primary{background:var(--pk);color:#fff;box-shadow:0 0 10px rgba(233,30,140,.25)}
+.tool-btn-primary:hover{background:var(--pk2)}
+.tool-btn-sec{background:var(--surf2);border:1px solid var(--brd2);color:var(--tx2)}
+.tool-btn-sec:hover{border-color:var(--pk);color:var(--pk)}
+
+/* Prompt generator */
+.prompt-box{
+  background:var(--surf2);border:1px solid var(--brd);border-radius:9px;
+  padding:14px;margin-top:10px;
+}
+.prompt-output{
+  background:rgba(0,0,0,.2);border:1px solid var(--brd);border-radius:7px;
+  padding:12px;font-size:11px;color:var(--tx2);line-height:1.7;
+  white-space:pre-wrap;min-height:60px;position:relative;
+  font-family:'Courier New',monospace;
+}
+.copy-prompt-btn{
+  position:absolute;top:8px;right:8px;
+  background:var(--surf3);border:1px solid var(--brd2);color:var(--tx3);
+  padding:4px 8px;border-radius:5px;font-size:9px;font-weight:700;
+  cursor:pointer;font-family:var(--font-b);transition:all .15s;
+}
+.copy-prompt-btn:hover{border-color:var(--pk);color:var(--pk)}
+
+/* Copy pieces */
+.copy-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.copy-card{
+  background:var(--surf);border:1px solid var(--brd);border-radius:10px;overflow:hidden;
+}
+.copy-card-head{
+  padding:10px 12px;border-bottom:1px solid var(--brd);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.copy-card-body{padding:10px 12px}
+.copy-pre{
+  font-size:11px;color:var(--tx2);line-height:1.65;
+  min-height:80px;white-space:pre-wrap;
+}
+.copy-actions{display:flex;gap:5px;margin-top:8px}
+
 </style>
 </head>
 <body>
@@ -643,7 +897,19 @@ canvas{border-radius:8px}
   <div class="ni" id="ni10" onclick="go(10);closeSbMobile()"><span class="nn">10</span><span class="nl">Orçamento VGV + KPIs</span></div>
   <div class="sb-grp">Síntese</div>
   <div class="ni" id="ni11" onclick="go(11);closeSbMobile()"><span class="nn">★</span><span class="nl">Dashboard Final</span><span class="n-ai">IA</span></div>
-  <div class="ni" id="ni12" onclick="go(12);closeSbMobile()"><span class="nn">📢</span><span class="nl">Materiais de Campanha</span><span class="n-ai">IA</span></div>
+  <div class="ni" id="ni12" onclick="go(12);closeSbMobile()"><span class="nn">🎬</span><span class="nl">Central de Mídia</span><span class="n-ai">IA</span></div>
+  <div class="sb-grp">Estratégia Avançada</div>
+  <div class="ni" id="ni14" onclick="go(14);closeSbMobile()"><span class="nn">🏆</span><span class="nl">Competitivo</span></div>
+  <div class="ni" id="ni15" onclick="go(15);closeSbMobile()"><span class="nn">📊</span><span class="nl">Funil de Vendas</span></div>
+  <div class="ni" id="ni16" onclick="go(16);closeSbMobile()"><span class="nn">🚀</span><span class="nl">Calendário Lançamento</span></div>
+  <div class="ni" id="ni17" onclick="go(17);closeSbMobile()"><span class="nn">💰</span><span class="nl">Simulador de Preços</span></div>
+  <div class="ni" id="ni18" onclick="go(18);closeSbMobile()"><span class="nn">🌐</span><span class="nl">Ecossistema de Vendas</span></div>
+  <div class="ni" id="ni19" onclick="go(19);closeSbMobile()"><span class="nn">⭐</span><span class="nl">Pós-Venda & CRM</span></div>
+  <div class="ni" id="ni20" onclick="go(20);closeSbMobile()"><span class="nn">⚠</span><span class="nl">Análise de Risco</span></div>
+  <div class="sb-grp">Entrega</div>
+  <div class="ni" id="ni21" onclick="go(21);closeSbMobile()"><span class="nn">📈</span><span class="nl">ROI p/ Comprador</span><span class="n-ai">IA</span></div>
+  <div class="ni" id="ni22" onclick="go(22);closeSbMobile()"><span class="nn">🎯</span><span class="nl">Pitch Deck</span><span class="n-ai">IA</span></div>
+  <div class="ni" id="ni23" onclick="go(23);closeSbMobile()"><span class="nn">🖥</span><span class="nl">Apresentação</span></div>
   <div class="ni" id="ni13" onclick="go(13);closeSbMobile()"><span class="nn">👨‍🏫</span><span class="nl">Painel do Professor</span></div>
   <div class="sb-score">
     <div class="sb-score-l">Pontuação do Grupo</div>
@@ -1456,15 +1722,507 @@ canvas{border-radius:8px}
 
 <!-- ===== S12 MATERIAIS DE CAMPANHA ===== -->
 <div class="scr" id="s12">
-<div class="sh2"><div class="stag">Módulo 12 • Engine de Copy</div><div class="st">Materiais de Campanha</div><div class="sd">Engine de copy por IA. 6 peças geradas individualmente ou em sequência com base em todo o planejamento.</div></div>
-
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
-  <button class="btn bai" onclick="genAllCopy()" id="btn-all-copy">✦ Gerar Todos (sequência)</button>
-  <button class="btn bg bsm" onclick="clearAllCopy()">✕ Limpar</button>
+<div class="sh2">
+  <div class="stag">Módulo 12 • Central de Mídia</div>
+  <div class="st">Criação de Imagens, Vídeo, Site & Copy</div>
+  <div class="sd">A IA gera os prompts prontos para cada ferramenta. Copie e cole diretamente nas plataformas abaixo para criar imagens, vídeos, sites e materiais de campanha em minutos.</div>
 </div>
 
-<div class="g2" id="camp-grid"></div>
-<div class="nav-btns"><button class="btn bg" onclick="go(11)">‹ Dashboard</button><button class="btn bp" onclick="markDone(12);go(13)">Painel do Professor ›</button></div>
+<!-- MASTER PROMPT GENERATOR -->
+<div class="c" style="margin-bottom:18px;border:1px solid var(--pkbrd);background:linear-gradient(135deg,rgba(233,30,140,.04),rgba(245,158,11,.02))">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+    <div>
+      <div class="ct" style="margin-bottom:2px;color:var(--pk)">✦ Gerador de Prompt Mestre</div>
+      <div style="font-size:11px;color:var(--tx3)">Gera um prompt completo baseado em todo o planejamento — use em qualquer ferramenta de IA</div>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <select id="prompt-tipo" style="font-size:11px;padding:6px 10px;border-radius:6px;background:var(--surf2);border:1px solid var(--brd);color:var(--tx)">
+        <option value="img-ext">Fachada externa do prédio</option>
+        <option value="img-int">Interior / Sala de estar</option>
+        <option value="img-area">Área de lazer / Rooftop</option>
+        <option value="img-vista">Vista do terraço / Mirante</option>
+        <option value="img-vida">Lifestyle da persona</option>
+        <option value="video">Vídeo de lançamento</option>
+        <option value="site">Landing page / Site</option>
+        <option value="social">Post Instagram premium</option>
+        <option value="outdoor">Outdoor / OOH</option>
+      </select>
+      <button class="btn bai bsm" onclick="genMasterPrompt()">✦ Gerar Prompt</button>
+    </div>
+  </div>
+  <div class="prompt-box" style="margin-top:0">
+    <div style="font-size:9px;font-weight:700;color:var(--tx4);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Prompt gerado — copie e cole na ferramenta escolhida:</div>
+    <div class="prompt-output" id="master-prompt-out">
+      Selecione o tipo de material e clique em "Gerar Prompt" →
+      <button class="copy-prompt-btn" onclick="copyMasterPrompt()">📋 Copiar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="media-tabs">
+  <button class="media-tab on" onclick="mediaTab(this,'mt-imagens')">🖼 Imagens</button>
+  <button class="media-tab" onclick="mediaTab(this,'mt-video')">🎬 Vídeo</button>
+  <button class="media-tab" onclick="mediaTab(this,'mt-site')">🌐 Site & Landing Page</button>
+  <button class="media-tab" onclick="mediaTab(this,'mt-copy')">✍ Copy & Textos</button>
+  <button class="media-tab" onclick="mediaTab(this,'mt-social')">📱 Social Media</button>
+</div>
+
+<!-- ══════════════ IMAGENS ══════════════ -->
+<div class="media-tp on" id="mt-imagens">
+
+  <div style="background:var(--surf2);border:1px solid var(--brd);border-radius:9px;padding:12px 16px;margin-bottom:14px">
+    <div style="font-size:9px;font-weight:800;color:var(--or);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px">💡 Como usar</div>
+    <div style="font-size:11px;color:var(--tx2);line-height:1.6">Gere o prompt mestre acima → escolha uma das ferramentas abaixo → cole o prompt → faça o download da imagem. Para melhores resultados, use <strong style="color:var(--pk)">Midjourney</strong> (qualidade máxima) ou <strong style="color:var(--tl)">Ideogram</strong> (gratuito e excelente para tipografia).</div>
+  </div>
+
+  <div class="tool-grid">
+
+    <!-- DALL-E 3 / ChatGPT -->
+    <div class="tool-card">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#10a37f,#065f46)">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/32px-ChatGPT_logo.svg.png" style="width:24px;height:24px" onerror="this.style.display='none';this.parentElement.textContent='🤖'">
+      </div>
+      <div class="tool-name">ChatGPT / DALL-E 3</div>
+      <div class="tool-desc">Melhor integrado ao texto. Excelente para renders arquitetônicos fotorrealistas e cenas de lifestyle. Requer conta ChatGPT Plus.</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-paid">Pago</span>
+        <span class="tool-tag tool-tag-api">API</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://chat.openai.com" target="_blank" class="tool-btn tool-btn-primary">▶ Abrir ChatGPT</a>
+        <button class="tool-btn tool-btn-sec" onclick="genToolPrompt('dalle')">📋 Prompt DALL-E</button>
+      </div>
+    </div>
+
+    <!-- Midjourney -->
+    <div class="tool-card">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#1a1a2e,#16213e)">🎨</div>
+      <div class="tool-name">Midjourney</div>
+      <div class="tool-desc">Qualidade artística máxima. Melhor do mundo para renders de luxo, lifestyle premium e imagens arquitetônicas de alto impacto visual.</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-paid">Pago</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://midjourney.com" target="_blank" class="tool-btn tool-btn-primary">▶ Abrir Midjourney</a>
+        <button class="tool-btn tool-btn-sec" onclick="genToolPrompt('midjourney')">📋 Prompt MJ</button>
+      </div>
+    </div>
+
+    <!-- Ideogram -->
+    <div class="tool-card">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#7c3aed,#4c1d95)">✦</div>
+      <div class="tool-name">Ideogram</div>
+      <div class="tool-desc">Gratuito e excelente para imagens com texto integrado (outdoor, fachada com logo, tipografia). Ideal para peças de comunicação.</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-free">Gratuito</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://ideogram.ai/t/explore" target="_blank" class="tool-btn tool-btn-primary">▶ Abrir Ideogram</a>
+        <button class="tool-btn tool-btn-sec" onclick="genToolPrompt('ideogram')">📋 Prompt</button>
+      </div>
+    </div>
+
+    <!-- Adobe Firefly -->
+    <div class="tool-card">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#ff0000,#cc0000)">🔥</div>
+      <div class="tool-name">Adobe Firefly</div>
+      <div class="tool-desc">Integrado ao Photoshop e Express. Excelente para material de campanha e pós-produção. Comercialmente seguro (treinado em imagens licenciadas).</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-free">Trial grátis</span>
+        <span class="tool-tag tool-tag-paid">Adobe CC</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://firefly.adobe.com" target="_blank" class="tool-btn tool-btn-primary">▶ Abrir Firefly</a>
+        <button class="tool-btn tool-btn-sec" onclick="genToolPrompt('firefly')">📋 Prompt</button>
+      </div>
+    </div>
+
+    <!-- Canva AI -->
+    <div class="tool-card">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#00C4CC,#0099A8)">🎨</div>
+      <div class="tool-name">Canva Text-to-Image</div>
+      <div class="tool-desc">Direto no Canva. Perfeito para gerar imagem e já usar em template de post, folder ou outdoor. Sem precisar baixar ou importar.</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-free">Grátis (limitado)</span>
+        <span class="tool-tag tool-tag-paid">Pro</span>
+        <span class="tool-tag tool-tag-br">🇧🇷 PT-BR</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://www.canva.com/text-to-image/" target="_blank" class="tool-btn tool-btn-primary">▶ Abrir Canva</a>
+        <button class="tool-btn tool-btn-sec" onclick="genToolPrompt('canva')">📋 Prompt</button>
+      </div>
+    </div>
+
+    <!-- Leonardo AI -->
+    <div class="tool-card">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#fbbf24,#92400e)">🦁</div>
+      <div class="tool-name">Leonardo AI</div>
+      <div class="tool-desc">Excelente custo-benefício. Oferece créditos gratuitos diários. Ótimo para gerar variações e testar estilos visuais do produto.</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-free">150 créditos/dia</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://app.leonardo.ai" target="_blank" class="tool-btn tool-btn-primary">▶ Abrir Leonardo</a>
+        <button class="tool-btn tool-btn-sec" onclick="genToolPrompt('leonardo')">📋 Prompt</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Prompt area for images -->
+  <div class="prompt-box" id="img-prompt-box" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px" id="img-prompt-tool-lbl">Prompt para —</div>
+      <button class="copy-prompt-btn" style="position:static" onclick="copyToolPrompt()">📋 Copiar</button>
+    </div>
+    <div class="prompt-output" id="img-prompt-out" style="position:relative"></div>
+    <div style="margin-top:8px;font-size:10px;color:var(--tx4);line-height:1.5" id="img-prompt-tip"></div>
+  </div>
+
+</div>
+
+<!-- ══════════════ VÍDEO ══════════════ -->
+<div class="media-tp" id="mt-video">
+
+  <div style="background:var(--surf2);border:1px solid var(--brd);border-radius:9px;padding:12px 16px;margin-bottom:14px">
+    <div style="font-size:9px;font-weight:800;color:var(--or);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px">💡 Fluxo recomendado</div>
+    <div style="font-size:11px;color:var(--tx2);line-height:1.6"><strong>1.</strong> Gere o prompt de vídeo abaixo → <strong>2.</strong> Abra o Kling AI (gratuito) ou Google Veo 3 → <strong>3.</strong> Cole o prompt → <strong>4.</strong> Para editar: use Runway ou CapCut. Para vídeo com imagem existente: use Pika (image-to-video).</div>
+  </div>
+
+  <div style="margin-bottom:14px">
+    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+      <select id="video-tipo" style="font-size:11px;padding:7px 10px;border-radius:6px;background:var(--surf2);border:1px solid var(--brd);color:var(--tx);flex:1">
+        <option>Teaser de lançamento (15s) — mystério e desejo</option>
+        <option>Tour virtual do decorado (30s)</option>
+        <option>Lifestyle da persona (30s) — dia a dia no produto</option>
+        <option>Drone fly-through da localização (20s)</option>
+        <option>Depoimento emocional do morador (60s)</option>
+        <option>Filme de marca — visão da incorporadora (90s)</option>
+      </select>
+      <button class="btn bai bsm" onclick="genVideoPrompt()">✦ Gerar Prompt de Vídeo</button>
+    </div>
+    <div class="prompt-box" id="video-prompt-box" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--pu);text-transform:uppercase;letter-spacing:.8px">Prompt de Vídeo — cole na ferramenta escolhida</div>
+        <button class="copy-prompt-btn" style="position:static" onclick="copyVideoPrompt2()">📋 Copiar</button>
+      </div>
+      <div class="prompt-output" id="video-prompt-out"></div>
+    </div>
+  </div>
+
+  <div class="tool-grid">
+
+    <!-- Google Veo 3 -->
+    <div class="tool-card">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#4285F4,#34A853)">G</div>
+      <div class="tool-name">Google Veo 3</div>
+      <div class="tool-desc">Melhor qualidade de vídeo por IA disponível. Disponível via Google AI Studio com créditos gratuitos. Gera vídeos até 8 segundos com áudio integrado.</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-free">Créditos grátis</span>
+        <span class="tool-tag tool-tag-paid">Gemini Ultra</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://aistudio.google.com/generate-video" target="_blank" class="tool-btn tool-btn-primary">▶ Abrir AI Studio</a>
+        <a href="https://videoplayground.google.com" target="_blank" class="tool-btn tool-btn-sec">Playground</a>
+      </div>
+    </div>
+
+    <!-- Kling AI -->
+    <div class="tool-card">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#000,#1a1a1a)">K</div>
+      <div class="tool-name">Kling AI</div>
+      <div class="tool-desc">Gratuito com 66 créditos/dia. Excelente para renders arquitetônicos em movimento e lifestyle. Suporta image-to-video (use imagem do DALL-E).</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-free">66 créditos/dia</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://klingai.com/text-to-video" target="_blank" class="tool-btn tool-btn-primary">▶ Kling (Text-to-Video)</a>
+        <a href="https://klingai.com/image-to-video" target="_blank" class="tool-btn tool-btn-sec">Image-to-Video</a>
+      </div>
+    </div>
+
+    <!-- Runway ML -->
+    <div class="tool-card">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#111,#E91E8C)">R</div>
+      <div class="tool-name">Runway ML Gen-3</div>
+      <div class="tool-desc">Padrão da indústria criativa. Melhor controle de câmera, edição de movimento e composição. Ideal para vídeos de marca premium.</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-free">Trial limitado</span>
+        <span class="tool-tag tool-tag-paid">Planos pagos</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://app.runwayml.com" target="_blank" class="tool-btn tool-btn-primary">▶ Abrir Runway</a>
+      </div>
+    </div>
+
+    <!-- Pika Labs -->
+    <div class="tool-card">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#7C3AED,#A78BFA)">P</div>
+      <div class="tool-name">Pika Labs</div>
+      <div class="tool-desc">Melhor para transformar imagens em vídeo (image-to-video). Use com renders do DALL-E ou Midjourney para animar fachadas e interiores.</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-free">Trial grátis</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://pika.art/create" target="_blank" class="tool-btn tool-btn-primary">▶ Abrir Pika</a>
+      </div>
+    </div>
+
+    <!-- Sora -->
+    <div class="tool-card">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#10a37f,#065f46)">S</div>
+      <div class="tool-name">Sora (OpenAI)</div>
+      <div class="tool-desc">Vídeos de até 20 segundos em 1080p. Qualidade cinematográfica. Disponível para assinantes ChatGPT Plus e Pro. Excelente para lifestyle.</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-paid">ChatGPT Plus</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://sora.com" target="_blank" class="tool-btn tool-btn-primary">▶ Abrir Sora</a>
+      </div>
+    </div>
+
+    <!-- CapCut -->
+    <div class="tool-card">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#000,#333)">✂</div>
+      <div class="tool-name">CapCut (edição)</div>
+      <div class="tool-desc">Gratuito e brasileiro. Edite os vídeos gerados, adicione legendas automáticas, música e textos animados. Ideal para finalização de reels e stories.</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-free">Gratuito</span>
+        <span class="tool-tag tool-tag-br">🇧🇷 PT-BR</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://www.capcut.com" target="_blank" class="tool-btn tool-btn-primary">▶ Abrir CapCut</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════ SITE & LANDING PAGE ══════════════ -->
+<div class="media-tp" id="mt-site">
+
+  <div style="background:var(--surf2);border:1px solid var(--brd);border-radius:9px;padding:12px 16px;margin-bottom:14px">
+    <div style="font-size:9px;font-weight:800;color:var(--or);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px">💡 Como usar</div>
+    <div style="font-size:11px;color:var(--tx2);line-height:1.6">Gere o prompt do site abaixo → cole no <strong style="color:var(--pk)">Claude.ai</strong> (pede um site HTML completo) ou abra direto no <strong style="color:var(--tl)">Framer AI</strong> ou <strong style="color:var(--or)">Wix Studio AI</strong> para landing pages prontas para publicar.</div>
+  </div>
+
+  <!-- Site prompt generator -->
+  <div class="c c-pk" style="margin-bottom:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+      <div class="ct" style="margin-bottom:0">Gerador de Prompt para Site</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <select id="site-tipo" style="font-size:11px;padding:6px 10px;border-radius:6px;background:var(--surf2);border:1px solid var(--brd);color:var(--tx)">
+          <option value="landing">Landing page de lançamento (1 página)</option>
+          <option value="site">Mini-site do empreendimento (3-5 páginas)</option>
+          <option value="vip">Página de cadastro lista VIP</option>
+          <option value="plantaonline">Planta online interativa</option>
+        </select>
+        <button class="btn bai bsm" onclick="genSitePrompt()">✦ Gerar Prompt</button>
+      </div>
+    </div>
+    <div class="prompt-box" id="site-prompt-box" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px">Prompt do Site — cole no Claude.ai ou ferramenta abaixo</div>
+        <button class="copy-prompt-btn" style="position:static" onclick="copySitePrompt()">📋 Copiar</button>
+      </div>
+      <div class="prompt-output" id="site-prompt-out"></div>
+    </div>
+  </div>
+
+  <div class="tool-grid">
+
+    <!-- Claude.ai -->
+    <div class="tool-card" style="border-color:var(--pkbrd);background:rgba(233,30,140,.03)">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#E91E8C,#F59E0B)">✦</div>
+      <div class="tool-name">Claude (Você está aqui!)</div>
+      <div class="tool-desc">Cole o prompt gerado acima direto no Claude.ai. Ele entrega o HTML completo da landing page em segundos — responsiva, animada e com o conceito do produto.</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-free">Grátis</span>
+        <span class="tool-tag tool-tag-br">🏆 Recomendado</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://claude.ai" target="_blank" class="tool-btn tool-btn-primary">▶ Abrir Claude.ai</a>
+        <button class="tool-btn tool-btn-sec" onclick="genSitePrompt()">📋 Gerar Prompt</button>
+      </div>
+    </div>
+
+    <!-- Framer AI -->
+    <div class="tool-card">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#0055FF,#0033CC)">F</div>
+      <div class="tool-name">Framer AI</div>
+      <div class="tool-desc">Melhor ferramenta para landing pages premium. Descreva o produto em texto e a IA monta o site com animações, tipografia e publicação automática.</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-free">Grátis (limitado)</span>
+        <span class="tool-tag tool-tag-paid">Planos pagos</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://framer.com/ai" target="_blank" class="tool-btn tool-btn-primary">▶ Abrir Framer AI</a>
+      </div>
+    </div>
+
+    <!-- Wix Studio AI -->
+    <div class="tool-card">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#FAAD4F,#FF6B35)">W</div>
+      <div class="tool-name">Wix Studio AI</div>
+      <div class="tool-desc">Cria site completo a partir de texto. Inclui formulário de captura de leads, integração com WhatsApp e publicação instantânea. Em português.</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-free">Grátis</span>
+        <span class="tool-tag tool-tag-br">🇧🇷 PT-BR</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://www.wix.com/studio" target="_blank" class="tool-btn tool-btn-primary">▶ Abrir Wix Studio</a>
+      </div>
+    </div>
+
+    <!-- v0 by Vercel -->
+    <div class="tool-card">
+      <div class="tool-logo" style="background:#000">v0</div>
+      <div class="tool-name">v0 by Vercel</div>
+      <div class="tool-desc">Gera componentes React prontos para deploy. Ideal para desenvolvedores. Cole o prompt e receba código limpo de landing page com Tailwind CSS.</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-free">Grátis (créditos)</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://v0.dev" target="_blank" class="tool-btn tool-btn-primary">▶ Abrir v0.dev</a>
+      </div>
+    </div>
+
+    <!-- Gamma -->
+    <div class="tool-card">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#7C3AED,#4C1D95)">γ</div>
+      <div class="tool-name">Gamma</div>
+      <div class="tool-desc">Transforma texto em apresentações e micro-sites visualmente impactantes. Ótimo para pitch do empreendimento com galeria de imagens integrada.</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-free">Gratuito</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://gamma.app" target="_blank" class="tool-btn tool-btn-primary">▶ Abrir Gamma</a>
+      </div>
+    </div>
+
+    <!-- Nana Banana / Durable -->
+    <div class="tool-card">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#FFD700,#FFA500)">🍌</div>
+      <div class="tool-name">Durable AI (+ Nana Banana)</div>
+      <div class="tool-desc">Site de negócio em 30 segundos com IA. Excelente para páginas de captação de leads do empreendimento com formulário integrado.</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-free">Grátis (trial)</span>
+        <span class="tool-tag tool-tag-br">🇧🇷 PT-BR</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://durable.co" target="_blank" class="tool-btn tool-btn-primary">▶ Abrir Durable</a>
+        <a href="https://www.nanabanana.com.br" target="_blank" class="tool-btn tool-btn-sec">🍌 Nana Banana BR</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════ COPY & TEXTOS ══════════════ -->
+<div class="media-tp" id="mt-copy">
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+    <button class="btn bai" onclick="genAllCopy()" id="btn-all-copy">✦ Gerar Todos os Textos</button>
+    <button class="btn bg bsm" onclick="clearAllCopy()">✕ Limpar</button>
+  </div>
+  <div class="copy-grid" id="camp-grid"></div>
+</div>
+
+<!-- ══════════════ SOCIAL MEDIA ══════════════ -->
+<div class="media-tp" id="mt-social">
+
+  <div style="background:var(--surf2);border:1px solid var(--brd);border-radius:9px;padding:12px 16px;margin-bottom:14px">
+    <div style="font-size:9px;font-weight:800;color:var(--or);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px">💡 Fluxo completo de Social</div>
+    <div style="font-size:11px;color:var(--tx2);line-height:1.6">
+      <strong>Imagem:</strong> Gere na aba Imagens → <strong>Template:</strong> Importe para o Canva → <strong>Copy:</strong> Use a IA abaixo → <strong>Agenda:</strong> Publique via Later ou Mango (BR). Para Reels: gere vídeo no Kling → edite no CapCut.
+    </div>
+  </div>
+
+  <div class="tool-grid" style="grid-template-columns:repeat(2,1fr)">
+
+    <!-- Canva Design -->
+    <div class="tool-card">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#00C4CC,#0099A8)">🎨</div>
+      <div class="tool-name">Canva — Design de Posts</div>
+      <div class="tool-desc">Mais de 2.000 templates premium para posts imobiliários. Importe sua imagem gerada por IA e adapte ao template. Tem fundo removedor e IA de design integrada.</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-free">Grátis</span>
+        <span class="tool-tag tool-tag-br">🇧🇷 PT-BR</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://www.canva.com/create/instagram-posts/" target="_blank" class="tool-btn tool-btn-primary">▶ Instagram Posts</a>
+        <a href="https://www.canva.com/create/instagram-stories/" target="_blank" class="tool-btn tool-btn-sec">Stories</a>
+        <a href="https://www.canva.com/create/reels/" target="_blank" class="tool-btn tool-btn-sec">Reels</a>
+      </div>
+    </div>
+
+    <!-- Adobe Express -->
+    <div class="tool-card">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#ff0000,#cc0000)">Ae</div>
+      <div class="tool-name">Adobe Express</div>
+      <div class="tool-desc">Templates profissionais com IA Firefly integrada. Gera posts, carrosséis e stories diretamente. Melhor integração com imagens geradas pelo Firefly.</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-free">Grátis</span>
+        <span class="tool-tag tool-tag-paid">Adobe CC</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://www.adobe.com/express" target="_blank" class="tool-btn tool-btn-primary">▶ Abrir Express</a>
+      </div>
+    </div>
+
+    <!-- Claude Design (prompt) -->
+    <div class="tool-card" style="border-color:var(--pkbrd)">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#E91E8C,#F59E0B)">✦</div>
+      <div class="tool-name">Claude Design (via prompt)</div>
+      <div class="tool-desc">Cole o prompt gerado aqui no Claude.ai e peça um post HTML completo com CSS animado — pronto para screenshot e usar como imagem do feed.</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-br">🏆 Exclusivo</span>
+      </div>
+      <div class="tool-actions">
+        <button class="tool-btn tool-btn-primary" onclick="genClaudeDesignPrompt()">✦ Gerar Prompt Design</button>
+        <a href="https://claude.ai" target="_blank" class="tool-btn tool-btn-sec">▶ Abrir Claude</a>
+      </div>
+    </div>
+
+    <!-- Agendamento -->
+    <div class="tool-card">
+      <div class="tool-logo" style="background:linear-gradient(135deg,#FF6B35,#FFD700)">📅</div>
+      <div class="tool-name">Mango (BR) + Later</div>
+      <div class="tool-desc">Agendamento de posts no Instagram, Facebook e LinkedIn. Mango é brasileiro com suporte em PT-BR. Later tem analytics detalhado.</div>
+      <div class="tool-tags">
+        <span class="tool-tag tool-tag-free">Plano grátis</span>
+        <span class="tool-tag tool-tag-br">🇧🇷 Mango</span>
+      </div>
+      <div class="tool-actions">
+        <a href="https://www.mango.com.br" target="_blank" class="tool-btn tool-btn-primary">▶ Mango BR</a>
+        <a href="https://later.com" target="_blank" class="tool-btn tool-btn-sec">Later</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Social prompts -->
+  <div class="c" style="margin-top:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+      <div class="ct" style="margin-bottom:0">Gerar Copies para Social</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <select id="social-tipo" style="font-size:11px;padding:6px 10px;border-radius:6px;background:var(--surf2);border:1px solid var(--brd);color:var(--tx)">
+          <option>Post Instagram — Teaser (pré-lançamento)</option>
+          <option>Post Instagram — Conceito do produto</option>
+          <option>Carrossel — 5 diferenciais do empreendimento</option>
+          <option>Reels — Script (narrativa 30s)</option>
+          <option>Stories — Sequência de 5 slides</option>
+          <option>LinkedIn — Investimento imobiliário</option>
+        </select>
+        <button class="btn bai bsm" onclick="genSocialCopy()" id="btn-social">✦ Gerar</button>
+      </div>
+    </div>
+    <div class="ai-out" id="out-social"></div>
+  </div>
+
+</div>
+
+<div class="nav-btns"><button class="btn bg" onclick="go(11)">‹ Dashboard</button><button class="btn bp" onclick="markDone(12);go(14)">Próximo: Competitivo ›</button></div>
 </div>
 
 <!-- ===== S13 PROFESSOR ===== -->
@@ -1483,6 +2241,560 @@ canvas{border-radius:8px}
   <div class="c"><div class="ct">Leaderboard</div><div id="prof-lb"></div></div>
   <div class="c"><div class="ct">Progresso por Módulo</div><div id="prof-heat"></div></div>
 </div>
+</div>
+
+
+<!-- ===== S14 POSICIONAMENTO COMPETITIVO ===== -->
+<div class="scr" id="s14">
+<div class="sh2"><div class="stag">Módulo 14 • Estratégia Avançada</div><div class="st">Posicionamento Competitivo</div><div class="sd">Compare seu produto com até 3 concorrentes diretos. Identifique diferenciais reais e gaps de posicionamento no mercado.</div></div>
+
+<div class="c c-pk" style="margin-bottom:14px">
+  <div class="ct">Mapa de Posicionamento — Preço × Conceito</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
+    <div style="text-align:center;padding:6px;background:var(--pklt);border:1px solid var(--pkbrd);border-radius:8px"><div style="font-size:10px;font-weight:700;color:var(--pk);margin-bottom:3px">NOSSO PRODUTO</div><span class="comp-tag comp-tag-nos">●</span></div>
+    <div style="text-align:center;padding:6px;background:var(--tllt);border:1px solid var(--tlbrd);border-radius:8px"><div style="font-size:10px;font-weight:700;color:var(--tl);margin-bottom:3px">CONCORRENTE 1</div><span class="comp-tag comp-tag-c1">●</span></div>
+    <div style="text-align:center;padding:6px;background:var(--orlt);border:1px solid var(--orbrd);border-radius:8px"><div style="font-size:10px;font-weight:700;color:var(--or);margin-bottom:3px">CONCORRENTE 2</div><span class="comp-tag comp-tag-c2">●</span></div>
+    <div style="text-align:center;padding:6px;background:var(--gnlt);border:1px solid var(--gnbrd);border-radius:8px"><div style="font-size:10px;font-weight:700;color:var(--gn);margin-bottom:3px">CONCORRENTE 3</div><span class="comp-tag comp-tag-c3">●</span></div>
+  </div>
+  <canvas id="comp-map-cv" style="width:100%;height:280px;border-radius:8px;background:var(--surf2);border:1px solid var(--brd)"></canvas>
+  <div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap">
+    <div class="fl" style="margin:0;flex:1"><label>Nosso posicionamento (eixo Y: 1–10 conceito)</label><input type="range" id="pos-nos-y" min="1" max="10" value="8" oninput="drawCompMap()"><span id="pos-nos-y-v" style="font-size:10px;color:var(--pk)">8</span></div>
+    <div class="fl" style="margin:0;flex:1"><label>Nosso preço/m² (eixo X)</label><input type="number" id="pos-nos-x" placeholder="Ex: 18000" oninput="sv();drawCompMap()"></div>
+  </div>
+</div>
+
+<div style="overflow-x:auto;margin-bottom:14px">
+<table class="comp-tbl">
+  <thead><tr>
+    <th style="min-width:140px">Critério de Comparação</th>
+    <th class="comp-our">🏠 Nosso Produto</th>
+    <th>🔵 Concorrente 1</th>
+    <th>🟠 Concorrente 2</th>
+    <th>🟢 Concorrente 3</th>
+  </tr></thead>
+  <tbody id="comp-tbody"></tbody>
+</table>
+</div>
+
+<div class="g2" style="margin-bottom:12px">
+  <div class="c">
+    <div class="ct">Nomes dos Concorrentes</div>
+    <div class="fl"><label>Concorrente 1</label><input type="text" id="comp-n1" placeholder="Ex: Cyrela Jardins" oninput="sv();drawCompMap()"></div>
+    <div class="fl"><label>Concorrente 2</label><input type="text" id="comp-n2" placeholder="Ex: Even Vila Nova" oninput="sv();drawCompMap()"></div>
+    <div class="fl"><label>Concorrente 3</label><input type="text" id="comp-n3" placeholder="Ex: Helbor Premium" oninput="sv();drawCompMap()"></div>
+  </div>
+  <div class="c">
+    <div class="ct">Nosso Diferencial Competitivo</div>
+    <div class="fl"><label>Vantagem principal vs concorrência</label><textarea id="comp-vant" rows="3" placeholder="O que nos torna insubstituíveis? O que nenhum concorrente consegue copiar facilmente?" oninput="sv()"></textarea></div>
+    <div class="fl"><label>Principal ameaça competitiva</label><textarea id="comp-ameaca" rows="2" placeholder="Onde corremos risco de ser comparados desfavoravelmente?" oninput="sv()"></textarea></div>
+  </div>
+</div>
+<div style="display:flex;justify-content:flex-end;margin-bottom:8px">
+  <button class="btn bai" onclick="genCompetitivo()" id="btn-comp">✦ Analisar Posicionamento com IA</button>
+</div>
+<div class="ai-out" id="out-comp"></div>
+<div class="nav-btns"><button class="btn bg" onclick="go(12)">‹ Materiais</button><button class="btn bp" onclick="markDone(14);go(15)">Próximo: Funil ›</button></div>
+</div>
+
+<!-- ===== S15 FUNIL DE VENDAS ===== -->
+<div class="scr" id="s15">
+<div class="sh2"><div class="stag">Módulo 15 • Funil Imobiliário</div><div class="st">Funil de Vendas Imobiliário</div><div class="sd">Mapeie o funil completo: Leads → Qualificados → Visitas → Propostas → Contratos. Identifique onde o produto perde e onde ganha.</div></div>
+
+<div class="g2" style="margin-bottom:14px">
+  <div>
+    <div class="c c-pk" style="margin-bottom:12px">
+      <div class="ct">Dados do Funil</div>
+      <div class="fl"><label>Leads totais gerados</label><input type="number" id="funil-leads" placeholder="Ex: 1200" oninput="sv();calcFunil()"></div>
+      <div class="fl"><label>Leads qualificados (renda confirmada)</label><input type="number" id="funil-qual" placeholder="Ex: 380" oninput="sv();calcFunil()"></div>
+      <div class="fl"><label>Visitas realizadas</label><input type="number" id="funil-visitas" placeholder="Ex: 180" oninput="sv();calcFunil()"></div>
+      <div class="fl"><label>Propostas recebidas</label><input type="number" id="funil-prop" placeholder="Ex: 90" oninput="sv();calcFunil()"></div>
+      <div class="fl"><label>Contratos assinados</label><input type="number" id="funil-contratos" placeholder="Ex: 60" oninput="sv();calcFunil()"></div>
+    </div>
+    <div class="c">
+      <div class="ct">Diagnóstico por Etapa</div>
+      <div id="funil-diag" style="font-size:11px;color:var(--tx3)">Preencha os dados do funil para ver o diagnóstico</div>
+    </div>
+  </div>
+  <div>
+    <div class="c" style="margin-bottom:12px">
+      <div class="ct">Funil Visual</div>
+      <div id="funil-visual"></div>
+    </div>
+    <div class="c">
+      <div class="ct">Plano B — Cenário de Baixa Performance</div>
+      <div class="fl"><label>Se VSO ficar abaixo de 10%/mês por 3 meses, o que fazemos?</label><textarea id="funil-planb" rows="3" placeholder="Ex: Ativar campanha de incentivo, revisar preço das últimas unidades, intensificar mídia paga..." oninput="sv()"></textarea></div>
+    </div>
+  </div>
+</div>
+
+<div class="g2" style="margin-bottom:12px">
+  <div class="c">
+    <div class="ct">Taxas de Conversão por Etapa — Benchmark Mercado Premium</div>
+    <div style="font-size:11px;color:var(--tx3);margin-bottom:10px">Compare suas taxas com o benchmark do mercado imobiliário premium SP/RJ</div>
+    <div id="funil-benchmark"></div>
+  </div>
+  <div class="c">
+    <div class="ct">Gargalos Identificados</div>
+    <div class="fl"><label>Principal gargalo no funil</label><textarea id="funil-gargalo" rows="2" placeholder="Ex: Taxa de conversão lead→visita muito baixa (8% vs benchmark 20%)" oninput="sv()"></textarea></div>
+    <div class="fl"><label>Ação para resolver o gargalo</label><textarea id="funil-acao" rows="2" placeholder="Ex: Implementar pré-atendimento por WhatsApp com SDR dedicado antes de convidar para visita" oninput="sv()"></textarea></div>
+    <div class="fl"><label>KPI de acompanhamento semanal</label><input type="text" id="funil-kpi" placeholder="Ex: Taxa lead→visita semanal > 15%" oninput="sv()"></div>
+  </div>
+</div>
+<div style="display:flex;justify-content:flex-end;margin-bottom:8px">
+  <button class="btn bai" onclick="genFunil()" id="btn-funil">✦ Analisar Funil com IA</button>
+</div>
+<div class="ai-out" id="out-funil"></div>
+<div class="nav-btns"><button class="btn bg" onclick="go(14)">‹ Competitivo</button><button class="btn bp" onclick="markDone(15);go(16)">Próximo: Calendário ›</button></div>
+</div>
+
+<!-- ===== S16 CALENDÁRIO DE LANÇAMENTO ===== -->
+<div class="scr" id="s16">
+<div class="sh2"><div class="stag">Módulo 16 • Launch Strategy</div><div class="st">Calendário de Lançamento</div><div class="sd">Estruture as 4 fases do lançamento imobiliário: Pré-lançamento → Lista VIP → Evento → Estabilização. Com gatilhos de ativação por fase.</div></div>
+
+<div style="margin-bottom:14px">
+  <div class="g2" style="margin-bottom:10px">
+    <div class="fl"><label>Data prevista do lançamento</label><input type="date" id="launch-date" oninput="sv();buildLaunchTimeline()"></div>
+    <div class="fl"><label>Tipo de evento de lançamento</label>
+      <select id="launch-tipo" onchange="sv()">
+        <option>Cocktail privativo para lista VIP</option>
+        <option>Evento no decorado / stand</option>
+        <option>Lançamento digital (live + tour virtual)</option>
+        <option>Evento híbrido (presencial + digital)</option>
+        <option>Lançamento silencioso (sem evento)</option>
+      </select>
+    </div>
+  </div>
+  <canvas id="launch-timeline-cv" style="width:100%;height:80px;border-radius:8px;background:var(--surf2);border:1px solid var(--brd);margin-bottom:12px"></canvas>
+</div>
+
+<div id="launch-phases">
+  <!-- FASE 1: PRÉ-LANÇAMENTO -->
+  <div class="lt-phase open" id="ltp-1">
+    <div class="lt-phase-head" onclick="toggleLTPhase(1)" style="background:rgba(56,189,248,.06)">
+      <div style="width:32px;height:32px;background:var(--tllt);border:1px solid var(--tlbrd);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🔥</div>
+      <div style="flex:1"><div style="font-weight:800;font-size:12px;color:var(--tl)">FASE 1 — Pré-Lançamento</div><div style="font-size:10px;color:var(--tx3)">8 a 12 semanas antes do evento</div></div>
+      <div style="font-size:10px;color:var(--tx4)">▼</div>
+    </div>
+    <div class="lt-phase-body">
+      <div class="g2" style="margin-bottom:10px">
+        <div class="fl"><label>Meta de leads na lista VIP</label><input type="number" id="lt-vip-meta" placeholder="Ex: 500 leads qualificados" oninput="sv()"></div>
+        <div class="fl"><label>Canais de captação VIP</label><input type="text" id="lt-vip-canais" placeholder="Ex: Instagram Stories, WhatsApp Broker, Indicação" oninput="sv()"></div>
+      </div>
+      <div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">Gatilhos de ativação desta fase:</div>
+      <div id="lt-triggers-1"></div>
+      <div class="fl" style="margin-top:8px"><label>Ações específicas do grupo nesta fase</label><textarea id="lt-acoes-1" rows="2" placeholder="Descreva as ações que o grupo vai executar nesta fase..." oninput="sv()"></textarea></div>
+    </div>
+  </div>
+
+  <!-- FASE 2: LISTA VIP -->
+  <div class="lt-phase" id="ltp-2">
+    <div class="lt-phase-head" onclick="toggleLTPhase(2)" style="background:rgba(233,30,140,.06)">
+      <div style="width:32px;height:32px;background:var(--pklt);border:1px solid var(--pkbrd);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">💎</div>
+      <div style="flex:1"><div style="font-weight:800;font-size:12px;color:var(--pk)">FASE 2 — Ativação Lista VIP</div><div style="font-size:10px;color:var(--tx3)">2 semanas antes + evento de lançamento</div></div>
+      <div style="font-size:10px;color:var(--tx4)">▼</div>
+    </div>
+    <div class="lt-phase-body">
+      <div class="g2" style="margin-bottom:10px">
+        <div class="fl"><label>% vendas meta na noite do evento</label><input type="number" id="lt-vip-pct" placeholder="Ex: 40%" oninput="sv()"></div>
+        <div class="fl"><label>Condição exclusiva para lista VIP</label><input type="text" id="lt-vip-cond" placeholder="Ex: 2% desconto + vaga extra na planta" oninput="sv()"></div>
+      </div>
+      <div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">Gatilhos de ativação desta fase:</div>
+      <div id="lt-triggers-2"></div>
+      <div class="fl" style="margin-top:8px"><label>Script do convite para o evento</label><textarea id="lt-acoes-2" rows="2" placeholder="O que o SDR vai dizer para converter o lead da lista VIP em presença no evento..." oninput="sv()"></textarea></div>
+    </div>
+  </div>
+
+  <!-- FASE 3: LANÇAMENTO -->
+  <div class="lt-phase" id="ltp-3">
+    <div class="lt-phase-head" onclick="toggleLTPhase(3)" style="background:rgba(245,158,11,.06)">
+      <div style="width:32px;height:32px;background:var(--orlt);border:1px solid var(--orbrd);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🚀</div>
+      <div style="flex:1"><div style="font-weight:800;font-size:12px;color:var(--or)">FASE 3 — Lançamento Público</div><div style="font-size:10px;color:var(--tx3)">Semanas 1 a 4 após o evento</div></div>
+      <div style="font-size:10px;color:var(--tx4)">▼</div>
+    </div>
+    <div class="lt-phase-body">
+      <div class="g2" style="margin-bottom:10px">
+        <div class="fl"><label>Meta de vendas em 30 dias (% das unidades)</label><input type="number" id="lt-30d" placeholder="Ex: 60%" oninput="sv()"></div>
+        <div class="fl"><label>Principal canal de vendas nesta fase</label><input type="text" id="lt-canal-30" placeholder="Ex: Google Ads + Portal ZAP" oninput="sv()"></div>
+      </div>
+      <div id="lt-triggers-3"></div>
+      <div class="fl" style="margin-top:8px"><label>Ações de queima para unidades restantes</label><textarea id="lt-acoes-3" rows="2" oninput="sv()" placeholder="Estratégia para as unidades que não venderam no evento..."></textarea></div>
+    </div>
+  </div>
+
+  <!-- FASE 4: ESTABILIZAÇÃO -->
+  <div class="lt-phase" id="ltp-4">
+    <div class="lt-phase-head" onclick="toggleLTPhase(4)" style="background:rgba(52,211,153,.06)">
+      <div style="width:32px;height:32px;background:var(--gnlt);border:1px solid var(--gnbrd);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">📈</div>
+      <div style="flex:1"><div style="font-weight:800;font-size:12px;color:var(--gn)">FASE 4 — Estabilização</div><div style="font-size:10px;color:var(--tx3)">Meses 2 a 12 — venda residual</div></div>
+      <div style="font-size:10px;color:var(--tx4)">▼</div>
+    </div>
+    <div class="lt-phase-body">
+      <div class="g2" style="margin-bottom:10px">
+        <div class="fl"><label>Meta VSO mensal nesta fase</label><input type="text" id="lt-vso-est" placeholder="Ex: 3–5 unidades/mês" oninput="sv()"></div>
+        <div class="fl"><label>Estratégia de indicação (advocacy)</label><input type="text" id="lt-advocacy" placeholder="Ex: Programa indica e ganha — bônus decoração" oninput="sv()"></div>
+      </div>
+      <div id="lt-triggers-4"></div>
+      <div class="fl" style="margin-top:8px"><label>Critério de sucesso desta fase</label><textarea id="lt-acoes-4" rows="2" oninput="sv()" placeholder="Como sabemos que o lançamento foi bem-sucedido?"></textarea></div>
+    </div>
+  </div>
+</div>
+
+<div style="display:flex;justify-content:flex-end;margin-top:12px;margin-bottom:8px">
+  <button class="btn bai" onclick="genLaunch()" id="btn-launch">✦ Gerar Plano de Lançamento com IA</button>
+</div>
+<div class="ai-out" id="out-launch"></div>
+<div class="nav-btns"><button class="btn bg" onclick="go(15)">‹ Funil</button><button class="btn bp" onclick="markDone(16);go(17)">Próximo: Simulador de Preços ›</button></div>
+</div>
+
+<!-- ===== S17 SIMULADOR DE PRECIFICAÇÃO ===== -->
+<div class="scr" id="s17">
+<div class="sh2"><div class="stag">Módulo 17 • Pricing Strategy</div><div class="st">Simulador de Precificação</div><div class="sd">Monte a tabela de preços por andar e tipologia. Simule cenários de elasticidade e calcule o impacto no VGV e VSO.</div></div>
+
+<div class="g2" style="margin-bottom:14px">
+  <div>
+    <div class="c c-or" style="margin-bottom:12px">
+      <div class="ct">Parâmetros da Tabela</div>
+      <div class="g2">
+        <div class="fl"><label>Nº de Andares</label><input type="number" id="price-andares" value="12" min="1" max="50" oninput="sv();buildPriceTable()"></div>
+        <div class="fl"><label>Unidades por Andar</label><input type="number" id="price-upm" value="4" min="1" max="12" oninput="sv();buildPriceTable()"></div>
+      </div>
+      <div class="g2">
+        <div class="fl"><label>Preço base (m²) — R$</label><input type="number" id="price-base" placeholder="Ex: 15000" oninput="sv();buildPriceTable()"></div>
+        <div class="fl"><label>Área média (m²)</label><input type="number" id="price-area" placeholder="Ex: 110" oninput="sv();buildPriceTable()"></div>
+      </div>
+      <div class="g2">
+        <div class="fl"><label>Incremento por andar (%)</label><input type="number" id="price-incr" value="1.5" step="0.1" oninput="sv();buildPriceTable()"></div>
+        <div class="fl"><label>Premium cobertura (%)</label><input type="number" id="price-cobert" value="25" step="1" oninput="sv();buildPriceTable()"></div>
+      </div>
+    </div>
+    <div class="c">
+      <div class="ct">Simulador de Elasticidade</div>
+      <div style="font-size:11px;color:var(--tx3);margin-bottom:10px">Se aumentar o preço base em X%, qual o impacto no VSO e VGV?</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <label style="font-size:10px;white-space:nowrap">Variação de preço:</label>
+        <input type="range" id="elast-slider" min="-20" max="20" value="0" step="1" oninput="calcElasticidade()" style="flex:1">
+        <span id="elast-val" style="font-size:14px;font-weight:800;color:var(--pk);min-width:40px">0%</span>
+      </div>
+      <div id="elast-result" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px"></div>
+    </div>
+  </div>
+  <div>
+    <div class="c" style="overflow-x:auto">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div class="ct" style="margin-bottom:0">Tabela de Preços</div>
+        <div style="display:flex;gap:6px">
+          <div style="display:flex;align-items:center;gap:4px;font-size:10px"><div style="width:10px;height:10px;border-radius:2px;background:rgba(52,211,153,.2)"></div> Vendida</div>
+          <div style="display:flex;align-items:center;gap:4px;font-size:10px"><div style="width:10px;height:10px;border-radius:2px;background:rgba(245,158,11,.2)"></div> Reservada</div>
+        </div>
+      </div>
+      <div id="price-table-wrap" style="max-height:400px;overflow-y:auto"></div>
+      <div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--brd);display:flex;gap:16px;font-size:11px">
+        <span>VGV Total: <strong style="color:var(--pk)" id="price-vgv-tot">—</strong></span>
+        <span>VGV Vendido: <strong style="color:var(--gn)" id="price-vgv-vend">—</strong></span>
+        <span>VSO: <strong style="color:var(--or)" id="price-vso-pct">—</strong></span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="nav-btns"><button class="btn bg" onclick="go(16)">‹ Calendário</button><button class="btn bp" onclick="markDone(17);go(18)">Próximo: Ecossistema ›</button></div>
+</div>
+
+<!-- ===== S18 ECOSSISTEMA DE VENDAS ===== -->
+<div class="scr" id="s18">
+<div class="sh2"><div class="stag">Módulo 18 • Ecossistema</div><div class="st">Ecossistema de Vendas & Influência</div><div class="sd">Mapeie brokers, imobiliárias parceiras, influenciadores e assessores. Este ecossistema move 40–60% das vendas premium.</div></div>
+
+<div class="c c-tl" style="margin-bottom:14px">
+  <div class="ct">Mapa do Ecossistema</div>
+  <canvas id="eco-map-cv" style="width:100%;height:240px;border-radius:8px;background:var(--surf2);border:1px solid var(--brd)"></canvas>
+</div>
+
+<div class="tabs" id="eco-tabs">
+  <button class="tab on" onclick="ecoTab(this,'eco-brokers')">🏢 Brokers / Imobiliárias</button>
+  <button class="tab" onclick="ecoTab(this,'eco-influencers')">📱 Influenciadores</button>
+  <button class="tab" onclick="ecoTab(this,'eco-assessores')">💼 Assessores Financeiros</button>
+  <button class="tab" onclick="ecoTab(this,'eco-arquitetos')">🏛 Arquitetos & Designers</button>
+</div>
+
+<div id="eco-brokers" class="tp on">
+  <div class="c">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="ct" style="margin-bottom:0">Brokers & Imobiliárias Parceiras</div>
+      <button class="btn bp bsm" onclick="addEcoItem('brokers')">+ Adicionar</button>
+    </div>
+    <div id="eco-brokers-list">
+      <div style="font-size:11px;color:var(--tx4);text-align:center;padding:16px">Clique em "+ Adicionar" para mapear os principais brokers do produto</div>
+    </div>
+  </div>
+</div>
+<div id="eco-influencers" class="tp">
+  <div class="c">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="ct" style="margin-bottom:0">Influenciadores de Lifestyle & Arquitetura</div>
+      <button class="btn bp bsm" onclick="addEcoItem('influencers')">+ Adicionar</button>
+    </div>
+    <div id="eco-influencers-list">
+      <div style="font-size:11px;color:var(--tx4);text-align:center;padding:16px">Mapeie influenciadores de lifestyle, arquitetura e decoração alinhados ao conceito</div>
+    </div>
+  </div>
+</div>
+<div id="eco-assessores" class="tp">
+  <div class="c">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="ct" style="margin-bottom:0">Assessores de Investimento & Private</div>
+      <button class="btn bp bsm" onclick="addEcoItem('assessores')">+ Adicionar</button>
+    </div>
+    <div id="eco-assessores-list">
+      <div style="font-size:11px;color:var(--tx4);text-align:center;padding:16px">Escritórios de wealth management e private banking que recomendam imóveis</div>
+    </div>
+  </div>
+</div>
+<div id="eco-arquitetos" class="tp">
+  <div class="c">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="ct" style="margin-bottom:0">Arquitetos, Designers & Construtoras Parceiras</div>
+      <button class="btn bp bsm" onclick="addEcoItem('arquitetos')">+ Adicionar</button>
+    </div>
+    <div id="eco-arquitetos-list">
+      <div style="font-size:11px;color:var(--tx4);text-align:center;padding:16px">Profissionais que recomendam o produto para seus clientes de alto padrão</div>
+    </div>
+  </div>
+</div>
+
+<div style="display:flex;justify-content:flex-end;margin-top:12px;margin-bottom:8px">
+  <button class="btn bai" onclick="genEcossistema()" id="btn-eco">✦ Gerar Estratégia de Ecossistema com IA</button>
+</div>
+<div class="ai-out" id="out-eco"></div>
+<div class="nav-btns"><button class="btn bg" onclick="go(17)">‹ Preços</button><button class="btn bp" onclick="markDone(18);go(19)">Próximo: Pós-Venda ›</button></div>
+</div>
+
+<!-- ===== S19 PÓS-VENDA & CRM ===== -->
+<div class="scr" id="s19">
+<div class="sh2"><div class="stag">Módulo 19 • Customer Success</div><div class="st">Régua de Pós-Venda & CRM</div><div class="sd">O que acontece com o comprador depois do contrato? A experiência pós-venda é o que transforma compradores em promotores e gera as vendas da próxima fase.</div></div>
+
+<div class="g2" style="margin-bottom:14px">
+  <div>
+    <div class="c c-gn" style="margin-bottom:12px">
+      <div class="ct">KPIs de Relacionamento</div>
+      <div class="fl"><label>NPS meta (Net Promoter Score)</label><input type="number" id="posv-nps" placeholder="Ex: 75" min="0" max="100" oninput="sv()"></div>
+      <div class="fl"><label>Taxa de indicação meta (%)</label><input type="number" id="posv-indica" placeholder="Ex: 20%" oninput="sv()"></div>
+      <div class="fl"><label>Frequência de comunicação</label>
+        <select id="posv-freq" onchange="sv()">
+          <option>Semanal (obra em andamento)</option>
+          <option>Quinzenal</option>
+          <option>Mensal</option>
+          <option>Por milestone da obra</option>
+        </select>
+      </div>
+    </div>
+    <div class="c">
+      <div class="ct">Experiência no Stand de Vendas</div>
+      <div class="fl"><label>Ritual de atendimento (primeiros 5 min)</label><textarea id="stand-ritual" rows="2" placeholder="Ex: Recepção com café especial, música curada, apresentação do arquiteto..." oninput="sv()"></textarea></div>
+      <div class="fl"><label>Ponto emocional de maior impacto</label><textarea id="stand-emocao" rows="2" placeholder="Ex: Vista do terraço com pôr do sol, degustação do conceito wellness..." oninput="sv()"></textarea></div>
+      <div class="fl"><label>Aroma / Sensorial</label><input type="text" id="stand-aroma" placeholder="Ex: Diffuser de cedro e baunilha no decorado..." oninput="sv()"></div>
+    </div>
+  </div>
+  <div>
+    <div class="c">
+      <div class="ct">Régua de Relacionamento Pós-Contrato</div>
+      <div style="font-size:11px;color:var(--tx3);margin-bottom:10px">Defina o que acontece com o comprador em cada momento após a assinatura</div>
+      <div id="regua-list"></div>
+      <button onclick="addReguaStep()" class="btn bg bsm" style="margin-top:8px">+ Adicionar touchpoint</button>
+    </div>
+  </div>
+</div>
+
+<div class="c" style="margin-bottom:12px">
+  <div class="ct">Programa de Indicação (Referral)</div>
+  <div class="g2">
+    <div class="fl"><label>Incentivo para quem indica</label><textarea id="posv-incent-ind" rows="2" placeholder="Ex: Crédito de R$15.000 na próxima compra ou cashback em serviços do empreendimento..." oninput="sv()"></textarea></div>
+    <div class="fl"><label>Incentivo para quem é indicado</label><textarea id="posv-incent-rec" rows="2" placeholder="Ex: Condição especial na tabela + upgrade de acabamento no banheiro..." oninput="sv()"></textarea></div>
+  </div>
+</div>
+<div class="nav-btns"><button class="btn bg" onclick="go(18)">‹ Ecossistema</button><button class="btn bp" onclick="markDone(19);go(20)">Próximo: Análise de Risco ›</button></div>
+</div>
+
+<!-- ===== S20 ANÁLISE DE RISCO ===== -->
+<div class="scr" id="s20">
+<div class="sh2"><div class="stag">Módulo 20 • Risk Management</div><div class="st">Análise de Risco do Lançamento</div><div class="sd">Mapeie os riscos em 3 cenários: otimista, realista e pessimista. Defina os planos de contingência para cada risco crítico.</div></div>
+
+<div class="c c-pk" style="margin-bottom:14px">
+  <div class="ct">Simulador de Cenários — VSO nos 12 Meses</div>
+  <canvas id="risk-cv" style="width:100%;height:220px;border-radius:8px;background:var(--surf2);border:1px solid var(--brd);margin-bottom:10px"></canvas>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+    <div style="background:rgba(52,211,153,.07);border:1px solid var(--gnbrd);border-radius:8px;padding:10px">
+      <div style="font-size:9px;font-weight:800;color:var(--gn);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">🟢 Cenário Otimista</div>
+      <div class="fl" style="margin:0"><label>VSO 3 meses (%)</label><input type="number" id="risk-ot-3" placeholder="Ex: 45" oninput="sv();drawRiskChart()"></div>
+      <div class="fl" style="margin-top:4px;margin-bottom:0"><label>VSO 12 meses (%)</label><input type="number" id="risk-ot-12" placeholder="Ex: 95" oninput="sv();drawRiskChart()"></div>
+    </div>
+    <div style="background:rgba(245,158,11,.07);border:1px solid var(--orbrd);border-radius:8px;padding:10px">
+      <div style="font-size:9px;font-weight:800;color:var(--or);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">🟡 Cenário Realista</div>
+      <div class="fl" style="margin:0"><label>VSO 3 meses (%)</label><input type="number" id="risk-re-3" placeholder="Ex: 30" oninput="sv();drawRiskChart()"></div>
+      <div class="fl" style="margin-top:4px;margin-bottom:0"><label>VSO 12 meses (%)</label><input type="number" id="risk-re-12" placeholder="Ex: 75" oninput="sv();drawRiskChart()"></div>
+    </div>
+    <div style="background:rgba(233,30,140,.07);border:1px solid var(--pkbrd);border-radius:8px;padding:10px">
+      <div style="font-size:9px;font-weight:800;color:var(--pk);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">🔴 Cenário Pessimista</div>
+      <div class="fl" style="margin:0"><label>VSO 3 meses (%)</label><input type="number" id="risk-pe-3" placeholder="Ex: 15" oninput="sv();drawRiskChart()"></div>
+      <div class="fl" style="margin-top:4px;margin-bottom:0"><label>VSO 12 meses (%)</label><input type="number" id="risk-pe-12" placeholder="Ex: 45" oninput="sv();drawRiskChart()"></div>
+    </div>
+  </div>
+</div>
+
+<div class="c" style="margin-bottom:14px">
+  <div class="ct">Matriz de Riscos</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px" id="risk-matrix"></div>
+  <button class="btn bp bsm" onclick="addRisk()">+ Adicionar Risco</button>
+</div>
+
+<div style="display:flex;justify-content:flex-end;margin-bottom:8px">
+  <button class="btn bai" onclick="genRisk()" id="btn-risk">✦ Análise de Risco com IA</button>
+</div>
+<div class="ai-out" id="out-risk"></div>
+<div class="nav-btns"><button class="btn bg" onclick="go(19)">‹ Pós-Venda</button><button class="btn bp" onclick="markDone(20);go(21)">Próximo: ROI ›</button></div>
+</div>
+
+<!-- ===== S21 ROI PARA O COMPRADOR ===== -->
+<div class="scr" id="s21">
+<div class="sh2"><div class="stag">Módulo 21 • Argumento de Venda</div><div class="st">Calculadora de ROI para o Comprador</div><div class="sd">O cliente não compra imóvel — compra um investimento. Prove com números: valorização, comparativo com CDI/ações, custo de oportunidade do aluguel.</div></div>
+
+<div class="g2" style="margin-bottom:14px">
+  <div>
+    <div class="c c-gn" style="margin-bottom:12px">
+      <div class="ct">Dados para Cálculo</div>
+      <div class="fl"><label>Preço de compra (R$)</label><input type="number" id="roi-preco" placeholder="Ex: 2500000" oninput="sv();calcROI()"></div>
+      <div class="fl"><label>Entrada (R$)</label><input type="number" id="roi-entrada" placeholder="Ex: 750000" oninput="sv();calcROI()"></div>
+      <div class="fl"><label>Valorização anual projetada (%)</label><input type="number" id="roi-valorizacao" value="12" step="0.5" oninput="sv();calcROI()"></div>
+      <div class="fl"><label>Aluguel equivalente (R$/mês)</label><input type="number" id="roi-aluguel" placeholder="Ex: 8500" oninput="sv();calcROI()"></div>
+      <div class="fl"><label>Prazo de análise (anos)</label><input type="number" id="roi-prazo" value="5" min="1" max="20" oninput="sv();calcROI()"></div>
+    </div>
+    <div class="c">
+      <div class="ct">Benchmarks de Referência</div>
+      <div style="font-size:11px;color:var(--tx2);line-height:1.8">
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--brd)"><span>CDI (12 meses)</span><strong style="color:var(--or)">~10,5% a.a.</strong></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--brd)"><span>IBOVESPA (média 10 anos)</span><strong style="color:var(--tl)">~12% a.a.</strong></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--brd)"><span>Imóveis SP premium (FipeZAP)</span><strong style="color:var(--pk)">~14% a.a.</strong></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0"><span>Poupança</span><strong style="color:var(--tx3)">~6,2% a.a.</strong></div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="roi-output on" id="roi-result">
+      <div style="font-size:9px;font-weight:800;color:var(--gn);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px">📈 Resultado da Análise</div>
+      <div class="roi-kpi-grid">
+        <div class="roi-kpi"><div class="roi-kpi-v" id="roi-vl-5a">—</div><div class="roi-kpi-l">Valor em <span id="roi-prazo-lbl">5</span> anos</div></div>
+        <div class="roi-kpi"><div class="roi-kpi-v" id="roi-ganho">—</div><div class="roi-kpi-l">Ganho Total</div></div>
+        <div class="roi-kpi"><div class="roi-kpi-v" id="roi-retorno">—</div><div class="roi-kpi-l">Retorno s/ entrada</div></div>
+      </div>
+      <canvas id="roi-cv" style="width:100%;height:160px;border-radius:7px;background:rgba(0,0,0,.15)"></canvas>
+      <div style="margin-top:10px;padding:10px;background:rgba(52,211,153,.06);border-radius:7px;border:1px solid rgba(52,211,153,.2)" id="roi-vs-cdi"></div>
+    </div>
+  </div>
+</div>
+
+<div class="c" style="margin-bottom:12px">
+  <div class="ct">Argumento de Venda — Script do ROI</div>
+  <div style="font-size:11px;color:var(--tx3);margin-bottom:8px">Use estes dados para construir o argumento de investimento na conversa com o cliente</div>
+  <div class="fl"><label>Perfil do comprador como investidor</label>
+    <select id="roi-perfil" onchange="sv()">
+      <option>Patrimonialista — segurança e preservação de capital</option>
+      <option>Especulador — valorização e revenda</option>
+      <option>Usuário final — moradia + investimento</option>
+      <option>Investidor de renda — quer alugar após entrega</option>
+    </select>
+  </div>
+  <button class="btn bai" onclick="genROI()" id="btn-roi" style="margin-top:4px">✦ Gerar Argumento de Venda com IA</button>
+  <div class="ai-out" id="out-roi"></div>
+</div>
+<div class="nav-btns"><button class="btn bg" onclick="go(20)">‹ Risco</button><button class="btn bp" onclick="markDone(21);go(22)">Próximo: Pitch Deck ›</button></div>
+</div>
+
+<!-- ===== S22 PITCH DECK ===== -->
+<div class="scr" id="s22">
+<div class="sh2"><div class="stag">Módulo 22 • Investor Pitch</div><div class="st">Pitch Deck para Investidores</div><div class="sd">A IA gera o conteúdo completo de 10 slides com base em todo o planejamento. Pronto para apresentar a investidores e stakeholders.</div></div>
+
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px" id="pitch-grid">
+  <div class="pitch-slide" onclick="genPitchSlide(0)">
+    <div class="pitch-slide-head">01 — Capa</div>
+    <div class="pitch-slide-body"><div id="ps-0" style="font-size:10px;color:var(--tx3)">Clique para gerar</div></div>
+  </div>
+  <div class="pitch-slide" onclick="genPitchSlide(1)">
+    <div class="pitch-slide-head">02 — O Mercado</div>
+    <div class="pitch-slide-body"><div id="ps-1" style="font-size:10px;color:var(--tx3)">Clique para gerar</div></div>
+  </div>
+  <div class="pitch-slide" onclick="genPitchSlide(2)">
+    <div class="pitch-slide-head">03 — O Problema</div>
+    <div class="pitch-slide-body"><div id="ps-2" style="font-size:10px;color:var(--tx3)">Clique para gerar</div></div>
+  </div>
+  <div class="pitch-slide" onclick="genPitchSlide(3)">
+    <div class="pitch-slide-head">04 — A Solução</div>
+    <div class="pitch-slide-body"><div id="ps-3" style="font-size:10px;color:var(--tx3)">Clique para gerar</div></div>
+  </div>
+  <div class="pitch-slide" onclick="genPitchSlide(4)">
+    <div class="pitch-slide-head">05 — Produto</div>
+    <div class="pitch-slide-body"><div id="ps-4" style="font-size:10px;color:var(--tx3)">Clique para gerar</div></div>
+  </div>
+  <div class="pitch-slide" onclick="genPitchSlide(5)">
+    <div class="pitch-slide-head">06 — Persona</div>
+    <div class="pitch-slide-body"><div id="ps-5" style="font-size:10px;color:var(--tx3)">Clique para gerar</div></div>
+  </div>
+  <div class="pitch-slide" onclick="genPitchSlide(6)">
+    <div class="pitch-slide-head">07 — Go-to-Market</div>
+    <div class="pitch-slide-body"><div id="ps-6" style="font-size:10px;color:var(--tx3)">Clique para gerar</div></div>
+  </div>
+  <div class="pitch-slide" onclick="genPitchSlide(7)">
+    <div class="pitch-slide-head">08 — Financeiro</div>
+    <div class="pitch-slide-body"><div id="ps-7" style="font-size:10px;color:var(--tx3)">Clique para gerar</div></div>
+  </div>
+  <div class="pitch-slide" onclick="genPitchSlide(8)">
+    <div class="pitch-slide-head">09 — Competitivo</div>
+    <div class="pitch-slide-body"><div id="ps-8" style="font-size:10px;color:var(--tx3)">Clique para gerar</div></div>
+  </div>
+  <div class="pitch-slide" onclick="genPitchSlide(9)">
+    <div class="pitch-slide-head">10 — Tese Final</div>
+    <div class="pitch-slide-body"><div id="ps-9" style="font-size:10px;color:var(--tx3)">Clique para gerar</div></div>
+  </div>
+</div>
+<div style="display:flex;gap:8px;justify-content:center;margin-bottom:10px;flex-wrap:wrap">
+  <button class="btn bai" style="font-size:13px;padding:11px 24px" onclick="genAllPitch()" id="btn-pitch">✦ Gerar Todos os Slides com IA</button>
+  <button class="btn bg" onclick="go(23)">🖥 Modo Apresentação ›</button>
+</div>
+<div class="ai-out" id="out-pitch"></div>
+<div class="nav-btns"><button class="btn bg" onclick="go(21)">‹ ROI</button><button class="btn bp" onclick="markDone(22);go(23)">Modo Apresentação ›</button></div>
+</div>
+
+<!-- ===== S23 MODO APRESENTAÇÃO ===== -->
+<div class="scr" id="s23">
+<div class="sh2"><div class="stag">Módulo 23 • Apresentação</div><div class="st">Modo Apresentação</div><div class="sd">Apresente o plano estratégico completo em tela cheia, slide a slide. Ideal para a defesa em sala de aula.</div></div>
+
+<div class="g2" style="margin-bottom:14px">
+  <div class="c">
+    <div class="ct">Configurar Apresentação</div>
+    <div class="fl"><label>Tema visual</label>
+      <select id="pres-tema" onchange="sv()">
+        <option value="dark">Dark Premium (padrão)</option>
+        <option value="light">Light Executivo</option>
+        <option value="gradient">Gradient Bold</option>
+      </select>
+    </div>
+    <div class="fl"><label>Tempo por slide (segundos)</label><input type="number" id="pres-tempo" value="45" min="10" max="300" oninput="sv()"></div>
+    <div class="fl"><label>Incluir módulos</label>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px" id="pres-modules-sel"></div>
+    </div>
+  </div>
+  <div class="c">
+    <div class="ct">Preview do Primeiro Slide</div>
+    <div id="pres-preview" style="background:var(--surf2);border-radius:8px;padding:24px;text-align:center;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid var(--brd)">
+      <div style="font-size:10px;font-weight:800;color:var(--pk);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">FRAMEWORK 6D®</div>
+      <div id="pres-preview-nome" style="font-family:var(--font-d);font-size:24px;color:var(--tx);margin-bottom:4px">Nome do Empreendimento</div>
+      <div id="pres-preview-tag" style="font-size:12px;color:var(--tx3);font-style:italic">Tagline do produto</div>
+      <div id="pres-preview-grp" style="margin-top:12px;font-size:10px;color:var(--tx4)">Grupo —</div>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;margin-bottom:14px">
+  <button class="btn bai" style="font-size:14px;padding:14px 32px" onclick="startPresentation()">🖥 Iniciar Apresentação em Tela Cheia</button>
+</div>
+<div class="nav-btns"><button class="btn bg" onclick="go(22)">‹ Pitch Deck</button><button class="btn bp" onclick="markDone(23);go(13)">Painel do Professor ›</button></div>
 </div>
 
 </div><!-- /main -->
@@ -1614,6 +2926,7 @@ function go(n){
   if(n===4){initCJM();setTimeout(drawEmocional,300);}
   if(n===6){initCSTable();}
   if(n===10){initBudget();setTimeout(function(){renderBudgetCanalChart();renderBudgetMensalChart();},400);}
+  // New modules 14-23 handled by patched go() below
   if(n===9)initActions();
   if(n===10)initBudget();
   if(n===11){setTimeout(renderDashboard,200)}
@@ -2855,6 +4168,1014 @@ function init(){
 document.addEventListener('DOMContentLoaded',init);
 
 // =====================================================
+// MEDIA HUB — MODULE 12
+// =====================================================
+function mediaTab(btn, id){
+  document.querySelectorAll('.media-tab').forEach(function(t){t.classList.remove('on')});
+  document.querySelectorAll('.media-tp').forEach(function(t){t.classList.remove('on')});
+  btn.classList.add('on');
+  var el = document.getElementById(id);
+  if(el) el.classList.add('on');
+}
+
+// ─── Build context string for prompts ───
+function buildVisualContext(){
+  var nome = gv('nome') || 'Empreendimento Premium';
+  var tag  = gv('tagline') || '';
+  var tipo = S.tipo || 'wellness';
+  var loc  = gv('localizacao') || gv('cidade') || 'São Paulo';
+  var pv   = gv('pv') || '';
+  var amen = gv('amenidades') || '';
+  var persona = gv('p-nome') ? gv('p-nome') + ', ' + gv('p-prof') + ', ' + gv('p-idade') + ' anos' : 'Comprador premium';
+  var arq  = gv('arquetipo') || '';
+  var area = gv('t-area') || '100–160';
+  return {nome, tag, tipo, loc, pv, amen, persona, arq, area};
+}
+
+// ─── MASTER PROMPT GENERATOR ───
+function genMasterPrompt(){
+  var tipo = gv('prompt-tipo');
+  var ctx  = buildVisualContext();
+  var key  = apiKey();
+  var out  = document.getElementById('master-prompt-out');
+  if(!out) return;
+  out.innerHTML = '<span class="spin"></span> Gerando prompt...';
+
+  if(!key){
+    // Gera prompt localmente sem IA
+    out.textContent = buildLocalPrompt(tipo, ctx);
+    return;
+  }
+
+  var systemMsg = 'Você é um diretor de arte especialista em marketing imobiliário premium. Gere APENAS o prompt em inglês para a ferramenta de IA especificada — sem explicações, sem markdown, só o prompt puro. O prompt deve ser cinematográfico, detalhado e otimizado para a ferramenta.';
+  var userMsg = 'Empreendimento: ' + ctx.nome + ' | Conceito: ' + ctx.tipo + ' | Tagline: ' + ctx.tag
+    + ' | Local: ' + ctx.loc + ' | Persona: ' + ctx.persona
+    + ' | Amenidades: ' + ctx.amen.substring(0,100)
+    + ' | Proposta de valor: ' + ctx.pv.substring(0,120)
+    + '\n\nGere um prompt visual otimizado para: ' + tipo
+    + '\nO prompt deve incluir: estilo visual, paleta de cores, iluminação, composição, ângulo de câmera, mood. Máx. 150 palavras.';
+
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:300,system:systemMsg,messages:[{role:'user',content:userMsg}]})
+  }).then(function(r){return r.json();}).then(function(d){
+    var txt = (d.content&&d.content[0]) ? d.content[0].text : buildLocalPrompt(tipo,ctx);
+    out.textContent = txt;
+  }).catch(function(){
+    out.textContent = buildLocalPrompt(tipo, ctx);
+  });
+}
+
+function buildLocalPrompt(tipo, ctx){
+  var tipoMap = {
+    'img-ext': 'Photorealistic architectural exterior render',
+    'img-int': 'Luxury interior living room photography',
+    'img-area': 'Premium rooftop garden and leisure area',
+    'img-vista': 'Panoramic city view from terrace, golden hour',
+    'img-vida': 'Luxury lifestyle photography, morning routine',
+    'video': 'Cinematic real estate launch video, drone shot',
+    'site': 'Premium real estate landing page, dark luxury aesthetic',
+    'social': 'Premium real estate Instagram post, editorial style',
+    'outdoor': 'Billboard advertising, luxury real estate, minimal',
+  };
+  var base = tipoMap[tipo] || 'Premium real estate marketing visual';
+  return base + ' for "' + ctx.nome + '", ' + ctx.tipo + ' concept, located in ' + ctx.loc
+    + ', targeting high-income professionals. '
+    + 'Architecture: contemporary luxury, natural materials, wellness-inspired. '
+    + 'Lighting: warm golden hour, soft shadows, cinematic. '
+    + 'Color palette: ivory, warm gold, deep charcoal. '
+    + 'Style: editorial photography, 8K, ultra-detailed, magazine quality, --ar 16:9 --style raw --q 2';
+}
+
+function copyMasterPrompt(){
+  var el = document.getElementById('master-prompt-out');
+  if(el) navigator.clipboard.writeText(el.textContent).then(function(){toast('Prompt copiado! Cole na ferramenta de IA ✓');});
+}
+
+// ─── TOOL-SPECIFIC PROMPTS ───
+var TOOL_TIPS = {
+  dalle:      'Cole direto no ChatGPT → clique em "Create image" → faça download.',
+  midjourney: 'Cole no Discord do Midjourney: /imagine [prompt] --ar 16:9 --style raw --q 2',
+  ideogram:   'Cole em ideogram.ai → selecione "Realistic" ou "Design" → Generate.',
+  firefly:    'Cole em firefly.adobe.com → Text to Image → Generate.',
+  canva:      'Abra Canva → Apps → Text to Image → cole o prompt.',
+  leonardo:   'Cole em app.leonardo.ai → Image Generation → PhotoReal v2 → Generate.'
+};
+
+function genToolPrompt(tool){
+  var ctx = buildVisualContext();
+  var tipo = gv('prompt-tipo');
+  var basePrompt = buildLocalPrompt(tipo, ctx);
+  var toolPrompts = {
+    dalle: basePrompt.replace('--ar 16:9 --style raw --q 2','') + '. Photorealistic, ultra-HD, professional photography.',
+    midjourney: basePrompt + ' --ar 16:9 --style raw --q 2 --v 6.1',
+    ideogram: basePrompt.replace('--ar 16:9 --style raw --q 2','') + '. Typography: "' + ctx.nome + '" in luxury serif font. Aspect ratio: 16:9.',
+    firefly: basePrompt.replace('--ar 16:9 --style raw --q 2','') + '. Commercial use safe. Ultra-realistic render.',
+    canva: basePrompt.replace('--ar 16:9 --style raw --q 2','') + '. Square format 1:1 for Instagram post.',
+    leonardo: basePrompt + ' --PhotoReal v2 --Alchemy --aspect 16:9'
+  };
+  var box = document.getElementById('img-prompt-box');
+  var lbl = document.getElementById('img-prompt-tool-lbl');
+  var out = document.getElementById('img-prompt-out');
+  var tip = document.getElementById('img-prompt-tip');
+  if(!box) return;
+  box.style.display = 'block';
+  if(lbl) lbl.textContent = 'Prompt otimizado para ' + tool.charAt(0).toUpperCase() + tool.slice(1);
+  if(out) out.textContent = toolPrompts[tool] || basePrompt;
+  if(tip) tip.textContent = TOOL_TIPS[tool] || '';
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function copyToolPrompt(){
+  var el = document.getElementById('img-prompt-out');
+  if(el) navigator.clipboard.writeText(el.textContent).then(function(){toast('Prompt copiado! ✓');});
+}
+
+// ─── VIDEO PROMPT ───
+function genVideoPrompt(){
+  var ctx = buildVisualContext();
+  var tipoVideo = gv('video-tipo');
+  var key = apiKey();
+  var box = document.getElementById('video-prompt-box');
+  var out = document.getElementById('video-prompt-out');
+  if(box) box.style.display = 'block';
+
+  var localPrompt = buildVideoPrompt(tipoVideo, ctx);
+  if(out) out.textContent = 'Gerando...';
+
+  if(!key){
+    if(out) out.textContent = localPrompt;
+    return;
+  }
+
+  var msg = 'Crie um prompt cinematográfico em inglês para geração de vídeo por IA ('
+    + tipoVideo + ') do empreendimento ' + ctx.nome + ' (' + ctx.tipo + ') em ' + ctx.loc
+    + '. Inclua: shot description, camera movement, lighting, color grade, mood, duration cue, audio direction. Apenas o prompt puro, sem explicações. Máx 120 palavras.';
+
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:250,messages:[{role:'user',content:msg}]})
+  }).then(function(r){return r.json();}).then(function(d){
+    var txt=(d.content&&d.content[0])?d.content[0].text:localPrompt;
+    if(out) out.textContent=txt;
+  }).catch(function(){if(out) out.textContent=localPrompt;});
+}
+
+function buildVideoPrompt(tipo, ctx){
+  return 'Cinematic real estate video for "' + ctx.nome + '", ' + ctx.tipo + ' luxury residence in ' + ctx.loc + '. '
+    + tipo + '. '
+    + 'Camera: slow dolly push-in, golden hour natural light, bokeh depth of field. '
+    + 'Color grade: warm ivory and gold tones, soft shadows, filmic. '
+    + 'Mood: aspirational, serene, exclusive. '
+    + 'Audio: soft ambient piano, gentle breeze. '
+    + 'Duration: 15-30 seconds. Ultra-HD 4K, cinematic 24fps. '
+    + 'Subject: ' + ctx.persona + ' lifestyle in premium residential setting.';
+}
+
+function copyVideoPrompt2(){
+  var el = document.getElementById('video-prompt-out');
+  if(el) navigator.clipboard.writeText(el.textContent).then(function(){toast('Prompt de vídeo copiado! ✓');});
+}
+
+// ─── SITE PROMPT ───
+function genSitePrompt(){
+  var ctx = buildVisualContext();
+  var tipo = gv('site-tipo');
+  var box = document.getElementById('site-prompt-box');
+  var out = document.getElementById('site-prompt-out');
+  if(box) box.style.display='block';
+
+  var prompts = {
+    landing: 'Crie uma landing page HTML completa (HTML + CSS + JS em um único arquivo) para o lançamento do empreendimento "' + ctx.nome + '". '
+      + 'Conceito: ' + ctx.tipo + ' | Local: ' + ctx.loc + ' | Tagline: ' + ctx.tag + ' | Persona: ' + ctx.persona + '. '
+      + 'Seções: 1) Hero com vídeo de fundo (placeholder), 2) Conceito com parallax, 3) Diferenciais (6 cards), 4) Galeria (6 imagens placeholder), 5) Localização, 6) Formulário de cadastro lista VIP. '
+      + 'Estilo: dark luxury, tons escuros, tipografia premium, animações de entrada suaves. Responsivo e production-ready.',
+
+    site: 'Crie um mini-site imobiliário completo (HTML + CSS + JS, arquivo único) para "' + ctx.nome + '" em ' + ctx.loc + '. '
+      + 'Páginas (via scroll ou âncoras): Home, Conceito, Plantas, Localização, Incorporadora, Contato. '
+      + 'Conceito visual: ' + ctx.tipo + ' premium, dark mode, animações suaves. '
+      + 'Inclua: navbar sticky, formulário de contato funcional, WhatsApp floating button, footer completo.',
+
+    vip: 'Crie uma página de cadastro lista VIP (HTML + CSS + JS) para "' + ctx.nome + '". '
+      + 'Design: hero com countdown timer, formulário simples (nome, tel, e-mail, interesse), '
+      + 'social proof (X pessoas já cadastradas), benefícios exclusivos da lista VIP. '
+      + 'Estilo luxo, dark, conversão otimizada. CTA: "Garantir Meu Acesso VIP".',
+
+    plantaonline: 'Crie uma página interativa de plantas (HTML + CSS + JS) para "' + ctx.nome + '". '
+      + 'Tipologias: ' + gv('t-qtos') + ' quartos, ' + gv('t-area') + 'm². '
+      + 'Layout: tabs por tipologia, planta SVG esquemática, lista de ambientes com m², botão solicitar. '
+      + 'Design premium dark, animações de transição entre plantas.'
+  };
+
+  if(out) out.textContent = prompts[tipo] || prompts['landing'];
+}
+
+function copySitePrompt(){
+  var el = document.getElementById('site-prompt-out');
+  if(el) navigator.clipboard.writeText(el.textContent).then(function(){toast('Prompt copiado! Cole no Claude.ai para gerar o site ✓');});
+}
+
+// ─── CLAUDE DESIGN PROMPT ───
+function genClaudeDesignPrompt(){
+  var ctx = buildVisualContext();
+  var prompt = 'Crie um post Instagram premium (HTML + CSS em arquivo único, 1080x1080px simulado com div quadrado) para o empreendimento "'
+    + ctx.nome + '". Tagline: "' + ctx.tag + '". Estilo visual: ' + ctx.tipo
+    + ' luxury, dark background (#0D0F14), tipografia premium (DM Serif Display + DM Sans do Google Fonts), '
+    + 'acento em magenta (#E91E8C) e dourado (#F59E0B). '
+    + 'Layout: Logo no topo, imagem de fundo com overlay escuro, título centralizado em display font, tagline, CTA button. '
+    + 'Animação de entrada suave. Pronto para screenshot.';
+  navigator.clipboard.writeText(prompt).then(function(){
+    toast('Prompt do Claude Design copiado! Cole no Claude.ai ✓');
+  });
+}
+
+// ─── SOCIAL COPY GENERATOR ───
+function genSocialCopy(){
+  var ctx = buildVisualContext();
+  var tipo = gv('social-tipo');
+  var key = apiKey();
+  if(!key){ toast('Configure a chave de API na tela inicial'); return; }
+  var prompts = {
+    'Post Instagram — Teaser (pré-lançamento)': 'Crie um post Instagram de TEASER para lançamento imobiliário. Não revele o produto ainda — crie suspense. Primeira linha: gancho misterioso. 3 parágrafos curtos que criam desejo sem entregar. CTA: "Algo que vai mudar o que você pensa sobre morar está chegando. Link na bio para ser o primeiro a saber." + 15 hashtags premium.',
+    'Post Instagram — Conceito do produto': 'Crie um post Instagram que apresenta o CONCEITO do empreendimento. Tom aspiracional, não comercial. Venda o estilo de vida, não o apartamento. 4 parágrafos emocionais. CTA para agendar visita. + 20 hashtags.',
+    'Carrossel — 5 diferenciais do empreendimento': 'Crie um carrossel Instagram de 5 slides sobre os diferenciais. Slide 1: título chamativo. Slides 2-5: 1 diferencial por slide (título curto + 2 linhas de copy). Último slide: CTA. Formato: [SLIDE X] Título / Copy.',
+    'Reels — Script (narrativa 30s)': 'Crie um script de Reels de 30 segundos. Formato: [00:00-00:05] descrição da cena + narração / [00:05-00:15] ... / [00:15-00:25] ... / [00:25-00:30] CTA. Tom aspiracional. Inclua sugestão de música.',
+    'Stories — Sequência de 5 slides': 'Crie sequência de 5 Stories Instagram. Cada story: tema + texto curto (máx. 3 linhas) + elemento interativo (enquete, pergunta, slider). Fluxo narrativo do produto.',
+    'LinkedIn — Investimento imobiliário': 'Crie um post LinkedIn sobre o empreendimento como investimento. Tom executivo, dados de valorização, benchmark vs CDI. 5 parágrafos. Sem hashtag excessivo. Termina com pergunta de engajamento.'
+  };
+  var specificPrompt = Object.entries(prompts).find(function(e){return tipo.includes(e[0].split('—')[0].trim())||tipo===e[0];});
+  var pText = specificPrompt ? specificPrompt[1] : 'Crie um post premium para: ' + tipo;
+  var fullPrompt = 'Empreendimento: "' + ctx.nome + '" | Conceito: ' + ctx.tipo + ' | Local: ' + ctx.loc
+    + ' | Persona: ' + ctx.persona + ' | Tagline: ' + ctx.tag
+    + '\n\n' + pText + '\n\nResposta em português, tom premium e aspiracional.';
+  callAI(fullPrompt, 'out-social', 'btn-social', 'Copy gerado!');
+}
+
+
+// =====================================================
+// MODULE 14 — COMPETITIVE POSITIONING
+// =====================================================
+var COMP_ROWS = [
+  'Preço/m² (R$)','Ticket médio (R$)','Área (m²)','Localização','Conceito / Tipologia',
+  'Amenidades principais','Público-alvo','Canal principal de vendas','Prazo de entrega',
+  'Incorporadora / Reputação','Certificação / Sustentabilidade','Diferencial único'
+];
+
+function initCompTable(){
+  var tbody = document.getElementById('comp-tbody');
+  if(!tbody || tbody.dataset.init) return;
+  tbody.dataset.init = '1';
+  COMP_ROWS.forEach(function(row, i){
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td style="font-weight:600;color:var(--tx2);font-size:11px;padding:7px 8px;background:var(--surf2);white-space:nowrap">' + row + '</td>' +
+      '<td class="comp-our"><input type="text" id="comp-nos-' + i + '" placeholder="—" oninput="sv()" style="min-width:100px"></td>' +
+      '<td><input type="text" id="comp-c1-' + i + '" placeholder="—" oninput="sv()" style="min-width:90px"></td>' +
+      '<td><input type="text" id="comp-c2-' + i + '" placeholder="—" oninput="sv()" style="min-width:90px"></td>' +
+      '<td><input type="text" id="comp-c3-' + i + '" placeholder="—" oninput="sv()" style="min-width:90px"></td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function drawCompMap(){
+  var cv = document.getElementById('comp-map-cv');
+  if(!cv) return;
+  var dpr = window.devicePixelRatio||1;
+  var W = cv.offsetWidth||500; var H = 280;
+  cv.width = W*dpr; cv.height = H*dpr;
+  var ctx = cv.getContext('2d'); ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+  var pad = 40;
+  // Axes
+  ctx.strokeStyle = 'rgba(255,255,255,.1)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(pad,pad); ctx.lineTo(pad,H-pad); ctx.lineTo(W-pad,H-pad); ctx.stroke();
+  // Labels
+  ctx.font='9px DM Sans'; ctx.fillStyle='#64748B'; ctx.textAlign='center';
+  ctx.fillText('Preço/m² →', W/2, H-8);
+  ctx.save(); ctx.translate(12, H/2); ctx.rotate(-Math.PI/2);
+  ctx.fillText('Conceito/Qualidade →', 0, 0);
+  ctx.restore();
+  // Quadrant lines
+  ctx.setLineDash([4,4]); ctx.strokeStyle='rgba(255,255,255,.05)';
+  ctx.beginPath(); ctx.moveTo(W/2,pad); ctx.lineTo(W/2,H-pad); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(pad,H/2); ctx.lineTo(W-pad,H/2); ctx.stroke();
+  ctx.setLineDash([]);
+  // Plot points
+  var pcts = [
+    {id:'nos', color:'#E91E8C', x: parseFloat(gv('pos-nos-x'))||15000, y: parseFloat(gv('pos-nos-y'))||8, label: gv('nome')||'Nosso'},
+    {id:'c1', color:'#38BDF8', x:12000, y:6, label: gv('comp-n1')||'Conc. 1'},
+    {id:'c2', color:'#F59E0B', x:18000, y:7, label: gv('comp-n2')||'Conc. 2'},
+    {id:'c3', color:'#34D399', x:10000, y:5, label: gv('comp-n3')||'Conc. 3'}
+  ];
+  var maxX = Math.max(...pcts.map(p=>p.x), 25000);
+  pcts.forEach(function(p){
+    var px = pad + ((p.x/maxX)*(W-2*pad));
+    var py = (H-pad) - ((p.y/10)*(H-2*pad));
+    ctx.beginPath(); ctx.arc(px,py,8,0,Math.PI*2);
+    ctx.fillStyle = p.color+'33'; ctx.fill();
+    ctx.strokeStyle = p.color; ctx.lineWidth=2; ctx.stroke();
+    ctx.fillStyle = p.color; ctx.font='10px DM Sans,sans-serif'; ctx.textAlign='center';
+    ctx.fillText(p.label.substring(0,12), px, py-14);
+  });
+  // Slider label
+  var slider = document.getElementById('pos-nos-y');
+  var lbl = document.getElementById('pos-nos-y-v');
+  if(slider && lbl) lbl.textContent = slider.value;
+}
+
+function genCompetitivo(){
+  var rows = COMP_ROWS.map(function(r,i){
+    return r + ': Nós=' + (gv('comp-nos-'+i)||'—') + ' | C1=' + (gv('comp-c1-'+i)||'—') + ' | C2=' + (gv('comp-c2-'+i)||'—') + ' | C3=' + (gv('comp-c3-'+i)||'—');
+  }).join('\n');
+  var prompt = 'Você é estrategista de marketing imobiliário premium. Dados do mapa competitivo:\n' + rows
+    + '\nConcorrentes: ' + (gv('comp-n1')||'C1') + ', ' + (gv('comp-n2')||'C2') + ', ' + (gv('comp-n3')||'C3')
+    + '\nVantagem: ' + gv('comp-vant') + '\nAmeaça: ' + gv('comp-ameaca')
+    + '\n' + buildAIContext()
+    + '\n\nAnalise:\n1. Posicionamento real vs concorrência\n2. Onde estamos mais vulneráveis\n3. Onde temos vantagem indefensável\n4. Estratégia de comunicação para acentuar diferencial\n5. 3 ações para aumentar share neste mercado\nResposta objetiva e estratégica em português.';
+  callAI(prompt, 'out-comp', 'btn-comp', 'Análise competitiva gerada!');
+}
+
+// =====================================================
+// MODULE 15 — SALES FUNNEL
+// =====================================================
+var FUNIL_BENCH = {
+  'Lead → Qualificado': {bench:28, desc:'% dos leads que têm renda para o produto'},
+  'Qualificado → Visita': {bench:45, desc:'% dos qualificados que visitam o stand'},
+  'Visita → Proposta': {bench:50, desc:'% dos visitantes que fazem proposta'},
+  'Proposta → Contrato': {bench:65, desc:'% das propostas que viram contrato'}
+};
+
+function calcFunil(){
+  var l = parseFloat(gv('funil-leads'))||0;
+  var q = parseFloat(gv('funil-qual'))||0;
+  var v = parseFloat(gv('funil-visitas'))||0;
+  var p = parseFloat(gv('funil-prop'))||0;
+  var c = parseFloat(gv('funil-contratos'))||0;
+  if(!l) return;
+
+  // Visual funnel
+  var funnelEl = document.getElementById('funil-visual');
+  if(funnelEl){
+    var stages = [
+      {label:'Leads', val:l, color:'#E91E8C', icon:'📨'},
+      {label:'Qualificados', val:q, color:'#A78BFA', icon:'✓'},
+      {label:'Visitas', val:v, color:'#38BDF8', icon:'🏠'},
+      {label:'Propostas', val:p, color:'#F59E0B', icon:'📋'},
+      {label:'Contratos', val:c, color:'#34D399', icon:'✅'}
+    ];
+    funnelEl.innerHTML = stages.map(function(s, i){
+      var pct = l>0 ? Math.round(s.val/l*100) : 0;
+      var width = Math.max(pct, 5);
+      var conv = i>0 && stages[i-1].val>0 ? Math.round(s.val/stages[i-1].val*100)+'%' : '';
+      return '<div class="funnel-stage"><div class="funnel-bar" style="background:' + s.color + '22;border:1px solid ' + s.color + '44;width:' + width + '%;min-width:180px">'
+        + '<div class="funnel-lbl"><span>' + s.icon + '</span>' + s.label + '</div>'
+        + '<div style="text-align:right"><div class="funnel-val" style="color:' + s.color + '">' + s.val.toLocaleString('pt-BR') + '</div>'
+        + (conv ? '<div class="funnel-conv">conv: ' + conv + '</div>' : '')
+        + '</div></div></div>';
+    }).join('');
+  }
+
+  // Benchmark
+  var benchEl = document.getElementById('funil-benchmark');
+  if(benchEl){
+    var rates = [
+      {name:'Lead → Qualificado', real:l>0?Math.round(q/l*100):0},
+      {name:'Qualificado → Visita', real:q>0?Math.round(v/q*100):0},
+      {name:'Visita → Proposta', real:v>0?Math.round(p/v*100):0},
+      {name:'Proposta → Contrato', real:p>0?Math.round(c/p*100):0}
+    ];
+    var keys = Object.keys(FUNIL_BENCH);
+    benchEl.innerHTML = rates.map(function(r, i){
+      var bench = FUNIL_BENCH[keys[i]].bench;
+      var ok = r.real >= bench;
+      var col = ok ? 'var(--gn)' : r.real >= bench*0.6 ? 'var(--or)' : 'var(--re)';
+      return '<div style="margin-bottom:10px">'
+        + '<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">'
+        + '<span style="color:var(--tx2);font-weight:600">' + r.name + '</span>'
+        + '<span style="color:' + col + ';font-weight:800">' + r.real + '% <span style="color:var(--tx4);font-weight:400">/ bench ' + bench + '%</span></span>'
+        + '</div>'
+        + '<div style="height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden">'
+        + '<div style="height:100%;background:' + col + ';width:' + Math.min(r.real/bench*100,100) + '%;border-radius:3px;transition:width .5s"></div>'
+        + '</div></div>';
+    }).join('');
+  }
+
+  // Diagnostics
+  var diagEl = document.getElementById('funil-diag');
+  if(diagEl){
+    var rate = l>0 ? Math.round(c/l*100) : 0;
+    diagEl.innerHTML = '<div style="margin-bottom:8px"><strong style="color:var(--pk)">Taxa de fechamento geral: ' + rate + '%</strong> (benchmark: 4–8%)</div>'
+      + (rate<4 ? '<div style="color:var(--re);font-size:11px">⚠ Abaixo do benchmark. Revise o funil.</div>' : '<div style="color:var(--gn);font-size:11px">✅ Dentro do esperado para o mercado premium.</div>');
+  }
+  sv();
+}
+
+function genFunil(){
+  var prompt = 'Analise o funil de vendas imobiliário:\n'
+    + 'Leads: ' + gv('funil-leads') + ' | Qualificados: ' + gv('funil-qual')
+    + ' | Visitas: ' + gv('funil-visitas') + ' | Propostas: ' + gv('funil-prop')
+    + ' | Contratos: ' + gv('funil-contratos')
+    + '\nGargalo identificado: ' + gv('funil-gargalo')
+    + '\n' + buildAIContext()
+    + '\n\n1. Onde está a maior perda de conversão?\n2. Como resolver o gargalo principal?\n3. 3 ações táticas para melhorar o funil\n4. KPIs semanais para acompanhar\nResposta estratégica em português.';
+  callAI(prompt, 'out-funil', 'btn-funil', 'Análise do funil gerada!');
+}
+
+// =====================================================
+// MODULE 16 — LAUNCH CALENDAR
+// =====================================================
+var LT_TRIGGERS = {
+  1: ['Teaser nas redes sociais (sem revelar o produto)','Landing page de cadastro VIP com benefícios exclusivos','Ativação com brokers parceiros (briefing confidencial)','Eventos de relacionamento com lista segmentada','SEO antecipado para palavras-chave do bairro'],
+  2: ['Convite personalizado para o evento (carta física + digital)','Pré-apresentação exclusiva para top brokers','Anúncio do benefício especial para lista VIP','Envio do book de apresentação digital 48h antes','WhatsApp Marketing 1:1 com SDR dedicado'],
+  3: ['Abertura para o mercado geral (portais + Google Ads)','Press release para imprensa especializada','Conteúdo de bastidores do evento no Instagram','E-mail marketing para base qualificada','Lives e tours virtuais do decorado'],
+  4: ['Programa de indicação ativo (embaixadores)','Conteúdo da obra (milestones mensais)','Anúncios de "últimas unidades" com escassez real','Assessoria de imprensa para casos de sucesso','Eventos exclusivos para moradores confirmados']
+};
+
+function toggleLTPhase(n){
+  var el = document.getElementById('ltp-'+n);
+  if(el) el.classList.toggle('open');
+}
+
+function buildLTTriggers(){
+  [1,2,3,4].forEach(function(n){
+    var el = document.getElementById('lt-triggers-'+n);
+    if(!el) return;
+    el.innerHTML = LT_TRIGGERS[n].map(function(t, i){
+      return '<div class="lt-trigger"><input type="checkbox" id="lt-chk-'+n+'-'+i+'" onchange="sv()"><label for="lt-chk-'+n+'-'+i+'" style="cursor:pointer;font-size:11px;color:var(--tx2)">' + t + '</label></div>';
+    }).join('');
+  });
+}
+
+function buildLaunchTimeline(){
+  var cv = document.getElementById('launch-timeline-cv');
+  if(!cv) return;
+  var dpr = window.devicePixelRatio||1;
+  var W = cv.offsetWidth||600; var H = 80;
+  cv.width = W*dpr; cv.height = H*dpr;
+  var ctx = cv.getContext('2d'); ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+  var phases = [
+    {label:'Pré-Lançamento', color:'#38BDF8', weeks:'8–12 sem'},
+    {label:'Lista VIP', color:'#E91E8C', weeks:'2 sem'},
+    {label:'Lançamento', color:'#F59E0B', weeks:'4 sem'},
+    {label:'Estabilização', color:'#34D399', weeks:'Meses 2–12'}
+  ];
+  var segW = W/phases.length;
+  phases.forEach(function(ph, i){
+    var x = i*segW;
+    ctx.fillStyle = ph.color+'22';
+    ctx.fillRect(x+2, 10, segW-4, 50);
+    ctx.strokeStyle = ph.color;
+    ctx.strokeRect(x+2, 10, segW-4, 50);
+    ctx.fillStyle = ph.color; ctx.font='bold 10px DM Sans'; ctx.textAlign='center';
+    ctx.fillText(ph.label, x+segW/2, 33);
+    ctx.fillStyle='#64748B'; ctx.font='9px DM Sans';
+    ctx.fillText(ph.weeks, x+segW/2, 50);
+  });
+}
+
+function genLaunch(){
+  var prompt = 'Crie um plano de lançamento imobiliário detalhado:\n'
+    + 'Meta VIP: ' + gv('lt-vip-meta') + ' leads | Canais VIP: ' + gv('lt-vip-canais')
+    + '\nMeta evento: ' + gv('lt-vip-pct') + '% vendas | Condição VIP: ' + gv('lt-vip-cond')
+    + '\nMeta 30 dias: ' + gv('lt-30d') + '% | Canal: ' + gv('lt-canal-30')
+    + '\nTipo evento: ' + gv('launch-tipo')
+    + '\n' + buildAIContext()
+    + '\n\nGere cronograma detalhado semana a semana, gatilhos de ativação e KPIs por fase.\nResposta detalhada em português.';
+  callAI(prompt, 'out-launch', 'btn-launch', 'Plano de lançamento gerado!');
+}
+
+// =====================================================
+// MODULE 17 — PRICING SIMULATOR
+// =====================================================
+var priceStatus = {}; // key: 'andar-unit' → 'available'|'reserved'|'sold'
+
+function buildPriceTable(){
+  var andares = parseInt(gv('price-andares'))||12;
+  var upm = parseInt(gv('price-upm'))||4;
+  var base = parseFloat(gv('price-base'))||15000;
+  var area = parseFloat(gv('price-area'))||110;
+  var incr = parseFloat(gv('price-incr'))||1.5;
+  var cobert = parseFloat(gv('price-cobert'))||25;
+  var wrap = document.getElementById('price-table-wrap');
+  if(!wrap) return;
+  var html = '<table style="border-collapse:collapse;width:100%;font-size:10px">';
+  html += '<tr><th style="padding:5px 8px;background:var(--surf2);border:1px solid var(--brd);color:var(--tx4);text-align:left">Andar</th>';
+  for(var u=0; u<upm; u++) html += '<th style="padding:5px 8px;background:var(--surf2);border:1px solid var(--brd);color:var(--tx4);text-align:center">Unid. ' + (u+1) + '</th>';
+  html += '</tr>';
+  var totalVGV=0, vendidoVGV=0, totalUnid=0, vendidoUnid=0;
+  for(var a=andares; a>=1; a--){
+    var mult = 1 + ((a-1)*incr/100);
+    if(a===andares) mult = mult*(1+cobert/100);
+    var priceM2 = base*mult;
+    var unitPrice = priceM2*area;
+    html += '<tr><td style="padding:4px 8px;border:1px solid var(--brd);font-weight:700;color:var(--tx2)">' + a + 'º</td>';
+    for(var u=0; u<upm; u++){
+      var key = a+'-'+u;
+      var status = priceStatus[key]||'available';
+      var cls = 'price-cell ' + (status==='sold'?'sold':status==='reserved'?'reserved':'available');
+      var tagHtml = status==='sold'?'<div class="price-tag" style="background:rgba(52,211,153,.2);color:var(--gn)">VENDIDA</div>':
+                    status==='reserved'?'<div class="price-tag" style="background:rgba(245,158,11,.2);color:var(--or)">RESERVADA</div>':'';
+      html += '<td style="padding:3px;border:1px solid var(--brd)"><div class="' + cls + '" onclick="togglePriceStatus(\'' + key + '\')">'
+        + '<div class="price-andar">Unid. ' + (u+1) + '</div>'
+        + '<div class="price-val">' + (unitPrice/1e6).toFixed(2) + 'M</div>'
+        + '<div style="font-size:9px;color:var(--tx4)">R$' + Math.round(priceM2).toLocaleString('pt-BR') + '/m²</div>'
+        + tagHtml + '</div></td>';
+      totalVGV += unitPrice; totalUnid++;
+      if(status==='sold'){ vendidoVGV+=unitPrice; vendidoUnid++; }
+    }
+    html += '</tr>';
+  }
+  html += '</table>';
+  wrap.innerHTML = html;
+  var vgvTot = document.getElementById('price-vgv-tot');
+  var vgvVend = document.getElementById('price-vgv-vend');
+  var vsoEl = document.getElementById('price-vso-pct');
+  if(vgvTot) vgvTot.textContent = 'R$' + (totalVGV/1e6).toFixed(1) + 'M';
+  if(vgvVend) vgvVend.textContent = 'R$' + (vendidoVGV/1e6).toFixed(1) + 'M';
+  if(vsoEl) vsoEl.textContent = totalUnid>0 ? Math.round(vendidoUnid/totalUnid*100)+'%' : '0%';
+  calcElasticidade();
+}
+
+function togglePriceStatus(key){
+  var cur = priceStatus[key]||'available';
+  priceStatus[key] = cur==='available'?'reserved':cur==='reserved'?'sold':'available';
+  buildPriceTable();
+}
+
+function calcElasticidade(){
+  var slider = document.getElementById('elast-slider');
+  var valEl = document.getElementById('elast-val');
+  var resultEl = document.getElementById('elast-result');
+  if(!slider||!resultEl) return;
+  var pct = parseInt(slider.value);
+  if(valEl) valEl.textContent = (pct>=0?'+':'')+pct+'%';
+  var base = parseFloat(gv('price-base'))||15000;
+  var area = parseFloat(gv('price-area'))||110;
+  var andares = parseInt(gv('price-andares'))||12;
+  var upm = parseInt(gv('price-upm'))||4;
+  var newBase = base*(1+pct/100);
+  var newVGV = newBase*area*andares*upm;
+  var oldVGV = base*area*andares*upm;
+  var impactVSO = pct>0?-pct*0.8:Math.abs(pct)*0.6; // elasticidade simplificada
+  var col = pct===0?'var(--tx)':pct>0?'var(--or)':'var(--gn)';
+  resultEl.innerHTML = [
+    {label:'Novo preço/m²',val:'R$'+Math.round(newBase).toLocaleString('pt-BR'),col:col},
+    {label:'Novo VGV total',val:'R$'+(newVGV/1e6).toFixed(1)+'M',col:col},
+    {label:'Impacto VSO est.',val:(impactVSO>=0?'+':'')+impactVSO.toFixed(1)+'%',col:impactVSO>0?'var(--gn)':'var(--re)'}
+  ].map(function(k){
+    return '<div style="background:var(--surf2);border:1px solid var(--brd);border-radius:7px;padding:8px;text-align:center">'
+      + '<div style="font-size:9px;color:var(--tx4);text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px">' + k.label + '</div>'
+      + '<div style="font-family:var(--font-d);font-size:16px;color:' + k.col + '">' + k.val + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+// =====================================================
+// MODULE 18 — SALES ECOSYSTEM
+// =====================================================
+var ecoItems = {brokers:[],influencers:[],assessores:[],arquitetos:[]};
+var ECO_TYPES = {
+  brokers:{label:'Broker / Imobiliária',icon:'🏢',badge:'B'},
+  influencers:{label:'Influenciador',icon:'📱',badge:'I'},
+  assessores:{label:'Assessor',icon:'💼',badge:'A'},
+  arquitetos:{label:'Arquiteto',icon:'🏛',badge:'D'}
+};
+
+function ecoTab(btn, id){
+  document.querySelectorAll('#eco-tabs .tab').forEach(function(t){t.classList.remove('on')});
+  document.querySelectorAll('#s18 .tp').forEach(function(t){t.classList.remove('on')});
+  btn.classList.add('on');
+  var el=document.getElementById(id); if(el) el.classList.add('on');
+}
+
+function addEcoItem(type){
+  var listEl = document.getElementById('eco-'+type+'-list');
+  if(!listEl) return;
+  var id = Date.now();
+  ecoItems[type].push(id);
+  var div = document.createElement('div');
+  div.className = 'inf-card';
+  div.id = 'eco-item-'+id;
+  var t = ECO_TYPES[type];
+  div.innerHTML =
+    '<div class="inf-avatar">' + t.badge + '</div>'
+    + '<div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:4px">'
+    + '<input type="text" placeholder="Nome" id="eco-nome-'+id+'" oninput="sv()" style="font-size:11px;font-weight:700">'
+    + '<input type="text" placeholder="Empresa / Canal" id="eco-emp-'+id+'" oninput="sv()" style="font-size:11px">'
+    + '</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">'
+    + '<input type="text" placeholder="Especialidade" id="eco-esp-'+id+'" oninput="sv()" style="font-size:10px">'
+    + '<input type="text" placeholder="Contato" id="eco-cont-'+id+'" oninput="sv()" style="font-size:10px">'
+    + '<select id="eco-prior-'+id+'" onchange="sv()" style="font-size:10px"><option>Alta prioridade</option><option>Média</option><option>Explorar</option></select>'
+    + '</div></div>'
+    + '<button onclick="document.getElementById(\'eco-item-'+id+'\').remove()" style="background:none;border:1px solid var(--brd);color:var(--tx4);padding:4px 8px;border-radius:6px;cursor:pointer;font-size:12px">✕</button>';
+  // Remove empty state
+  var empty = listEl.querySelector('div[style]');
+  if(empty) empty.remove();
+  listEl.appendChild(div);
+  drawEcoMap();
+}
+
+function drawEcoMap(){
+  var cv = document.getElementById('eco-map-cv');
+  if(!cv) return;
+  var dpr = window.devicePixelRatio||1;
+  var W = cv.offsetWidth||600; var H = 240;
+  cv.width=W*dpr; cv.height=H*dpr;
+  var ctx=cv.getContext('2d'); ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+  // Center (product)
+  var cx=W/2; var cy=H/2;
+  var rings=[{r:40,label:'PRODUTO',color:'var(--pk)'},{r:80,label:'1º Anel'},{r:120,label:'2º Anel'}];
+  rings.forEach(function(ring){
+    ctx.beginPath(); ctx.arc(cx,cy,ring.r,0,Math.PI*2);
+    ctx.strokeStyle='rgba(255,255,255,.08)'; ctx.lineWidth=1; ctx.stroke();
+  });
+  // Center node
+  ctx.beginPath(); ctx.arc(cx,cy,18,0,Math.PI*2);
+  var g=ctx.createRadialGradient(cx,cy,0,cx,cy,18);
+  g.addColorStop(0,'#E91E8C'); g.addColorStop(1,'#F59E0B');
+  ctx.fillStyle=g; ctx.fill();
+  ctx.fillStyle='#fff'; ctx.font='bold 10px DM Sans'; ctx.textAlign='center';
+  ctx.fillText(gv('nome')||'6D®',cx,cy+4);
+  // Stakeholders
+  var types=[
+    {type:'brokers',color:'#38BDF8',angle:0},
+    {type:'influencers',color:'#A78BFA',angle:Math.PI/2},
+    {type:'assessores',color:'#F59E0B',angle:Math.PI},
+    {type:'arquitetos',color:'#34D399',angle:3*Math.PI/2}
+  ];
+  types.forEach(function(t){
+    var count=ecoItems[t.type].length;
+    for(var i=0;i<Math.min(count,3);i++){
+      var r=80+i*15; var spread=(i-1)*0.4;
+      var a=t.angle+spread;
+      var nx=cx+r*Math.cos(a); var ny=cy+r*Math.sin(a);
+      ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(nx,ny);
+      ctx.strokeStyle=t.color+'44'; ctx.lineWidth=1; ctx.stroke();
+      ctx.beginPath(); ctx.arc(nx,ny,10,0,Math.PI*2);
+      ctx.fillStyle=t.color+'33'; ctx.fill();
+      ctx.strokeStyle=t.color; ctx.lineWidth=1.5; ctx.stroke();
+    }
+    // Type label
+    var lx=cx+110*Math.cos(t.angle); var ly=cy+110*Math.sin(t.angle);
+    ctx.font='9px DM Sans'; ctx.fillStyle=t.color; ctx.textAlign='center';
+    ctx.fillText(ECO_TYPES[t.type].label,lx,ly);
+  });
+}
+
+function genEcossistema(){
+  var prompt = 'Estratégia de ecossistema de vendas para empreendimento imobiliário premium:\n'
+    + buildAIContext()
+    + '\nBrokers cadastrados: ' + ecoItems.brokers.length
+    + ' | Influenciadores: ' + ecoItems.influencers.length
+    + ' | Assessores: ' + ecoItems.assessores.length
+    + '\n\n1. Como estruturar comissionamento e incentivos para brokers\n2. Estratégia de co-marketing com influenciadores alinhados\n3. Como abordar gestores de patrimônio e private banking\n4. Evento de culinária com arquitetos e designers\n5. Métricas para medir a eficácia de cada parceiro\nResposta prática e aplicável.';
+  callAI(prompt, 'out-eco', 'btn-eco', 'Estratégia de ecossistema gerada!');
+}
+
+// =====================================================
+// MODULE 19 — PÓS-VENDA & CRM
+// =====================================================
+var reguaSteps = [];
+var REGUA_DEFAULTS = [
+  {day:'D+1',acao:'Ligação de agradecimento do gerente',canal:'Telefone',resp:'Gerente comercial'},
+  {day:'D+7',acao:'Envio do kit boas-vindas (carta + brindes)',canal:'Courier',resp:'Marketing'},
+  {day:'D+30',acao:'Visita de obra (milestone 1)',canal:'Presencial',resp:'Obras + Comercial'},
+  {day:'D+90',acao:'Pesquisa NPS + convite para evento exclusivo',canal:'WhatsApp',resp:'CRM'},
+  {day:'D+180',acao:'Envio de revista/newsletter do projeto',canal:'Digital + impresso',resp:'Marketing'},
+  {day:'Entrega',acao:'Cerimônia de entrega das chaves',canal:'Presencial',resp:'Diretoria'}
+];
+
+function initRegua(){
+  if(reguaSteps.length>0) return;
+  REGUA_DEFAULTS.forEach(function(d){ addReguaStep(d); });
+}
+
+function addReguaStep(data){
+  var listEl = document.getElementById('regua-list');
+  if(!listEl) return;
+  var id = Date.now() + Math.random();
+  reguaSteps.push(id);
+  var div = document.createElement('div');
+  div.className = 'regua-step';
+  div.innerHTML =
+    '<div class="regua-day"><div class="regua-day-n">' + (data&&data.day?data.day:'D+?') + '</div><div class="regua-day-l">Momento</div></div>'
+    + '<div style="flex:1">'
+    + '<input type="text" placeholder="Ação de relacionamento" value="' + (data&&data.acao?data.acao:'') + '" oninput="sv()" style="font-size:11px;font-weight:600;margin-bottom:4px">'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">'
+    + '<input type="text" placeholder="Canal" value="' + (data&&data.canal?data.canal:'') + '" oninput="sv()" style="font-size:10px">'
+    + '<input type="text" placeholder="Responsável" value="' + (data&&data.resp?data.resp:'') + '" oninput="sv()" style="font-size:10px">'
+    + '</div></div>';
+  listEl.appendChild(div);
+}
+
+// =====================================================
+// MODULE 20 — RISK ANALYSIS
+// =====================================================
+var risks = [];
+var RISK_DEFAULTS = [
+  {name:'Alta taxa de juros SELIC',prob:'Alta',imp:'Alto',plan:'Oferecer tabela IPCA com carência de 2 anos'},
+  {name:'Concorrente lança produto similar',prob:'Média',imp:'Médio',plan:'Acelerar ativação lista VIP e reforçar diferenciais'},
+  {name:'Prazo de entrega atrasado',prob:'Média',imp:'Alto',plan:'Cláusula contratual + comunicação proativa'},
+  {name:'Queda na renda da persona',prob:'Baixa',imp:'Alto',plan:'Oferecer condições de parcelamento mais flexíveis'}
+];
+
+function initRiskMatrix(){
+  if(document.getElementById('risk-matrix').children.length>0) return;
+  RISK_DEFAULTS.forEach(function(r){ addRisk(r); });
+}
+
+function addRisk(data){
+  var el = document.getElementById('risk-matrix');
+  if(!el) return;
+  var id = Date.now()+Math.random();
+  var d = data||{};
+  var div = document.createElement('div');
+  var prob = d.prob||'Média';
+  var imp = d.imp||'Médio';
+  var cls = (prob==='Alta'&&imp==='Alto')?'risk-high':(prob==='Baixa'||imp==='Baixo')?'risk-low':'risk-med';
+  div.className = 'risk-cell ' + cls;
+  div.innerHTML =
+    '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px">' + (d.name||'Novo Risco') + '</div>'
+    + '<div style="display:flex;gap:4px"><span style="font-size:8px;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.1)">P: '+prob+'</span><span style="font-size:8px;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.1)">I: '+imp+'</span></div>'
+    + '<div style="font-size:10px;color:rgba(255,255,255,.7)">' + (d.plan||'Defina o plano de contingência') + '</div>';
+  el.appendChild(div);
+}
+
+function drawRiskChart(){
+  var cv = document.getElementById('risk-cv');
+  if(!cv) return;
+  var dpr=window.devicePixelRatio||1;
+  var W=cv.offsetWidth||600; var H=220;
+  cv.width=W*dpr; cv.height=H*dpr;
+  var ctx=cv.getContext('2d'); ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+  var pad={l:40,r:20,t:20,b:30};
+  var w=W-pad.l-pad.r; var h=H-pad.t-pad.b;
+  // Grid
+  [0,25,50,75,100].forEach(function(v){
+    var y=pad.t+h-(v/100)*h;
+    ctx.strokeStyle='rgba(255,255,255,.05)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(W-pad.r,y); ctx.stroke();
+    ctx.fillStyle='#64748B'; ctx.font='8px DM Sans'; ctx.textAlign='right';
+    ctx.fillText(v+'%',pad.l-4,y+3);
+  });
+  var scenarios=[
+    {id:'ot',color:'#34D399',label:'Otimista'},
+    {id:'re',color:'#F59E0B',label:'Realista'},
+    {id:'pe',color:'#E91E8C',label:'Pessimista'}
+  ];
+  scenarios.forEach(function(sc){
+    var v3=parseFloat(gv('risk-'+sc.id+'-3'))||0;
+    var v12=parseFloat(gv('risk-'+sc.id+'-12'))||0;
+    if(!v3&&!v12) return;
+    var pts=[{x:0,y:0},{x:3,y:v3},{x:12,y:v12}];
+    ctx.beginPath();
+    pts.forEach(function(p,i){
+      var px=pad.l+(p.x/12)*w; var py=pad.t+h-(p.y/100)*h;
+      if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    });
+    ctx.strokeStyle=sc.color; ctx.lineWidth=2; ctx.stroke();
+    pts.forEach(function(p){
+      var px=pad.l+(p.x/12)*w; var py=pad.t+h-(p.y/100)*h;
+      ctx.beginPath(); ctx.arc(px,py,4,0,Math.PI*2);
+      ctx.fillStyle=sc.color; ctx.fill();
+    });
+    // Label
+    var lastX=pad.l+(12/12)*w; var lastY=pad.t+h-(v12/100)*h;
+    ctx.fillStyle=sc.color; ctx.font='9px DM Sans'; ctx.textAlign='left';
+    ctx.fillText(sc.label,lastX-W+pad.l+pad.r+4,lastY+3);
+  });
+  // X axis labels
+  [0,3,6,9,12].forEach(function(m){
+    var px=pad.l+(m/12)*w;
+    ctx.fillStyle='#64748B'; ctx.font='8px DM Sans'; ctx.textAlign='center';
+    ctx.fillText('M'+m,px,H-pad.b+12);
+  });
+}
+
+function genRisk(){
+  var prompt = 'Análise de risco para lançamento imobiliário:\n'
+    + 'Cenário otimista — VSO 3m: '+gv('risk-ot-3')+'% / 12m: '+gv('risk-ot-12')+'%\n'
+    + 'Cenário realista — VSO 3m: '+gv('risk-re-3')+'% / 12m: '+gv('risk-re-12')+'%\n'
+    + 'Cenário pessimista — VSO 3m: '+gv('risk-pe-3')+'% / 12m: '+gv('risk-pe-12')+'%\n'
+    + buildAIContext()
+    + '\n\n1. Qual cenário é mais provável dado o contexto macro?\n2. Quais os 3 maiores riscos para este lançamento?\n3. Planos de contingência específicos\n4. Indicadores de alerta precoce (early warning KPIs)\nResposta estratégica em português.';
+  callAI(prompt, 'out-risk', 'btn-risk', 'Análise de risco gerada!');
+}
+
+// =====================================================
+// MODULE 21 — ROI CALCULATOR
+// =====================================================
+function calcROI(){
+  var preco = parseFloat(gv('roi-preco'))||0;
+  var entrada = parseFloat(gv('roi-entrada'))||0;
+  var valorizacao = parseFloat(gv('roi-valorizacao'))||12;
+  var aluguel = parseFloat(gv('roi-aluguel'))||0;
+  var prazo = parseInt(gv('roi-prazo'))||5;
+  if(!preco||!entrada) return;
+  document.getElementById('roi-prazo-lbl').textContent = prazo;
+  var valorFuturo = preco * Math.pow(1+valorizacao/100, prazo);
+  var ganho = valorFuturo - preco;
+  var retornoEntrada = (ganho/entrada)*100;
+  var aluguelTotal = aluguel*12*prazo;
+  document.getElementById('roi-vl-5a').textContent = 'R$'+(valorFuturo/1e6).toFixed(2)+'M';
+  document.getElementById('roi-ganho').textContent = 'R$'+(ganho/1e6).toFixed(2)+'M';
+  document.getElementById('roi-retorno').textContent = Math.round(retornoEntrada)+'%';
+  // vs CDI
+  var cdiReturn = entrada * Math.pow(1.105, prazo);
+  var cdiGanho = cdiReturn - entrada;
+  var diff = ganho - cdiGanho;
+  var vsEl = document.getElementById('roi-vs-cdi');
+  if(vsEl) vsEl.innerHTML = '<strong style="color:var(--gn)">vs CDI:</strong> Imóvel supera CDI em <strong style="color:var(--pk)">R$'+(diff/1e6).toFixed(2)+'M</strong> no período de '+prazo+' anos — retorno '+(diff>0?'<strong style="color:var(--gn)">superior</strong>':'<strong style="color:var(--re)">inferior</strong>')+' ao CDI acumulado.';
+  // Draw chart
+  var cv = document.getElementById('roi-cv');
+  if(!cv) return;
+  var dpr=window.devicePixelRatio||1;
+  var W=cv.offsetWidth||400; var H=160;
+  cv.width=W*dpr; cv.height=H*dpr;
+  var ctx=cv.getContext('2d'); ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+  var pts=[]; var cdiPts=[];
+  for(var y=0;y<=prazo;y++){
+    pts.push(preco*Math.pow(1+valorizacao/100,y));
+    cdiPts.push(preco*Math.pow(1.105,y));
+  }
+  var maxV=Math.max(...pts,...cdiPts);
+  var pad={l:30,r:10,t:10,b:20};
+  var drawLine=function(arr,color){
+    ctx.beginPath();
+    arr.forEach(function(v,i){
+      var x=pad.l+(i/prazo)*(W-pad.l-pad.r);
+      var y=(H-pad.b)-(v/maxV)*(H-pad.t-pad.b);
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    });
+    ctx.strokeStyle=color; ctx.lineWidth=2; ctx.stroke();
+  };
+  drawLine(pts,'#E91E8C');
+  drawLine(cdiPts,'#F59E0B');
+  ctx.fillStyle='#E91E8C'; ctx.font='9px DM Sans'; ctx.textAlign='left';
+  ctx.fillText('Imóvel',pad.l+4,pad.t+14);
+  ctx.fillStyle='#F59E0B';
+  ctx.fillText('CDI',pad.l+4,pad.t+26);
+  sv();
+}
+
+function genROI(){
+  var prompt = 'Crie um argumento de venda baseado em ROI para um cliente com perfil: '+gv('roi-perfil')
+    + '\nPreço: R$' + Number(gv('roi-preco')).toLocaleString('pt-BR')
+    + ' | Valorização projetada: ' + gv('roi-valorizacao') + '%/ano'
+    + ' | Prazo: ' + gv('roi-prazo') + ' anos'
+    + '\n' + buildAIContext()
+    + '\n\nCrie um argumento de venda convincente que:\n1. Fale a linguagem do investidor\n2. Compare com outros ativos (CDI, ações, fundos imobiliários)\n3. Calcule o custo de oportunidade de NÃO comprar\n4. Use dados emocionais além dos racionais\n5. Termine com um call-to-action claro\nResposta em português, tom consultivo, não de vendedor.';
+  callAI(prompt, 'out-roi', 'btn-roi', 'Argumento de ROI gerado!');
+}
+
+// =====================================================
+// MODULE 22 — PITCH DECK
+// =====================================================
+var PITCH_SLIDES = [
+  {tag:'Capa',prompt:'Crie o conteúdo da capa do pitch deck: nome do empreendimento, tagline e proposta de valor em 1 frase impactante.'},
+  {tag:'O Mercado',prompt:'Descreva o mercado imobiliário premium: TAM, SAM, tendências e oportunidade específica do nicho.'},
+  {tag:'O Problema',prompt:'Qual o problema que este produto resolve para a persona? Seja específico sobre a dor não atendida pelo mercado.'},
+  {tag:'A Solução',prompt:'Como o produto resolve o problema? Descreva o conceito, diferenciais e a transformação que entrega.'},
+  {tag:'O Produto',prompt:'Descrição técnica e emocional do produto: tipologias, amenidades, localização e projeto arquitetônico.'},
+  {tag:'A Persona',prompt:'Quem compra? Perfil completo da persona compradora com dados socioeconômicos e motivações.'},
+  {tag:'Go-to-Market',prompt:'Estratégia de lançamento e marketing: canais, funil, calendário e orçamento de marketing.'},
+  {tag:'Financeiro',prompt:'Projeções financeiras: VGV, VSO esperado, budget de marketing, CAC, ROI do investidor.'},
+  {tag:'Competitivo',prompt:'Análise competitiva: posicionamento vs concorrentes, vantagens defensáveis e estratégia de precificação.'},
+  {tag:'Tese de Investimento',prompt:'Por que investir neste produto agora? Tese completa de investimento em 5 pontos-chave.'}
+];
+
+function genPitchSlide(idx){
+  var el = document.getElementById('ps-'+idx);
+  if(!el) return;
+  el.innerHTML = '<div class="spin"></div>';
+  var key = apiKey();
+  if(!key){ el.innerHTML='<span style="color:var(--tx4);font-size:10px">Configure API key</span>'; return; }
+  var prompt = PITCH_SLIDES[idx].prompt + '\n\nContexto: ' + buildAIContext() + '\n\nResponda em português, conciso (máx. 80 palavras), com marcadores se necessário.';
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:prompt}]})
+  }).then(function(r){return r.json();}).then(function(d){
+    var txt=(d.content&&d.content[0])?d.content[0].text:'Erro';
+    el.innerHTML='<div style="font-size:10px;color:var(--tx2);line-height:1.5">'+txt.replace(/\n/g,'<br>')+'</div>';
+  }).catch(function(e){ el.innerHTML='<span style="color:var(--re);font-size:10px">Erro: '+e.message+'</span>'; });
+}
+
+function genAllPitch(){
+  var btn=document.getElementById('btn-pitch');
+  if(btn){btn.disabled=true;btn.textContent='Gerando...';}
+  var delay=0;
+  PITCH_SLIDES.forEach(function(_,i){
+    setTimeout(function(){genPitchSlide(i);},delay);
+    delay+=1500;
+  });
+  setTimeout(function(){if(btn){btn.disabled=false;btn.textContent='\u2736 Gerar Todos os Slides com IA';}toast('Pitch Deck completo gerado!');},delay+500);
+}
+
+// =====================================================
+// MODULE 23 — PRESENTATION MODE
+// =====================================================
+var presSlides = [];
+var presCur = 0;
+
+function buildPresSlides(){
+  presSlides = [
+    {tag:'FRAMEWORK 6D®',title: gv('nome')||'Empreendimento',body: (gv('tagline')||'') + (gv('pv')?' — '+gv('pv').substring(0,150)+'...':''),name:'Capa'},
+    {tag:'Módulo 1 — Estratégia',title:'Matriz de Ansoff',body:'Quadrante: <strong>'+((S.ansoff)||'—')+'</strong><br>' + (gv('a-obj')||'').substring(0,200),name:'Ansoff'},
+    {tag:'Módulo 2 — Conceito',title: gv('nome')||'Naming & Conceito',body:gv('tagline')+'<br><br>'+gv('pv').substring(0,200),name:'Conceito'},
+    {tag:'Módulo 3 — Persona',title: gv('p-nome')||'Persona Estratégica',body:'<strong>'+gv('p-prof')+'</strong> · '+gv('p-idade')+'<br>'+gv('p-renda')+'<br><br>'+gv('pq1').substring(0,180),name:'Persona'},
+    {tag:'Módulos 7–8 — SWOT',title:'Análise SWOT',body:'<strong style="color:var(--gn)">Forças:</strong> '+gv('sw-f').substring(0,80)+'...<br><strong style="color:var(--pk)">Oportunidades:</strong> '+gv('sw-o').substring(0,80)+'...',name:'SWOT'},
+    {tag:'Módulo 9 — North Star',title: gv('nsm-m')||'North Star Metric',body:gv('nsm-meta')+'<br><br>'+gv('nsm-just').substring(0,200),name:'NSM'},
+    {tag:'Módulo 10 — Budget',title:'Orçamento de Marketing',body:'VGV: <strong style="color:var(--pk)">'+fmt(parseFloat(gv('vgv')))+'</strong><br>Budget: <strong style="color:var(--or)">'+gv('bud-pct')+'% do VGV</strong><br>Unidades: '+gv('n-unid'),name:'Orçamento'},
+    {tag:'Módulo 14 — Competitivo',title:'Posicionamento Competitivo',body:'Diferencial: '+gv('comp-vant').substring(0,180),name:'Competitivo'},
+    {tag:'Módulo 15 — Funil',title:'Funil de Vendas',body:'Leads: <strong>'+gv('funil-leads')+'</strong> → Qualif.: <strong>'+gv('funil-qual')+'</strong> → Visitas: <strong>'+gv('funil-visitas')+'</strong> → Contratos: <strong style="color:var(--gn)">'+gv('funil-contratos')+'</strong>',name:'Funil'},
+    {tag:'Módulo 21 — ROI',title:'ROI para o Comprador',body:'Preço: <strong>R$'+Number(gv('roi-preco')||0).toLocaleString('pt-BR')+'</strong><br>Valorização: <strong style="color:var(--gn)">'+gv('roi-valorizacao')+'% a.a.</strong><br>Prazo: '+gv('roi-prazo')+' anos',name:'ROI'},
+    {tag:'Grupo — Framework 6D®',title:'Obrigado!',body:S.groupName+'<br><br>'+(S.participants||[]).join(' · '),name:'Encerramento'}
+  ];
+}
+
+function startPresentation(){
+  buildPresSlides();
+  presCur=0;
+  var overlay=document.getElementById('pres-overlay');
+  if(overlay){ overlay.classList.add('on'); showPresSlide(0); }
+  try{ document.documentElement.requestFullscreen(); }catch(e){}
+}
+
+function exitPresentation(){
+  var overlay=document.getElementById('pres-overlay');
+  if(overlay) overlay.classList.remove('on');
+  try{ document.exitFullscreen(); }catch(e){}
+}
+
+function showPresSlide(idx){
+  if(idx<0) idx=0;
+  if(idx>=presSlides.length) idx=presSlides.length-1;
+  presCur=idx;
+  var s=presSlides[idx];
+  var tag=document.getElementById('pres-slide-tag');
+  var title=document.getElementById('pres-slide-title');
+  var body=document.getElementById('pres-slide-body');
+  var counter=document.getElementById('pres-counter');
+  var sname=document.getElementById('pres-slide-name');
+  var prog=document.getElementById('pres-progress-bar');
+  if(tag) tag.textContent=s.tag;
+  if(title) title.textContent=s.title;
+  if(body) body.innerHTML=s.body;
+  if(counter) counter.textContent=(idx+1)+' / '+presSlides.length;
+  if(sname) sname.textContent=s.name;
+  if(prog) prog.style.width=Math.round((idx+1)/presSlides.length*100)+'%';
+}
+
+function presNav(dir){
+  showPresSlide(presCur+dir);
+}
+
+document.addEventListener('keydown',function(e){
+  var overlay=document.getElementById('pres-overlay');
+  if(!overlay||!overlay.classList.contains('on')) return;
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') presNav(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp') presNav(-1);
+  if(e.key==='Escape') exitPresentation();
+});
+
+// Update preview
+function updPresPreview(){
+  var pn=document.getElementById('pres-preview-nome');
+  var pt=document.getElementById('pres-preview-tag');
+  var pg=document.getElementById('pres-preview-grp');
+  if(pn) pn.textContent=gv('nome')||'Nome do Empreendimento';
+  if(pt) pt.textContent=gv('tagline')||'Tagline do produto';
+  if(pg) pg.textContent='Grupo — '+(S.groupName||'—');
+}
+
+// =====================================================
+// PATCH go() FOR NEW MODULES
+// =====================================================
+var _orig_go_newmods = window.go;
+window.go = function(n){
+  _orig_go_newmods(n);
+  if(n===14){ initCompTable(); setTimeout(drawCompMap,200); }
+  if(n===15){ setTimeout(calcFunil,100); }
+  if(n===16){ buildLTTriggers(); setTimeout(buildLaunchTimeline,200); }
+  if(n===17){ setTimeout(buildPriceTable,100); }
+  if(n===18){ setTimeout(drawEcoMap,200); }
+  if(n===19){ initRegua(); }
+  if(n===20){ initRiskMatrix(); setTimeout(drawRiskChart,200); }
+  if(n===21){ setTimeout(calcROI,100); }
+  if(n===23){ updPresPreview(); }
+};
+
+
+// =====================================================
 // SAVE / AUTOSAVE
 // =====================================================
 var SAVE_KEY = 'fw6d_save_v2';
@@ -3496,6 +5817,32 @@ window.init = function(){
   <button id="save-btn" onclick="saveAll()" title="Salvar progresso (Ctrl+S)">
     💾 Salvar
   </button>
+</div>
+
+
+<!-- PRESENTATION OVERLAY -->
+<div class="pres-overlay" id="pres-overlay">
+  <div class="pres-slide" id="pres-slide-content">
+    <div style="position:relative;z-index:1;width:100%;max-width:900px">
+      <div style="font-size:10px;font-weight:800;color:var(--pk);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px" id="pres-slide-tag">Módulo</div>
+      <div style="font-family:var(--font-d);font-size:clamp(28px,4vw,52px);color:var(--tx);margin-bottom:16px;line-height:1.2" id="pres-slide-title">Título do Slide</div>
+      <div style="font-size:14px;color:var(--tx2);line-height:1.8;max-width:700px;margin:0 auto" id="pres-slide-body">Conteúdo</div>
+    </div>
+  </div>
+  <div class="pres-nav">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="font-size:10px;color:var(--tx4);font-weight:700" id="pres-counter">1 / 12</div>
+      <div style="width:200px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden">
+        <div id="pres-progress-bar" style="height:100%;background:linear-gradient(90deg,var(--pk),var(--or));border-radius:2px;transition:width .4s"></div>
+      </div>
+    </div>
+    <div style="font-family:var(--font-d);font-size:13px;color:var(--tx3)" id="pres-slide-name">—</div>
+    <div style="display:flex;gap:8px">
+      <button onclick="presNav(-1)" style="background:rgba(255,255,255,.08);border:1px solid var(--brd2);color:var(--tx2);padding:7px 14px;border-radius:7px;cursor:pointer;font-size:12px;font-family:var(--font-b)">‹ Anterior</button>
+      <button onclick="presNav(1)" style="background:var(--pk);border:none;color:#fff;padding:7px 14px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:700;font-family:var(--font-b)">Próximo ›</button>
+      <button onclick="exitPresentation()" style="background:rgba(255,255,255,.06);border:1px solid var(--brd);color:var(--tx4);padding:7px 12px;border-radius:7px;cursor:pointer;font-size:12px">✕ Sair</button>
+    </div>
+  </div>
 </div>
 
 </body>
