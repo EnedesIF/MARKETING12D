@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.26.0/dist/umd/supabase.min.js"></script>
 <script>
 // =====================================================
 // SUPABASE CONFIG — Framework 6D® / MKT 12D
@@ -1113,6 +1113,12 @@ canvas{border-radius:8px}
 .ref-item{font-size:10px;color:var(--tx3);line-height:1.5;border-left:2px solid var(--brd2);padding-left:7px}
 .ref-item strong{color:var(--tx2);font-weight:700}
 .ref-item em{color:var(--tx4);font-style:normal}
+
+/* ===== EMOTION CHIPS ===== */
+.emoc-chips{display:flex;flex-wrap:wrap;gap:3px;padding:4px 0}
+.emoc-chip{font-size:9px;padding:2px 7px;border-radius:10px;cursor:pointer;border:1px solid var(--brd2);color:var(--tx3);background:var(--surf2);transition:all .15s;user-select:none;white-space:nowrap}
+.emoc-chip:hover{border-color:var(--pk);color:var(--pk)}
+.emoc-chip.active{background:var(--pklt);border-color:var(--pkbrd);color:var(--pk);font-weight:700}
 
 </style>
 </head>
@@ -2588,8 +2594,9 @@ canvas{border-radius:8px}
   <canvas id="comp-map-cv" style="width:100%;height:280px;border-radius:8px;background:var(--surf2);border:1px solid var(--brd)"></canvas>
   <div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap">
     <div class="fl" style="margin:0;flex:1"><label>Nosso posicionamento (eixo Y: 1–10 conceito)</label><input type="range" id="pos-nos-y" min="1" max="10" value="8" oninput="drawCompMap()"><span id="pos-nos-y-v" style="font-size:10px;color:var(--pk)">8</span></div>
-    <div class="fl" style="margin:0;flex:1"><label>Nosso preço/m² (eixo X)</label><input type="number" id="pos-nos-x" placeholder="Ex: 18000" oninput="sv();drawCompMap()"></div>
+    <div class="fl" style="margin:0;flex:1"><label>Nosso preço/m² (eixo X)</label><input type="number" id="pos-nos-x" placeholder="Ex: 18000" oninput="sv();drawCompMap();calcPriceSuggestion()"></div>
   </div>
+  <div id="price-suggestion-box" style="display:none;margin-top:10px;padding:10px 14px;background:var(--pklt);border:1px solid var(--pkbrd);border-radius:8px;font-size:11px;color:var(--tx2);line-height:1.6"></div>
 </div>
 
 <div style="overflow-x:auto;margin-bottom:14px">
@@ -2608,8 +2615,8 @@ canvas{border-radius:8px}
 <div class="g2" style="margin-bottom:12px">
   <div class="c">
     <div class="ct">Nomes dos Concorrentes</div>
-    <div class="fl"><label>Concorrente 1</label><input type="text" id="comp-n1" placeholder="Ex: Cyrela Jardins" oninput="sv();drawCompMap()"></div>
-    <div class="fl"><label>Concorrente 2</label><input type="text" id="comp-n2" placeholder="Ex: Even Vila Nova" oninput="sv();drawCompMap()"></div>
+    <div class="fl"><label>Concorrente 1</label><input type="text" id="comp-n1" placeholder="Ex: Cyrela Jardins" oninput="sv();drawCompMap();calcPriceSuggestion()"></div>
+    <div class="fl"><label>Concorrente 2</label><input type="text" id="comp-n2" placeholder="Ex: Even Vila Nova" oninput="sv();drawCompMap();calcPriceSuggestion()"></div>
     <div class="fl"><label>Concorrente 3</label><input type="text" id="comp-n3" placeholder="Ex: Helbor Premium" oninput="sv();drawCompMap()"></div>
   </div>
   <div class="c">
@@ -3733,6 +3740,23 @@ var TOUCHPOINTS_BY_PHASE = {
   6:['NPS','Indicação','Comunidade','Eventos','Inauguração','Conteúdo Pós-venda']
 };
 var S_TOUCHPOINTS = {}; // {phaseIdx: Set of selected tp names}
+
+var CJM_EMOTIONS = [["Curiosidade", "Surpresa", "Interesse", "Indiferen\u00e7a", "Ceticismo", "Admira\u00e7\u00e3o"], ["Interesse", "Esperan\u00e7a", "D\u00favida", "Compara\u00e7\u00e3o", "Ansiedade", "Engajamento"], ["Tens\u00e3o", "Medo de errar", "Entusiasmo", "Ambival\u00eancia", "Confian\u00e7a", "Urg\u00eancia"], ["Euforia", "Al\u00edvio", "Orgulho", "Arrependimento", "Confian\u00e7a", "Realiza\u00e7\u00e3o"], ["Satisfa\u00e7\u00e3o", "Ansiedade", "Expectativa", "Decep\u00e7\u00e3o", "Gratid\u00e3o", "Impaci\u00eancia"], ["Orgulho", "Entusiasmo", "Satisfa\u00e7\u00e3o", "Pertencimento", "Protagonismo", "Indiferen\u00e7a"], ["Lealdade", "Pertencimento", "Satisfa\u00e7\u00e3o", "Confian\u00e7a", "Admira\u00e7\u00e3o", "V\u00ednculo"]];
+
+function toggleEmoc(phaseIdx, el){
+  var wasActive = el.classList.contains('active');
+  // deactivate all in this phase
+  var chips = document.querySelectorAll('#emoc-chips-'+phaseIdx+' .emoc-chip');
+  chips.forEach(function(c){ c.classList.remove('active'); });
+  if(!wasActive){
+    el.classList.add('active');
+    var inp = document.getElementById('cjm-em'+phaseIdx);
+    if(inp){ inp.value = el.textContent; sv(); }
+  } else {
+    var inp = document.getElementById('cjm-em'+phaseIdx);
+    if(inp){ inp.value = ''; sv(); }
+  }
+}
 var S_PHASE_WEIGHT = {}; // {phaseIdx: 0-100}
 
 function initCJM(){
@@ -3754,7 +3778,7 @@ function initCJM(){
         '<div class="cjm-fl"><label>Touchpoints (clique para ativar)</label><div style="display:flex;flex-wrap:wrap;gap:0;min-height:60px;padding:4px 0">'+tpChips+'</div></div>'+
         '<div class="cjm-fl"><label>Peso na Decisão</label><input type="range" id="cjm-w'+i+'" min="0" max="100" value="50" oninput="S_PHASE_WEIGHT['+i+']=parseInt(this.value);drawTeia();sv()" style="margin:2px 0"><div style="font-size:9px;color:'+ph.cor+';font-weight:700;text-align:center" id="cjm-w-v'+i+'">50%</div></div>'+
         '<div class="cjm-fl"><label>Touchpoints Extras</label><textarea id="cjm-tp'+i+'" rows="2" placeholder="Outros canais..." oninput="sv()"></textarea></div>'+
-        '<div class="cjm-fl"><label>Emoção</label><input id="cjm-em'+i+'" type="text" placeholder="Curiosidade..." oninput="sv()"></div>'+
+        '<div class="cjm-fl"><label>Emoção (selecione ou escreva)</label><div class="emoc-chips" id="emoc-chips-'+i+'">'+(CJM_EMOTIONS[i]||[]).map(function(e){return '<span class="emoc-chip" onclick="toggleEmoc('+i+',this)">'+e+'</span>';}).join('')+'</div><input id="cjm-em'+i+'" type="text" placeholder="Ou descreva outra emoção..." oninput="sv()" style="margin-top:4px"></div>'+
         '<div class="cjm-fl"><label>Fricção</label><input id="cjm-fr'+i+'" type="text" placeholder="O que trava?" oninput="sv()"></div>'+
         '<div class="cjm-fl"><label>Oportunidade</label><input id="cjm-op'+i+'" type="text" placeholder="Como ativar?" oninput="sv()"></div>'+
         '<div class="cjm-fl"><label>KPI</label><input id="cjm-kp'+i+'" type="text" placeholder="Métrica..." oninput="sv()"></div>'+
@@ -4007,7 +4031,7 @@ function initCSTable(){
       +'<textarea id="'+d.ic+'" placeholder="Ex: Quer um lar que reflita quem ela é..." oninput="sv();updCSAlignment()" style="font-size:11px;min-height:52px"></textarea>'
       +'</td>'
       +'<td style="min-width:120px">'
-      +'<textarea id="cs-gap'+i+'" placeholder="Quais os principais gaps entre empresa e cliente nesta dimensão?" rows="3" oninput="sv();updCSAlignment()" style="font-size:11px;min-height:52px"></textarea>'
+      +'<textarea id="cs-gap'+i+'" placeholder="Opcional: descreva gaps específicos percebidos nesta dimensão..." rows="3" oninput="sv();updCSAlignment()" style="font-size:11px;min-height:52px"></textarea>'
       +'</td>'
       +'<td style="min-width:90px;text-align:center">'
       +'<div id="cs-align-bar'+i+'" style="height:7px;background:var(--surf3);border:1px solid var(--brd);border-radius:3px;overflow:hidden;margin-bottom:4px"><div id="cs-align-fill'+i+'" style="height:100%;background:var(--tx4);border-radius:3px;width:0%;transition:width .5s ease"></div></div>'
@@ -5855,6 +5879,52 @@ function drawCompMap(){
   });
 }
 
+
+function calcPriceSuggestion(){
+  var nosX = parseFloat(gv('pos-nos-x')) || 0;
+  if(!nosX){ document.getElementById('price-suggestion-box').style.display='none'; return; }
+
+  var c1x = parseFloat(gv('comp-nos-0')) || 0; // Preço/m² do C1 vem da linha 0 da tabela
+  var c2x = parseFloat(gv('comp-c2-0')) || 0;
+  var c3x = parseFloat(gv('comp-c3-0')) || 0;
+  var prices = [c1x,c2x,c3x].filter(function(p){return p>0;});
+  if(!prices.length){ document.getElementById('price-suggestion-box').style.display='none'; return; }
+
+  var avgComp = prices.reduce(function(a,b){return a+b;},0)/prices.length;
+  var maxComp = Math.max.apply(null,prices);
+  var minComp = Math.min.apply(null,prices);
+  var diff = ((nosX - avgComp)/avgComp*100).toFixed(1);
+  var nosY = parseFloat(document.getElementById('pos-nos-y').value)||8;
+
+  var msg = '';
+  var icon = '';
+
+  if(nosX > maxComp){
+    icon = '🔴';
+    msg = '<strong>Preço acima de todos os concorrentes (+' + Math.abs(diff) + '% vs média).</strong> '
+      + 'Para sustentar esse posicionamento, o conceito precisa ser claramente superior (pontuação atual: '+nosY+'/10). '
+      + 'Recomendação: reforce diferenciais emocionais e funcionais — o cliente precisa justificar o prêmio. '
+      + 'Faixa estratégica de trabalho: R$' + Math.round(maxComp*1.05).toLocaleString('pt-BR') + ' – R$' + Math.round(maxComp*1.15).toLocaleString('pt-BR') + '/m².';
+  } else if(nosX < minComp){
+    icon = '🟡';
+    msg = '<strong>Preço abaixo de todos os concorrentes (' + diff + '% vs média).</strong> '
+      + 'Risco de percepção de qualidade inferior. Se a estratégia é Volume/Acessibilidade, está correto. '
+      + 'Se é Premium, considere reposicionar. '
+      + 'Faixa estratégica para Premium: R$' + Math.round(minComp*0.95).toLocaleString('pt-BR') + ' – R$' + Math.round(avgComp).toLocaleString('pt-BR') + '/m².';
+  } else {
+    var pct = parseFloat(diff);
+    icon = pct >= 0 ? '🟢' : '🟡';
+    msg = '<strong>Preço ' + (pct>=0?'acima':'abaixo') + ' da média competitiva (' + (pct>=0?'+':'') + diff + '%).</strong> '
+      + 'Posicionamento competitivo. Com conceito ' + nosY + '/10, '
+      + (nosY>=7 ? 'há espaço para trabalhar até R$'+Math.round(avgComp*1.08).toLocaleString('pt-BR')+'/m² sem perda de competitividade.'
+                 : 'atenção: preço próximo dos concorrentes exige diferencial de produto claro.');
+  }
+
+  var box = document.getElementById('price-suggestion-box');
+  box.style.display = 'block';
+  box.innerHTML = icon + ' <strong>Sugestão estratégica de preço:</strong> ' + msg;
+}
+
 function genCompetitivo(){
   var rows=COMP_ROWS.map(function(r,i){return r+': Nós='+(gv('comp-nos-'+i)||'—')+' | C1='+(gv('comp-c1-'+i)||'—');}).join('\n');
   var prompt='Estrategista de marketing imobiliário premium. Mapa competitivo:\n'+rows
@@ -6735,10 +6805,12 @@ function updCSAlignment(){
     var ps  = gv(d.ip)  || '';
     var cs  = gv(d.ic)  || '';
     var gap = gv('cs-gap'+i) || '';
-    var filled = (ps.length>3?1:0) + (cs.length>3?1:0) + (gap.length>3?1:0);
-    var pct = Math.round(filled/3*100);
+    var filled = (ps.length>3?1:0) + (cs.length>3?1:0);
+    var pct = Math.round(filled/2*100);
+    // Calculate semantic alignment: if both filled, compare length similarity as proxy
+    var bothFilled = ps.length>3 && cs.length>3;
     var col = pct===100?'var(--gn)':pct>=50?'var(--or)':'var(--re)';
-    var align = pct===100?'Completo':pct>=50?'Parcial':'Vazio';
+    var align = pct===100?'Alinhado':pct>=50?'Parcial':'Vazio';
 
     // Card row
     cardHtml += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:9px">'
