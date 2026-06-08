@@ -9,19 +9,34 @@
 var SUPA_URL = 'https://hotwxduptbhanhopzxud.supabase.co';
 var SUPA_KEY = 'sb_publishable_JWkZYlvqYQToVGnvyJegxQ_cE07ZRYb';
 var supa = null;
-var GRUPO_ID = null;  // uuid do grupo no banco
+var GRUPO_ID = null;
 var SUPA_READY = false;
 var SYNC_INTERVAL = null;
 
 function initSupabase(){
   try{
+    if(!window.supabase){
+      console.warn('[6D] SDK Supabase não carregou ainda');
+      return;
+    }
     supa = window.supabase.createClient(SUPA_URL, SUPA_KEY);
     SUPA_READY = true;
     console.log('[6D] Supabase conectado ✓');
+    // Start background services
+    startRealtime();
+    startAutoSync();
+    loadLBSupabase();
+    syncChavesSupabase();
   }catch(e){
     console.warn('[6D] Supabase offline:', e.message);
+    SUPA_READY = false;
   }
 }
+
+// Init Supabase as soon as DOM is ready (independent of init() chain)
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(initSupabase, 300); // small delay ensures SDK loaded
+});
 
 // ── Coleta TODOS os campos do plano ──
 function coletaTodosCampos(){
@@ -36,7 +51,14 @@ function coletaTodosCampos(){
 
 // ── Salva grupo no Supabase ──
 async function syncSupabase(forceNew){
-  if(!SUPA_READY || !supa || !S.groupName) return;
+  console.log('[6D] syncSupabase called. Ready:', SUPA_READY, 'GroupName:', S.groupName);
+  if(!SUPA_READY || !supa){
+    console.warn('[6D] Supabase not ready — retrying init');
+    initSupabase();
+    await new Promise(function(r){setTimeout(r,500)});
+    if(!SUPA_READY) return;
+  }
+  if(!S.groupName) return;
   try{
     var sc = calcScore();
     var payload = {
@@ -216,8 +238,9 @@ function startRealtime(){
 function updSyncStatus(ok){
   var el = document.getElementById('sync-status');
   if(!el) return;
-  el.textContent = ok ? '☁ Salvo' : '⚠ Offline';
+  el.textContent = ok ? '☁ Salvo no banco' : '⚠ Só local';
   el.style.color = ok ? 'var(--gn)' : 'var(--or)';
+  el.title = ok ? 'Dados salvos no Supabase' : 'Supabase indisponível — dados salvos localmente';
 }
 
 // ── Auto-sync a cada 45s ──
@@ -5218,24 +5241,23 @@ function clearGallery(){
 }
 
 // ── Patch init to load all keys ──
-var _origInitKeys = window.init;
-window.init = function(){
-  if(_origInitKeys) _origInitKeys();
-  loadAllKeys();
-  // Sync anthropic key from old storage
-  try{
-    var oldKey = localStorage.getItem('ak');
-    var antEl = document.getElementById('key-anthropic');
-    var mainEl = document.getElementById('api-key');
-    if(oldKey){
-      if(antEl) antEl.value = oldKey;
-      if(mainEl) mainEl.value = oldKey;
-    }
-    // Also sync setup modal key
-    var setupEl = document.getElementById('setup-api-key');
-    if(oldKey && setupEl) setupEl.value = oldKey;
-  }catch(e){}
-};
+// Keys loaded on DOMContentLoaded (independent of init chain)
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    loadAllKeys();
+    try{
+      var oldKey = localStorage.getItem('ak');
+      var antEl = document.getElementById('key-anthropic');
+      var mainEl = document.getElementById('api-key');
+      if(oldKey){
+        if(antEl) antEl.value = oldKey;
+        if(mainEl) mainEl.value = oldKey;
+      }
+      var setupEl = document.getElementById('setup-api-key');
+      if(oldKey && setupEl) setupEl.value = oldKey;
+    }catch(e){}
+  }, 200);
+});
 
 // ── Override apiKey() to read from unified storage ──
 window.apiKey = function(){
@@ -6282,7 +6304,9 @@ function confirmSetup(){
   document.getElementById('setup-modal').classList.add('hidden');
   toast('Bem-vindos, ' + grpName + '! (' + (S.participants.length||0) + ' participante(s)) 🚀');
   saveLB();
-  syncSupabase(true); // cria novo grupo no banco
+  // Wait for Supabase then sync
+  if(!SUPA_READY){ initSupabase(); }
+  setTimeout(function(){ syncSupabase(true); }, 800); // cria novo grupo no banco
 }
 
 function saveKey2(){
