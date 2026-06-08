@@ -8,7 +8,7 @@
 // =====================================================
 var SUPA_URL = 'https://hotwxduptbhanhopzxud.supabase.co';
 var SUPA_KEY = 'sb_publishable_JWkZYlvqYQToVGnvyJegxQ_cE07ZRYb';
-var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvdHd4ZHVwdGJoYW5ob3B6eHVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MzYyNTcsImV4cCI6MjA5NjQxMjI1N30.5lsCj5H68mChgFEOXussYR_Q_PmwNHkbkh_tEsmkBxg';
+var supa = null;
 var GRUPO_ID = null;
 var SUPA_READY = false;
 var SYNC_INTERVAL = null;
@@ -3002,6 +3002,54 @@ canvas{border-radius:8px}
       <strong style="color:var(--tx2)">RD Station</strong> → CRM + marketing integrado + portais BR (Zap, Viva Real), suporte PT-BR<br>
       <strong style="color:var(--tx2)">HubSpot</strong> → pipeline de vendas + follow-up automatizado de leads, CRM mais robusto<br>
       <strong style="color:var(--tx2)">WhatsApp</strong> → comunicação 1:1 imediata, maior taxa de abertura (98%), melhor para pós-venda
+    </div>
+  </div>
+</div>
+<div class="nav-btns"><button class="btn bg" onclick="go(19)">‹ Pós-Venda</button><button class="btn bp" onclick="markDone(20);go(21)">Próximo: ROI ›</button></div>
+</div>
+
+<!-- ===== S20 ANÁLISE DE RISCO ===== -->
+<div class="scr" id="s20">
+<div class="sh2"><div class="stag">Módulo 20 • Gestão de Risco</div><div class="st">Análise de Risco do Projeto</div><div class="sd">Identifique, avalie e mitigue os principais riscos do lançamento. Uma boa gestão de riscos diferencia empreendedores estratégicos de improvisadores.</div></div>
+
+<div class="g2" style="margin-bottom:14px">
+  <div>
+    <div class="c c-re" style="margin-bottom:12px">
+      <div class="ct">Cenários de Vendas</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
+        <div style="background:rgba(5,150,105,.06);border:1px solid var(--gnbrd);border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:9px;font-weight:700;color:var(--gn);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Otimista</div>
+          <div class="fl"><label style="font-size:9px">% Vendas 3 meses</label><input type="number" id="risk-ot-3" placeholder="Ex: 60" oninput="sv();drawRiskChart()"></div>
+          <div class="fl"><label style="font-size:9px">% Vendas 12 meses</label><input type="number" id="risk-ot-12" placeholder="Ex: 90" oninput="sv();drawRiskChart()"></div>
+        </div>
+        <div style="background:rgba(217,119,6,.06);border:1px solid var(--orbrd);border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:9px;font-weight:700;color:var(--or);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Realista</div>
+          <div class="fl"><label style="font-size:9px">% Vendas 3 meses</label><input type="number" id="risk-re-3" placeholder="Ex: 35" oninput="sv();drawRiskChart()"></div>
+          <div class="fl"><label style="font-size:9px">% Vendas 12 meses</label><input type="number" id="risk-re-12" placeholder="Ex: 70" oninput="sv();drawRiskChart()"></div>
+        </div>
+        <div style="background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.2);border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:9px;font-weight:700;color:var(--re);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Pessimista</div>
+          <div class="fl"><label style="font-size:9px">% Vendas 3 meses</label><input type="number" id="risk-pe-3" placeholder="Ex: 15" oninput="sv();drawRiskChart()"></div>
+          <div class="fl"><label style="font-size:9px">% Vendas 12 meses</label><input type="number" id="risk-pe-12" placeholder="Ex: 40" oninput="sv();drawRiskChart()"></div>
+        </div>
+      </div>
+      <canvas id="risk-cv" style="width:100%;height:220px;border-radius:8px;background:var(--surf2)"></canvas>
+    </div>
+  </div>
+  <div>
+    <div class="c" style="margin-bottom:12px">
+      <div class="ct">Matriz de Riscos</div>
+      <div style="font-size:11px;color:var(--tx3);margin-bottom:10px">Riscos identificados para o projeto — avalie probabilidade e impacto</div>
+      <div id="risk-matrix" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px"></div>
+      <button class="btn bg bsm" onclick="addRisk()">+ Adicionar Risco</button>
+    </div>
+    <div class="c">
+      <div class="ct">Plano de Contingência Geral</div>
+      <div class="fl"><label>Reserva financeira de contingência (%)</label><input type="number" id="risk-reserva" placeholder="Ex: 15" oninput="sv()"></div>
+      <div class="fl"><label>Gatilho para ativar plano B</label><textarea id="risk-gatilho" rows="2" placeholder="Ex: Menos de 20% vendido em 90 dias após lançamento..." oninput="sv()"></textarea></div>
+      <div class="fl"><label>Plano B — ação principal</label><textarea id="risk-planob" rows="2" placeholder="Ex: Reduzir preço em 8%, ampliar comissionamento para 2%..." oninput="sv()"></textarea></div>
+      <button class="btn bai" onclick="genRisco()" id="btn-risco" style="margin-top:8px">✦ Gerar Análise de Risco com IA</button>
+      <div class="ai-out" id="out-risco"></div>
     </div>
   </div>
 </div>
@@ -6112,6 +6160,15 @@ function calcROI(){
   ctx.fillStyle='#D6157A';ctx.font='9px DM Sans';ctx.textAlign='left';ctx.fillText('Imóvel',pad.l+4,pad.t+14);
   ctx.fillStyle='#D97706';ctx.fillText('CDI',pad.l+4,pad.t+26);
   sv();
+}
+
+function genRisco(){
+  var prompt='Análise de risco para lançamento imobiliário premium:\n'+buildAIContext()
+    +'\nCenário Otimista: '+gv('risk-ot-3')+'% em 3 meses, '+gv('risk-ot-12')+'% em 12 meses'
+    +'\nCenário Realista: '+gv('risk-re-3')+'% em 3 meses, '+gv('risk-re-12')+'% em 12 meses'
+    +'\nCenário Pessimista: '+gv('risk-pe-3')+'% em 3 meses, '+gv('risk-pe-12')+'% em 12 meses'
+    +'\nReserva: '+gv('risk-reserva')+'%\n\n1. Avaliação dos cenários\n2. Principais riscos\n3. Plano de mitigação\n4. Recomendação estratégica\nEm português.';
+  callAI(prompt,'out-risco','btn-risco','Análise gerada!');
 }
 
 function genROI(){
