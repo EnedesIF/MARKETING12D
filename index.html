@@ -2818,45 +2818,170 @@ canvas{border-radius:8px}
     <div class="fl"><label>Incentivo para quem é indicado</label><textarea id="posv-incent-rec" rows="2" placeholder="Ex: Condição especial na tabela + upgrade de acabamento no banheiro..." oninput="sv()"></textarea></div>
   </div>
 </div>
-<div class="nav-btns"><button class="btn bg" onclick="go(18)">‹ Ecossistema</button><button class="btn bp" onclick="markDone(19);go(20)">Próximo: Análise de Risco ›</button></div>
-</div>
 
-<!-- ===== S20 ANÁLISE DE RISCO ===== -->
-<div class="scr" id="s20">
-<div class="sh2"><div class="stag">Módulo 20 • Risk Management</div><div class="st">Análise de Risco do Lançamento</div><div class="sd">Mapeie os riscos em 3 cenários: otimista, realista e pessimista. Defina os planos de contingência para cada risco crítico.</div></div>
+<!-- CRM & COMUNICAÇÃO DIGITAL -->
+<div class="c" style="margin-top:16px;border:1px solid var(--pkbrd)">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+    <div>
+      <div class="ct" style="color:var(--pk);margin-bottom:2px">📧 CRM & Comunicação Digital — Gerador de Peças por Etapa</div>
+      <div style="font-size:11px;color:var(--tx3)">Selecione um touchpoint da régua acima, escolha o canal e a IA gera a peça completa. Depois cole direto na ferramenta ou use o link de envio rápido.</div>
+    </div>
+    <button class="btn bai bsm" id="btn-gen-crm" onclick="genCRMPiece()">✦ Gerar Peça</button>
+  </div>
 
-<div class="c c-pk" style="margin-bottom:14px">
-  <div class="ct">Simulador de Cenários — VSO nos 12 Meses</div>
-  <canvas id="risk-cv" style="width:100%;height:220px;border-radius:8px;background:var(--surf2);border:1px solid var(--brd);margin-bottom:10px"></canvas>
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-    <div style="background:rgba(52,211,153,.07);border:1px solid var(--gnbrd);border-radius:8px;padding:10px">
-      <div style="font-size:9px;font-weight:800;color:var(--gn);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">🟢 Cenário Otimista</div>
-      <div class="fl" style="margin:0"><label>VSO 3 meses (%)</label><input type="number" id="risk-ot-3" placeholder="Ex: 45" oninput="sv();drawRiskChart()"></div>
-      <div class="fl" style="margin-top:4px;margin-bottom:0"><label>VSO 12 meses (%)</label><input type="number" id="risk-ot-12" placeholder="Ex: 95" oninput="sv();drawRiskChart()"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
+    <div class="fl" style="margin:0">
+      <label>Touchpoint da Régua</label>
+      <select id="crm-touchpoint" style="font-size:11px">
+        <option value="d1">D+1 — Ligação de agradecimento</option>
+        <option value="d7">D+7 — Kit boas-vindas</option>
+        <option value="d30">D+30 — Visita de obra</option>
+        <option value="d90">D+90 — Pesquisa NPS</option>
+        <option value="d180">D+180 — Newsletter do projeto</option>
+        <option value="entrega">Entrega — Cerimônia das chaves</option>
+        <option value="custom">Personalizado (descreva abaixo)</option>
+      </select>
     </div>
-    <div style="background:rgba(245,158,11,.07);border:1px solid var(--orbrd);border-radius:8px;padding:10px">
-      <div style="font-size:9px;font-weight:800;color:var(--or);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">🟡 Cenário Realista</div>
-      <div class="fl" style="margin:0"><label>VSO 3 meses (%)</label><input type="number" id="risk-re-3" placeholder="Ex: 30" oninput="sv();drawRiskChart()"></div>
-      <div class="fl" style="margin-top:4px;margin-bottom:0"><label>VSO 12 meses (%)</label><input type="number" id="risk-re-12" placeholder="Ex: 75" oninput="sv();drawRiskChart()"></div>
+    <div class="fl" style="margin:0">
+      <label>Canal de Comunicação</label>
+      <select id="crm-canal" style="font-size:11px">
+        <option value="email">📧 E-mail HTML completo</option>
+        <option value="whatsapp">💬 Mensagem WhatsApp</option>
+        <option value="sms">📱 SMS (160 caracteres)</option>
+        <option value="push">🔔 Push notification</option>
+        <option value="carta">✉ Carta física</option>
+      </select>
     </div>
-    <div style="background:rgba(233,30,140,.07);border:1px solid var(--pkbrd);border-radius:8px;padding:10px">
-      <div style="font-size:9px;font-weight:800;color:var(--pk);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">🔴 Cenário Pessimista</div>
-      <div class="fl" style="margin:0"><label>VSO 3 meses (%)</label><input type="number" id="risk-pe-3" placeholder="Ex: 15" oninput="sv();drawRiskChart()"></div>
-      <div class="fl" style="margin-top:4px;margin-bottom:0"><label>VSO 12 meses (%)</label><input type="number" id="risk-pe-12" placeholder="Ex: 45" oninput="sv();drawRiskChart()"></div>
+    <div class="fl" style="margin:0">
+      <label>Tom da mensagem</label>
+      <select id="crm-tom" style="font-size:11px">
+        <option>Caloroso e pessoal</option>
+        <option>Profissional e sofisticado</option>
+        <option>Entusiasmado e celebratório</option>
+        <option>Consultivo e informativo</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="fl" style="margin-bottom:12px">
+    <label>Contexto adicional (opcional)</label>
+    <input type="text" id="crm-contexto" placeholder="Ex: mencionar o nome do morador, referência à vista do 12º andar..." style="font-size:11px">
+  </div>
+
+  <!-- OUTPUT DA PEÇA -->
+  <div id="crm-output-wrap" style="display:none">
+    <div style="background:var(--surf2);border:1px solid var(--brd);border-radius:9px;overflow:hidden;margin-bottom:10px">
+      <div style="padding:10px 14px;border-bottom:1px solid var(--brd);display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px" id="crm-output-label">Peça gerada</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn bg bsm" onclick="copyCRMPiece()">📋 Copiar</button>
+          <button class="btn bg bsm" onclick="document.getElementById('crm-html-preview').style.display=document.getElementById('crm-html-preview').style.display==='none'?'block':'none'">👁 Preview HTML</button>
+        </div>
+      </div>
+      <div id="crm-output-text" style="padding:14px;font-size:12px;color:var(--tx2);line-height:1.7;white-space:pre-wrap;font-family:'Courier New',monospace;max-height:320px;overflow-y:auto"></div>
+    </div>
+    <!-- HTML Preview iframe -->
+    <div id="crm-html-preview" style="display:none;border:1px solid var(--brd);border-radius:9px;overflow:hidden;margin-bottom:10px">
+      <div style="padding:8px 12px;background:var(--surf2);border-bottom:1px solid var(--brd);font-size:10px;color:var(--tx3);font-weight:700">Preview do E-mail</div>
+      <iframe id="crm-preview-frame" style="width:100%;height:400px;border:none;background:#fff"></iframe>
+    </div>
+  </div>
+
+  <!-- FERRAMENTAS DE ENVIO -->
+  <div style="border-top:1px solid var(--brd);padding-top:14px;margin-top:8px">
+    <div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">Escolha a ferramenta de envio:</div>
+
+    <!-- MAILCHIMP -->
+    <div style="background:var(--surf2);border:1px solid var(--brd);border-radius:10px;padding:14px;margin-bottom:8px">
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <div style="width:40px;height:40px;background:linear-gradient(135deg,#FFE01B,#F5A623);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🐒</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap">
+            <div style="font-weight:800;font-size:13px;color:var(--tx)">Mailchimp</div>
+            <span style="font-size:8px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(5,150,105,.1);color:var(--gn);border:1px solid var(--gnbrd)">GRÁTIS até 500 contatos</span>
+          </div>
+          <div style="font-size:11px;color:var(--tx3);margin-bottom:6px;line-height:1.5">E-mail marketing clássico. Templates prontos, automações e analytics. Melhor para newsletters e comunicados de obra.</div>
+          <div style="font-size:10px;color:var(--tx4);background:var(--surf3);padding:5px 8px;border-radius:5px;margin-bottom:8px"><strong>Como usar:</strong> Copie o HTML gerado → Mailchimp → Create Campaign → Email → Code Your Own → Cole</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <a href="https://mailchimp.com/create/email/" target="_blank" class="btn bp bsm" style="text-decoration:none;font-size:10px">▶ Criar Campanha</a>
+            <a href="https://login.mailchimp.com/signup/" target="_blank" class="btn bg bsm" style="text-decoration:none;font-size:10px">Criar conta grátis</a>
+            <button class="btn bg bsm" onclick="copyCRMPiece()" style="font-size:10px">📋 Copiar HTML</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RD STATION -->
+    <div style="background:var(--surf2);border:1px solid var(--brd);border-radius:10px;padding:14px;margin-bottom:8px">
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <div style="width:40px;height:40px;background:linear-gradient(135deg,#00AEEF,#0077B6);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🚀</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap">
+            <div style="font-weight:800;font-size:13px;color:var(--tx)">RD Station</div>
+            <span style="font-size:8px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(56,189,248,.1);color:var(--tl);border:1px solid var(--tlbrd)">🇧🇷 BRASILEIRO</span>
+            <span style="font-size:8px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(5,150,105,.1);color:var(--gn);border:1px solid var(--gnbrd)">Trial 10 dias</span>
+          </div>
+          <div style="font-size:11px;color:var(--tx3);margin-bottom:6px;line-height:1.5">CRM + Marketing integrados em português. Régua de automação, lead scoring, integração com Zap Imóveis e Viva Real. Muito usado por incorporadoras.</div>
+          <div style="font-size:10px;color:var(--tx4);background:var(--surf3);padding:5px 8px;border-radius:5px;margin-bottom:8px"><strong>Como usar:</strong> Copie o conteúdo → RD → Marketing → E-mail → Criar → Personalizado → Cole</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <a href="https://app.rdstation.com.br/marketing/emails" target="_blank" class="btn bp bsm" style="text-decoration:none;font-size:10px">▶ Abrir RD Station</a>
+            <a href="https://www.rdstation.com/marketing/trial/" target="_blank" class="btn bg bsm" style="text-decoration:none;font-size:10px">Trial gratuito</a>
+            <button class="btn bg bsm" onclick="copyCRMPiece()" style="font-size:10px">📋 Copiar conteúdo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HUBSPOT -->
+    <div style="background:var(--surf2);border:1px solid var(--brd);border-radius:10px;padding:14px;margin-bottom:8px">
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <div style="width:40px;height:40px;background:linear-gradient(135deg,#FF7A59,#FF5C35);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🔶</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap">
+            <div style="font-weight:800;font-size:13px;color:var(--tx)">HubSpot Free</div>
+            <span style="font-size:8px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(5,150,105,.1);color:var(--gn);border:1px solid var(--gnbrd)">CRM GRATUITO</span>
+          </div>
+          <div style="font-size:11px;color:var(--tx3);margin-bottom:6px;line-height:1.5">CRM completo grátis + e-mail marketing + pipeline de vendas. Melhor para quem quer gestão de leads robusta junto com comunicação automatizada.</div>
+          <div style="font-size:10px;color:var(--tx4);background:var(--surf3);padding:5px 8px;border-radius:5px;margin-bottom:8px"><strong>Como usar:</strong> Copie → HubSpot → Marketing → E-mail → Criar e-mail → Bloco HTML → Cole</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <a href="https://app.hubspot.com/email/" target="_blank" class="btn bp bsm" style="text-decoration:none;font-size:10px">▶ Abrir HubSpot</a>
+            <a href="https://app.hubspot.com/signup-hubspot/crm" target="_blank" class="btn bg bsm" style="text-decoration:none;font-size:10px">Criar conta grátis</a>
+            <button class="btn bg bsm" onclick="copyCRMPiece()" style="font-size:10px">📋 Copiar conteúdo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHATSAPP -->
+    <div style="background:rgba(37,211,102,.05);border:1px solid rgba(37,211,102,.25);border-radius:10px;padding:14px;margin-bottom:8px">
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <div style="width:40px;height:40px;background:linear-gradient(135deg,#25D366,#128C7E);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">💬</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap">
+            <div style="font-weight:800;font-size:13px;color:var(--tx)">WhatsApp</div>
+            <span style="font-size:8px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(37,211,102,.12);color:#128C7E;border:1px solid rgba(37,211,102,.3)">98% de abertura</span>
+            <span style="font-size:8px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(5,150,105,.1);color:var(--gn);border:1px solid var(--gnbrd)">INSTANTÂNEO</span>
+          </div>
+          <div style="font-size:11px;color:var(--tx3);margin-bottom:6px;line-height:1.5">Abre o WhatsApp Web com a mensagem já preenchida. Para disparos em massa use WhatsApp Business API (Meta) ou Zenvia.</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button onclick="sendWhatsApp()" style="background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none;font-weight:700;font-size:10px;cursor:pointer;border-radius:6px;padding:5px 11px;display:inline-flex;align-items:center;gap:4px">▶ Abrir com mensagem</button>
+            <a href="https://business.whatsapp.com/" target="_blank" class="btn bg bsm" style="text-decoration:none;font-size:10px">WhatsApp Business API</a>
+            <button class="btn bg bsm" onclick="copyCRMPiece()" style="font-size:10px">📋 Copiar mensagem</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GUIA DE ESCOLHA -->
+    <div style="padding:10px 14px;background:var(--surf2);border-radius:8px;border:1px solid var(--brd);font-size:10px;color:var(--tx3);line-height:1.75">
+      <strong style="color:var(--tx2)">💡 Qual escolher?</strong><br>
+      <strong style="color:var(--tx2)">Mailchimp</strong> → e-mail em volume, templates visuais bonitos, analytics detalhado<br>
+      <strong style="color:var(--tx2)">RD Station</strong> → CRM + marketing integrado + portais BR (Zap, Viva Real), suporte PT-BR<br>
+      <strong style="color:var(--tx2)">HubSpot</strong> → pipeline de vendas + follow-up automatizado de leads, CRM mais robusto<br>
+      <strong style="color:var(--tx2)">WhatsApp</strong> → comunicação 1:1 imediata, maior taxa de abertura (98%), melhor para pós-venda
     </div>
   </div>
 </div>
-
-<div class="c" style="margin-bottom:14px">
-  <div class="ct">Matriz de Riscos</div>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px" id="risk-matrix"></div>
-  <button class="btn bp bsm" onclick="addRisk()">+ Adicionar Risco</button>
-</div>
-
-<div style="display:flex;justify-content:flex-end;margin-bottom:8px">
-  <button class="btn bai" onclick="genRisk()" id="btn-risk">✦ Análise de Risco com IA</button>
-</div>
-<div class="ai-out" id="out-risk"></div>
 <div class="nav-btns"><button class="btn bg" onclick="go(19)">‹ Pós-Venda</button><button class="btn bp" onclick="markDone(20);go(21)">Próximo: ROI ›</button></div>
 </div>
 
@@ -3642,6 +3767,7 @@ function initCSTable(){
   var tbody=document.getElementById('cs-tbl-body');
   if(!tbody||tbody.dataset.init)return;
   tbody.dataset.init='1';
+  setTimeout(updCSAlignment,100);
   var ICONS=['📦','💰','📍','📣'];
   var DESCS=[
     {p:'O que a empresa entrega: features, design, qualidade construtiva, amenidades',c:'O que o cliente realmente valoriza: experiência, identidade, status, bem-estar'},
@@ -3669,7 +3795,7 @@ function initCSTable(){
       +'<textarea id="cs-gap'+i+'" placeholder="Quais os principais gaps entre empresa e cliente nesta dimensão?" rows="3" oninput="sv();updCSAlignment()" style="font-size:11px;min-height:52px"></textarea>'
       +'</td>'
       +'<td style="min-width:90px;text-align:center">'
-      +'<div id="cs-align-bar'+i+'" style="height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;margin-bottom:4px"><div id="cs-align-fill'+i+'" style="height:100%;background:var(--tx4);border-radius:3px;width:0%;transition:width .4s"></div></div>'
+      +'<div id="cs-align-bar'+i+'" style="height:7px;background:var(--surf3);border:1px solid var(--brd);border-radius:3px;overflow:hidden;margin-bottom:4px"><div id="cs-align-fill'+i+'" style="height:100%;background:var(--tx4);border-radius:3px;width:0%;transition:width .5s ease"></div></div>'
       +'<div id="cs-align-lbl'+i+'" style="font-size:9px;color:var(--tx4)">Vazio</div>'
       +'</td>';
     tbody.appendChild(tr);
@@ -4408,6 +4534,119 @@ function init(){
   setInterval(()=>{if(S.cur===13)loadProfData();},30000);
 }
 document.addEventListener('DOMContentLoaded',init);
+
+// =====================================================
+// MODULE 19 — CRM & DIGITAL COMMUNICATION
+// =====================================================
+var _crmLastPiece = '';
+
+function genCRMPiece(){
+  var touchpoint = gv('crm-touchpoint');
+  var canal = gv('crm-canal');
+  var tom = gv('crm-tom');
+  var ctx = gv('crm-contexto');
+  var key = apiKey();
+  var btn = document.getElementById('btn-gen-crm');
+  var wrap = document.getElementById('crm-output-wrap');
+  var outText = document.getElementById('crm-output-text');
+  var outLabel = document.getElementById('crm-output-label');
+
+  var touchMap = {
+    d1:'D+1 — Ligação/mensagem de agradecimento (1 dia após assinatura do contrato)',
+    d7:'D+7 — Envio do kit boas-vindas ao novo morador',
+    d30:'D+30 — Comunicado sobre visita de obra (milestone 1)',
+    d90:'D+90 — Pesquisa de NPS + convite para evento exclusivo de moradores',
+    d180:'D+180 — Newsletter do projeto com updates e bastidores da obra',
+    entrega:'Entrega das chaves — Celebração e cerimônia de entrega do imóvel',
+    custom:'Comunicação personalizada: '+ctx
+  };
+  var canalMap = {
+    email:'e-mail HTML completo (subject, preheader, corpo com HTML formatado, assinatura, CTA)',
+    whatsapp:'mensagem WhatsApp (informal, emojis, máx 300 caracteres, link de ação)',
+    sms:'SMS (máx 160 caracteres, direto ao ponto, sem emojis)',
+    push:'push notification (título 40 chars + corpo 90 chars)',
+    carta:'carta física formal (endereçamento, corpo, assinatura)'
+  };
+
+  if(!key){
+    wrap.style.display = 'block';
+    outText.textContent = 'Configure a chave Anthropic no Painel do Professor para gerar as peças.';
+    return;
+  }
+
+  if(btn){ btn.disabled=true; btn.textContent='Gerando...'; }
+  wrap.style.display = 'block';
+  outText.textContent = 'Gerando peça...';
+  outLabel.textContent = 'Gerando...';
+  document.getElementById('crm-html-preview').style.display = 'none';
+
+  var prompt = 'Você é especialista em CRM e comunicação para o mercado imobiliário premium.\n'
+    + 'Empreendimento: "' + (gv('nome')||'Empreendimento Premium') + '"\n'
+    + 'Incorporadora: ' + (gv('empresa')||'—') + '\n'
+    + 'Persona: ' + (gv('p-nome')||'Comprador premium') + ', ' + (gv('p-prof')||'') + '\n'
+    + 'Tom: ' + tom + '\n'
+    + 'Contexto adicional: ' + (ctx||'nenhum') + '\n'
+    + 'Proposta de valor: ' + (gv('pv')||'').substring(0,120) + '\n\n'
+    + 'Gere um(a) ' + canalMap[canal] + ' para o momento:\n'
+    + touchMap[touchpoint] + '\n\n'
+    + (canal==='email'
+      ? 'Formato obrigatório:\nSUBJECT: [linha do assunto]\nPREHEADER: [texto do preheader]\n---\n[HTML completo do e-mail com inline CSS, responsivo, premium visual, fundo branco, acento na cor #D6157A, rodapé com endereço e descadastro]\n---\nA estrutura HTML deve ser completa e pronta para colar no Mailchimp ou RD Station.'
+      : canal==='whatsapp'
+      ? 'Escreva apenas a mensagem WhatsApp, com emojis estratégicos, tom ' + tom + ', máx 300 caracteres. Inclua um link placeholder [LINK] para a ação desejada.'
+      : canal==='sms'
+      ? 'Escreva apenas o SMS, máx 160 caracteres, sem emojis, direto ao ponto.'
+      : canal==='push'
+      ? 'Formato:\nTÍTULO: [máx 40 chars]\nCORPO: [máx 90 chars]'
+      : 'Escreva a carta formal completa com endereçamento, corpo e assinatura.')
+    + '\n\nResposta em português.';
+
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,messages:[{role:'user',content:prompt}]})
+  }).then(function(r){return r.json();}).then(function(d){
+    var txt = (d.content&&d.content[0]) ? d.content[0].text : 'Erro na geração';
+    _crmLastPiece = txt;
+    outText.textContent = txt;
+    outLabel.textContent = (canal==='email'?'E-mail HTML':canal==='whatsapp'?'WhatsApp':canal==='sms'?'SMS':canal==='push'?'Push':'Carta') + ' — ' + touchMap[touchpoint].split('—')[0].trim();
+
+    // If email, try to show preview
+    if(canal==='email'){
+      var htmlMatch = txt.match(/---\n([\s\S]+?)\n---/);
+      if(htmlMatch){
+        var frame = document.getElementById('crm-preview-frame');
+        if(frame){
+          frame.srcdoc = htmlMatch[1];
+          document.getElementById('crm-html-preview').style.display = 'block';
+        }
+      }
+    }
+    toast('Peça de CRM gerada! \u2713');
+  }).catch(function(e){
+    outText.textContent = 'Erro: ' + e.message;
+  }).finally(function(){
+    if(btn){ btn.disabled=false; btn.innerHTML='\u2736 Gerar Pe\u00e7a'; }
+  });
+}
+
+function copyCRMPiece(){
+  if(!_crmLastPiece){ toast('Gere uma peça primeiro'); return; }
+  navigator.clipboard.writeText(_crmLastPiece).then(function(){
+    toast('Copiado! Cole no Mailchimp, RD Station ou WhatsApp \u2713');
+  });
+}
+
+function sendWhatsApp(){
+  var msg = '';
+  if(_crmLastPiece && gv('crm-canal')==='whatsapp'){
+    msg = _crmLastPiece;
+  } else {
+    msg = 'Olá! Passando para dar um retorno sobre o ' + (gv('nome')||'nosso empreendimento') + '. Podemos conversar?';
+  }
+  var url = 'https://wa.me/?text=' + encodeURIComponent(msg);
+  window.open(url,'_blank');
+}
+
 
 // =====================================================
 // PITCH DECK — MODULE 22
@@ -5989,22 +6228,7 @@ setInterval(function(){
 }, 60000);
 
 
-// Also patch updCSAlignment to update inline bars
-var _origUpdCSAlignment = window.updCSAlignment;
-window.updCSAlignment = function(){
-  if(_origUpdCSAlignment) _origUpdCSAlignment();
-  CS_DIMS.forEach((d,i)=>{
-    var ps=gv(d.ip);var cs=gv(d.ic);var gap=gv('cs-gap'+i);
-    var filled=(ps.length>3?1:0)+(cs.length>3?1:0)+(gap.length>3?1:0);
-    var pct=Math.round(filled/3*100);
-    var col=pct===100?'var(--gn)':pct>=50?'var(--or)':'var(--re)';
-    var lbl=pct===100?'Completo':pct>=50?'Parcial':'Vazio';
-    var fill=document.getElementById('cs-align-fill'+i);
-    var lblEl=document.getElementById('cs-align-lbl'+i);
-    if(fill){fill.style.width=pct+'%';fill.style.background=col;}
-    if(lblEl){lblEl.textContent=lbl;lblEl.style.color=col;}
-  });
-};
+// (updCSAlignment patch consolidated into main function)
 
 
 
@@ -6267,25 +6491,50 @@ function drawEmocional(){
 // 4Cs × 4Ps — ALIGNMENT BARS
 // =====================================================
 function updCSAlignment(){
+  // ── Update bottom card ──
   var card = document.getElementById('cs-alignment-card');
-  var bars = document.getElementById('cs-alignment-bars');
-  if(!card || !bars) return;
-  card.style.display = 'block';
-  var html = '';
-  CS_DIMS.forEach((d,i)=>{
-    var ps = gv(d.ip); var cs = gv(d.ic); var gap = gv('cs-gap'+i);
+  var barsEl = document.getElementById('cs-alignment-bars');
+  if(card) card.style.display = 'block';
+
+  var cardHtml = '';
+  CS_DIMS.forEach(function(d,i){
+    var ps  = gv(d.ip)  || '';
+    var cs  = gv(d.ic)  || '';
+    var gap = gv('cs-gap'+i) || '';
     var filled = (ps.length>3?1:0) + (cs.length>3?1:0) + (gap.length>3?1:0);
     var pct = Math.round(filled/3*100);
     var col = pct===100?'var(--gn)':pct>=50?'var(--or)':'var(--re)';
     var align = pct===100?'Completo':pct>=50?'Parcial':'Vazio';
-    html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'
-      + '<div style="width:120px;font-size:11px;color:var(--tx2);font-weight:600">'+d.dim+'</div>'
-      + '<div style="flex:1;height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden">'
-      + '<div style="width:'+pct+'%;height:100%;background:'+col+';border-radius:3px;transition:width .4s"></div></div>'
-      + '<div style="width:60px;font-size:10px;font-weight:700;color:'+col+'">'+align+'</div>'
+
+    // Card row
+    cardHtml += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:9px">'
+      + '<div style="width:130px;font-size:11px;color:var(--tx2);font-weight:600;flex-shrink:0">'+d.dim+'</div>'
+      + '<div style="flex:1;height:7px;background:var(--surf3);border-radius:3px;overflow:hidden;border:1px solid var(--brd)">'
+      + '<div style="width:'+pct+'%;height:100%;background:'+col+';border-radius:3px;transition:width .5s ease"></div></div>'
+      + '<div style="width:64px;font-size:10px;font-weight:700;color:'+col+';text-align:right">'+align+'</div>'
       + '</div>';
+
+    // Inline bars inside table row
+    var fill  = document.getElementById('cs-align-fill'+i);
+    var lblEl = document.getElementById('cs-align-lbl'+i);
+    var barEl = document.getElementById('cs-align-bar'+i);
+    if(fill){
+      fill.style.width = pct+'%';
+      fill.style.background = col;
+    }
+    if(barEl){
+      barEl.style.background = 'var(--surf3)';
+      barEl.style.border = '1px solid var(--brd)';
+    }
+    if(lblEl){
+      lblEl.textContent = align;
+      lblEl.style.color = col;
+      lblEl.style.fontWeight = '700';
+    }
   });
-  bars.innerHTML = html || '<div style="font-size:11px;color:var(--tx4)">Preencha a tabela acima para ver o alinhamento</div>';
+
+  if(barsEl) barsEl.innerHTML = cardHtml
+    || '<div style="font-size:11px;color:var(--tx4)">Preencha a tabela acima para ver o alinhamento</div>';
 }
 
 // =====================================================
