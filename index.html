@@ -889,7 +889,7 @@ canvas{border-radius:8px}
   flex:1;display:flex;flex-direction:column;
   align-items:center;justify-content:center;
   padding:60px;text-align:center;
-  background:var(--bg);
+  background:#0D0F14;
   position:relative;overflow:hidden;
 }
 .pres-slide::before{
@@ -2002,7 +2002,7 @@ canvas{border-radius:8px}
 <div class="c" style="margin-bottom:14px"><div class="ct">Timeline de Implantação</div><canvas id="gantt-cv" style="width:100%;max-height:160px"></canvas></div>
 
 <div class="ai-out" id="out-sint"></div>
-<div class="nav-btns"><button class="btn bg" onclick="go(10)">‹ Orçamento</button><button class="btn bp" onclick="markDone(11);go(12)">Próximo: Materiais ›</button></div>
+<div class="nav-btns"><button class="btn bg" onclick="go(10)">‹ Orçamento</button><button class="btn bp" onclick="gerarPlanoPDF()" style="background:var(--or);border-color:var(--or);box-shadow:0 0 14px rgba(217,119,6,.25)">📄 Baixar PDF Completo</button><button class="btn bp" onclick="markDone(11);go(12)">Próximo: Materiais ›</button></div>
 </div>
 
 <!-- ===== S12 MATERIAIS DE CAMPANHA ===== -->
@@ -4410,6 +4410,277 @@ function init(){
 document.addEventListener('DOMContentLoaded',init);
 
 // =====================================================
+// PITCH DECK — MODULE 22
+// =====================================================
+var PITCH_SLIDES = [
+  {tag:'Capa',          prompt:'Crie o conteúdo da capa do pitch deck: nome do empreendimento, tagline impactante e proposta de valor em 1 frase. Resposta concisa, max 60 palavras.'},
+  {tag:'O Mercado',     prompt:'Descreva o mercado imobiliário premium: tamanho, tendências e oportunidade específica do nicho. Max 80 palavras.'},
+  {tag:'O Problema',    prompt:'Qual o problema que este produto resolve para a persona? Seja específico sobre a dor não atendida pelo mercado. Max 80 palavras.'},
+  {tag:'A Solução',     prompt:'Como o produto resolve o problema? Conceito, diferenciais e transformação que entrega. Max 80 palavras.'},
+  {tag:'O Produto',     prompt:'Descrição técnica e emocional: tipologias, amenidades, localização e arquitetura. Max 80 palavras.'},
+  {tag:'A Persona',     prompt:'Quem compra? Perfil completo com dados socioeconômicos e motivações de compra. Max 80 palavras.'},
+  {tag:'Go-to-Market',  prompt:'Estratégia de lançamento: canais, funil, calendário e budget de marketing. Max 80 palavras.'},
+  {tag:'Financeiro',    prompt:'Projeções financeiras: VGV, VSO esperado, budget de marketing, CAC, ROI do investidor. Max 80 palavras.'},
+  {tag:'Competitivo',   prompt:'Análise competitiva: posicionamento vs concorrentes e vantagens defensáveis. Max 80 palavras.'},
+  {tag:'Tese Final',    prompt:'Por que investir neste produto agora? Tese de investimento em 5 pontos-chave. Max 80 palavras.'}
+];
+
+function genPitchSlide(idx){
+  var el = document.getElementById('ps-'+idx);
+  if(!el) return;
+  el.innerHTML = '<div style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--tx3)"><span class="spin"></span> Gerando...</div>';
+  var key = apiKey();
+  if(!key){
+    el.innerHTML = '<span style="color:var(--tx3);font-size:10px">Configure API key no Painel do Professor</span>';
+    return;
+  }
+  var ctx = buildAIContext ? buildAIContext() : '';
+  var prompt = PITCH_SLIDES[idx].prompt + '\n\nContexto do empreendimento: ' + ctx + '\n\nResponda em português, conciso, pronto para slide.';
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:prompt}]})
+  }).then(function(r){return r.json();}).then(function(d){
+    var txt = (d.content&&d.content[0]) ? d.content[0].text : 'Erro na geração';
+    el.innerHTML = '<div style="font-size:10px;color:var(--tx2);line-height:1.55">'+txt.replace(/\n/g,'<br>')+'</div>';
+  }).catch(function(e){
+    el.innerHTML = '<span style="color:var(--re);font-size:10px">Erro: '+e.message+'</span>';
+  });
+}
+
+function genAllPitch(){
+  var btn = document.getElementById('btn-pitch');
+  if(btn){btn.disabled=true;btn.textContent='Gerando...';}
+  var delay = 0;
+  for(var i=0;i<PITCH_SLIDES.length;i++){
+    (function(idx){
+      setTimeout(function(){genPitchSlide(idx);},delay);
+    })(i);
+    delay += 1800;
+  }
+  setTimeout(function(){
+    if(btn){btn.disabled=false;btn.innerHTML='\u2736 Gerar Todos os Slides com IA';}
+    toast('Pitch Deck completo gerado! \u2713');
+  }, delay+500);
+}
+
+// =====================================================
+// PRESENTATION MODE — MODULE 23
+// =====================================================
+var presSlides = [];
+var presCur = 0;
+
+function updPresPreview(){
+  var pn  = document.getElementById('pres-preview-nome');
+  var pt  = document.getElementById('pres-preview-tag');
+  var pg  = document.getElementById('pres-preview-grp');
+  if(pn) pn.textContent = gv('nome') || 'Nome do Empreendimento';
+  if(pt) pt.textContent = gv('tagline') || 'Tagline do produto';
+  if(pg) pg.textContent = 'Grupo — '+(S.groupName||'—');
+}
+
+function buildPresSlides(){
+  presSlides = [
+    {tag:'FRAMEWORK 6D\u00ae', title:gv('nome')||'Empreendimento', body:(gv('tagline')||'')+(gv('pv')?' \u2014 '+gv('pv').substring(0,120):''), name:'Capa'},
+    {tag:'M\u00f3dulo 1 \u2014 Estrat\u00e9gia', title:'Matriz de Ansoff', body:'Quadrante: <strong>'+(S.ansoff||'\u2014')+'</strong><br>'+(gv('a-obj')||'').substring(0,180), name:'Ansoff'},
+    {tag:'M\u00f3dulo 2 \u2014 Conceito', title:gv('nome')||'Conceito & Naming', body:(gv('tagline')||'')+'<br><br>'+(gv('pv')||'').substring(0,180), name:'Conceito'},
+    {tag:'M\u00f3dulo 3 \u2014 Persona', title:gv('p-nome')||'Persona Estrat\u00e9gica', body:'<strong>'+(gv('p-prof')||'')+'</strong> \u00b7 '+(gv('p-idade')||'')+'<br>'+(gv('p-renda')||'')+'<br><br>'+(gv('pq1')||'').substring(0,160), name:'Persona'},
+    {tag:'M\u00f3dulos 7\u20138 \u2014 SWOT', title:'An\u00e1lise SWOT', body:'<strong style="color:var(--gn)">For\u00e7as:</strong> '+(gv('sw-f')||'').substring(0,80)+'...<br><strong style="color:var(--pk)">Oportunidades:</strong> '+(gv('sw-o')||'').substring(0,80)+'...', name:'SWOT'},
+    {tag:'M\u00f3dulo 9 \u2014 North Star', title:'North Star Metric', body:(gv('nsm-m')||'Defina sua NSM')+'<br><br>'+(gv('nsm-just')||'').substring(0,180), name:'NSM'},
+    {tag:'M\u00f3dulo 10 \u2014 Budget', title:'Or\u00e7amento de Marketing', body:'VGV: <strong style="color:var(--pk)">R$ '+(gv('vgv')||'\u2014')+'M</strong><br>Budget: <strong style="color:var(--or)">'+(gv('vgv-pct')||'3.5')+'% do VGV</strong><br>Unidades: '+(gv('unidades')||'\u2014'), name:'Or\u00e7amento'},
+    {tag:'M\u00f3dulo 14 \u2014 Competitivo', title:'Posicionamento Competitivo', body:'Diferencial: '+(gv('comp-vant')||'').substring(0,180), name:'Competitivo'},
+    {tag:'M\u00f3dulo 15 \u2014 Funil', title:'Funil de Vendas', body:'Leads: <strong>'+(gv('funil-leads')||'\u2014')+'</strong> \u2192 Qualif.: <strong>'+(gv('funil-qual')||'\u2014')+'</strong> \u2192 Visitas: <strong>'+(gv('funil-visitas')||'\u2014')+'</strong> \u2192 Contratos: <strong style="color:var(--gn)">'+(gv('funil-contratos')||'\u2014')+'</strong>', name:'Funil'},
+    {tag:'M\u00f3dulo 21 \u2014 ROI', title:'ROI para o Comprador', body:'Pre\u00e7o: <strong>R$ '+Number(gv('roi-preco')||0).toLocaleString('pt-BR')+'</strong><br>Valoriza\u00e7\u00e3o: <strong style="color:var(--gn)">'+(gv('roi-valorizacao')||'12')+'% a.a.</strong><br>Prazo: '+(gv('roi-prazo')||'5')+' anos', name:'ROI'},
+    {tag:'Encerramento', title:'Obrigado!', body:(S.groupName||'Grupo')+'<br><br>'+((S.participants||[]).join(' \u00b7 ')||''), name:'Encerramento'}
+  ];
+}
+
+function startPresentation(){
+  buildPresSlides();
+  presCur = 0;
+  var overlay = document.getElementById('pres-overlay');
+  if(overlay){ overlay.classList.add('on'); showPresSlide(0); }
+  try{ document.documentElement.requestFullscreen(); }catch(e){}
+}
+
+function exitPresentation(){
+  var overlay = document.getElementById('pres-overlay');
+  if(overlay) overlay.classList.remove('on');
+  try{ document.exitFullscreen(); }catch(e){}
+}
+
+function showPresSlide(idx){
+  if(!presSlides.length) buildPresSlides();
+  if(idx < 0) idx = 0;
+  if(idx >= presSlides.length) idx = presSlides.length - 1;
+  presCur = idx;
+  var s = presSlides[idx];
+  var tag    = document.getElementById('pres-slide-tag');
+  var title  = document.getElementById('pres-slide-title');
+  var body   = document.getElementById('pres-slide-body');
+  var counter= document.getElementById('pres-counter');
+  var sname  = document.getElementById('pres-slide-name');
+  var prog   = document.getElementById('pres-progress-bar');
+  if(tag)    tag.textContent  = s.tag;
+  if(title)  title.textContent= s.title;
+  if(body)   body.innerHTML   = s.body;
+  if(counter)counter.textContent = (idx+1)+' / '+presSlides.length;
+  if(sname)  sname.textContent = s.name;
+  if(prog)   prog.style.width = Math.round((idx+1)/presSlides.length*100)+'%';
+}
+
+function presNav(dir){ showPresSlide(presCur + dir); }
+
+document.addEventListener('keydown', function(e){
+  var overlay = document.getElementById('pres-overlay');
+  if(!overlay || !overlay.classList.contains('on')) return;
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') presNav(1);
+  if(e.key==='ArrowLeft' ||e.key==='ArrowUp')   presNav(-1);
+  if(e.key==='Escape') exitPresentation();
+});
+
+// =====================================================
+// PDF — BAIXAR PLANO COMPLETO
+// =====================================================
+function gerarPlanoPDF(){
+  toast('Gerando PDF... aguarde \u23f3');
+
+  // Build HTML content for PDF
+  var nome    = gv('nome') || 'Empreendimento';
+  var grupo   = S.groupName || 'Grupo';
+  var parts   = (S.participants||[]).join(', ') || '—';
+  var data    = new Date().toLocaleDateString('pt-BR');
+
+  var secoes = [
+    {titulo:'1. Estratégia — Matriz de Ansoff', campos:[
+      {l:'Empresa',gv:'empresa'},{l:'Cidade',gv:'cidade'},
+      {l:'Quadrante Ansoff',gv:'a-sel'},{l:'Justificativa',gv:'a-just'},
+      {l:'Objetivo 12 meses',gv:'a-obj'}
+    ]},
+    {titulo:'2. Conceito + Naming', campos:[
+      {l:'Nome do produto',gv:'nome'},{l:'Tagline',gv:'tagline'},
+      {l:'VGV estimado (R$)',gv:'c-vgv'},{l:'Nº Unidades',gv:'unidades'},
+      {l:'Localização',gv:'localizacao'},{l:'Amenidades',gv:'amenidades'},
+      {l:'Proposta de Valor',gv:'pv'},{l:'Arquétipo',gv:'arquetipo'},
+      {l:'Quartos',gv:'t-qtos'},{l:'Área (m²)',gv:'t-area'}
+    ]},
+    {titulo:'3. Persona Estratégica', campos:[
+      {l:'Nome / Perfil',gv:'p-nome'},{l:'Faixa etária',gv:'p-idade'},
+      {l:'Profissão',gv:'p-prof'},{l:'Renda',gv:'p-renda'},
+      {l:'Q1 — Objetivo pessoal',gv:'pq1'},{l:'Q2 — Gatilhos',gv:'pq2'},
+      {l:'Q3 — Como ajudamos',gv:'pq3'},{l:'Q4 — Valores',gv:'pq4'},
+      {l:'Q5 — Barreiras',gv:'pq5'},{l:'Q6 — Percepção',gv:'pq6'},
+      {l:'Q7 — Fontes',gv:'pq7'},{l:'Q8 — O que tornaria desnecessário',gv:'pq8'},
+      {l:'Q9 — Experiência esperada',gv:'pq9'},{l:'Q10 — Objeções',gv:'pq10'},
+      {l:'Q11 — O que mais valoriza',gv:'pq11'},{l:'Q12 — O que busca',gv:'pq12'}
+    ]},
+    {titulo:'7. Análise SWOT', campos:[
+      {l:'Forças',gv:'sw-f'},{l:'Fraquezas',gv:'sw-w'},
+      {l:'Oportunidades',gv:'sw-o'},{l:'Ameaças',gv:'sw-t'}
+    ]},
+    {titulo:'10. Orçamento de Marketing', campos:[
+      {l:'VGV (R$ milhões)',gv:'vgv'},{l:'% do VGV',gv:'vgv-pct'},
+      {l:'Nº Unidades',gv:'n-unid'}
+    ]},
+    {titulo:'14. Posicionamento Competitivo', campos:[
+      {l:'Diferencial principal',gv:'comp-vant'},{l:'Ameaça competitiva',gv:'comp-ameaca'},
+      {l:'Concorrente 1',gv:'comp-n1'},{l:'Concorrente 2',gv:'comp-n2'},{l:'Concorrente 3',gv:'comp-n3'}
+    ]},
+    {titulo:'15. Funil de Vendas', campos:[
+      {l:'Leads totais',gv:'funil-leads'},{l:'Qualificados',gv:'funil-qual'},
+      {l:'Visitas',gv:'funil-visitas'},{l:'Propostas',gv:'funil-prop'},
+      {l:'Contratos',gv:'funil-contratos'},{l:'Plano B',gv:'funil-planb'}
+    ]},
+    {titulo:'20. Análise de Risco', campos:[
+      {l:'VSO otimista 3m',gv:'risk-ot-3'},{l:'VSO otimista 12m',gv:'risk-ot-12'},
+      {l:'VSO realista 3m',gv:'risk-re-3'},{l:'VSO realista 12m',gv:'risk-re-12'},
+      {l:'VSO pessimista 3m',gv:'risk-pe-3'},{l:'VSO pessimista 12m',gv:'risk-pe-12'}
+    ]},
+    {titulo:'21. ROI para o Comprador', campos:[
+      {l:'Preço de compra',gv:'roi-preco'},{l:'Entrada',gv:'roi-entrada'},
+      {l:'Valorização anual (%)',gv:'roi-valorizacao'},{l:'Prazo (anos)',gv:'roi-prazo'},
+      {l:'Perfil do investidor',gv:'roi-perfil'}
+    ]}
+  ];
+
+  // Build HTML string
+  var h = '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">'
+    + '<title>Plano Estratégico — '+nome+'</title>'
+    + '<style>'
+    + 'body{font-family:Arial,sans-serif;color:#1E293B;margin:0;padding:0;font-size:12px}'
+    + '.cover{background:linear-gradient(135deg,#D6157A,#D97706);color:#fff;padding:60px 48px;min-height:220px}'
+    + '.cover h1{font-size:32px;margin:0 0 8px;font-weight:900}'
+    + '.cover p{font-size:14px;opacity:.85;margin:4px 0}'
+    + '.cover .badge{background:rgba(255,255,255,.2);display:inline-block;padding:4px 12px;border-radius:4px;font-size:10px;letter-spacing:2px;font-weight:700;margin-bottom:16px}'
+    + '.body{padding:32px 48px}'
+    + '.secao{margin-bottom:28px;break-inside:avoid}'
+    + '.secao h2{font-size:13px;font-weight:700;color:#D6157A;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid #D6157A;padding-bottom:5px;margin-bottom:12px}'
+    + '.campo{display:grid;grid-template-columns:160px 1fr;gap:6px;margin-bottom:7px;align-items:start}'
+    + '.campo-l{font-weight:600;color:#374151;font-size:11px}'
+    + '.campo-v{color:#1E293B;font-size:11px;line-height:1.5;background:#F4F6FA;padding:4px 8px;border-radius:4px;min-height:20px;white-space:pre-wrap;word-break:break-word}'
+    + '.meta{display:flex;gap:24px;margin-top:16px;padding:12px 0;border-top:1px solid #E5E7EB}'
+    + '.meta-item{text-align:center}'
+    + '.meta-v{font-size:22px;font-weight:900;color:#D6157A}'
+    + '.meta-l{font-size:9px;color:#6B7280;text-transform:uppercase;letter-spacing:.5px}'
+    + '@media print{.cover{-webkit-print-color-adjust:exact;print-color-adjust:exact}}'
+    + '</style></head><body>'
+    + '<div class="cover">'
+    + '<div class="badge">FRAMEWORK 6D\u00ae \u2014 PLANO ESTRAT\u00c9GICO</div>'
+    + '<h1>'+nome+'</h1>'
+    + '<p style="font-size:16px;font-style:italic;opacity:.9">'+(gv('tagline')||'')+'</p>'
+    + '<div class="meta">'
+    + '<div class="meta-item"><div class="meta-v">'+grupo+'</div><div class="meta-l">Grupo</div></div>'
+    + '<div class="meta-item"><div class="meta-v">'+(S.participants||[]).length||'—'+'</div><div class="meta-l">Participantes</div></div>'
+    + '<div class="meta-item"><div class="meta-v">'+(S.done?S.done.size:0)+'/23</div><div class="meta-l">Módulos</div></div>'
+    + '<div class="meta-item"><div class="meta-v">'+data+'</div><div class="meta-l">Data</div></div>'
+    + '</div>'
+    + '<p style="margin-top:8px;opacity:.7;font-size:11px">Participantes: '+parts+'</p>'
+    + '</div>'
+    + '<div class="body">';
+
+  secoes.forEach(function(sec){
+    var temDados = sec.campos.some(function(c){return gv(c.gv);});
+    if(!temDados) return;
+    h += '<div class="secao"><h2>'+sec.titulo+'</h2>';
+    sec.campos.forEach(function(c){
+      var val = gv(c.gv);
+      if(!val) return;
+      h += '<div class="campo"><div class="campo-l">'+c.l+'</div><div class="campo-v">'+val+'</div></div>';
+    });
+    h += '</div>';
+  });
+
+  // Actions from plan
+  if(S.actions && S.actions.length){
+    h += '<div class="secao"><h2>Plano de A\u00e7\u00f5es TOWS ('+S.actions.length+' a\u00e7\u00f5es)</h2>';
+    S.actions.forEach(function(a,i){
+      h += '<div style="margin-bottom:10px;padding:8px;background:#F4F6FA;border-radius:6px;border-left:3px solid #D6157A">';
+      h += '<strong style="font-size:11px">'+(i+1)+'. '+a.what+'</strong>';
+      if(a.why)  h += '<br><span style="color:#6B7280">Por quê: </span>'+a.why;
+      if(a.who)  h += '<br><span style="color:#6B7280">Quem: </span>'+a.who;
+      if(a.when) h += '<br><span style="color:#6B7280">Quando: </span>'+a.when;
+      if(a.howm) h += '<br><span style="color:#6B7280">Investimento: </span>'+a.howm;
+      h += '</div>';
+    });
+    h += '</div>';
+  }
+
+  h += '<p style="text-align:center;color:#9CA3AF;font-size:10px;margin-top:32px;padding-top:16px;border-top:1px solid #E5E7EB">Gerado pelo Framework 6D\u00ae \u2014 '+data+'</p>';
+  h += '</div></body></html>';
+
+  // Open in new window and trigger print dialog
+  var win = window.open('','_blank','width=900,height=700');
+  win.document.write(h);
+  win.document.close();
+  win.focus();
+  setTimeout(function(){
+    win.print();
+    toast('Janela de PDF aberta! Use Ctrl+P \u2192 "Salvar como PDF" \u2713');
+  }, 600);
+}
+
+
+// =====================================================
 // PROFESSOR PANEL — TABS, KEYS, IMAGE GEN
 // =====================================================
 
@@ -5059,6 +5330,538 @@ function initMediaHubEvents(){
   });
 }
 // =====================================================
+
+// =====================================================
+// MODULE 14 — COMPETITIVE POSITIONING
+// =====================================================
+var COMP_ROWS=['Preço/m² (R$)','Ticket médio (R$)','Área (m²)','Localização','Conceito / Tipologia','Amenidades principais','Público-alvo','Canal de vendas','Prazo de entrega','Incorporadora','Certificação','Diferencial único'];
+
+function initCompTable(){
+  var tbody=document.getElementById('comp-tbody');
+  if(!tbody||tbody.dataset.init)return;
+  tbody.dataset.init='1';
+  COMP_ROWS.forEach(function(row,i){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td style="font-weight:600;color:var(--tx2);font-size:11px;padding:7px 8px;background:var(--surf2);white-space:nowrap">'+row+'</td>'
+      +'<td class="comp-our"><input type="text" id="comp-nos-'+i+'" placeholder="—" oninput="sv()" style="min-width:100px"></td>'
+      +'<td><input type="text" id="comp-c1-'+i+'" placeholder="—" oninput="sv()" style="min-width:90px"></td>'
+      +'<td><input type="text" id="comp-c2-'+i+'" placeholder="—" oninput="sv()" style="min-width:90px"></td>'
+      +'<td><input type="text" id="comp-c3-'+i+'" placeholder="—" oninput="sv()" style="min-width:90px"></td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function drawCompMap(){
+  var cv=document.getElementById('comp-map-cv');if(!cv)return;
+  var dpr=window.devicePixelRatio||1;var W=cv.offsetWidth||500;var H=280;
+  cv.width=W*dpr;cv.height=H*dpr;var ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+  var pad=44;
+  ctx.strokeStyle='rgba(0,0,0,.08)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(pad,pad);ctx.lineTo(pad,H-pad);ctx.lineTo(W-pad,H-pad);ctx.stroke();
+  [0,25,50,75,100].forEach(function(v){
+    var y=pad+((100-v)/100)*(H-2*pad);
+    ctx.strokeStyle='rgba(0,0,0,.05)';ctx.lineWidth=.5;
+    ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(W-pad,y);ctx.stroke();
+    ctx.font='8px DM Sans,sans-serif';ctx.fillStyle='#9CA3AF';ctx.textAlign='right';
+    ctx.fillText(v+'',pad-4,y+3);
+  });
+  ctx.setLineDash([4,4]);ctx.strokeStyle='rgba(0,0,0,.06)';
+  ctx.beginPath();ctx.moveTo(W/2,pad);ctx.lineTo(W/2,H-pad);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(pad,(H/2));ctx.lineTo(W-pad,H/2);ctx.stroke();
+  ctx.setLineDash([]);
+  var slider=document.getElementById('pos-nos-y');
+  var lbl=document.getElementById('pos-nos-y-v');
+  if(slider&&lbl)lbl.textContent=slider.value;
+  var nosY=parseFloat((slider&&slider.value)||8);
+  var nosX=parseFloat(gv('pos-nos-x'))||15000;
+  var pcts=[
+    {x:nosX,y:nosY,color:'#D6157A',label:gv('nome')||'Nosso'},
+    {x:parseFloat(gv('comp-nos-0'))||12000,y:6,color:'#0284C7',label:gv('comp-n1')||'C1'},
+    {x:parseFloat(gv('comp-nos-0'))||18000,y:7,color:'#D97706',label:gv('comp-n2')||'C2'},
+    {x:10000,y:5,color:'#059669',label:gv('comp-n3')||'C3'}
+  ];
+  var maxX=Math.max.apply(null,pcts.map(function(p){return p.x}))||25000;
+  pcts.forEach(function(p){
+    var px=pad+((p.x/maxX)*(W-2*pad));
+    var py=pad+((10-p.y)/10)*(H-2*pad);
+    ctx.beginPath();ctx.arc(px,py,8,0,Math.PI*2);
+    ctx.fillStyle=p.color+'22';ctx.fill();
+    ctx.strokeStyle=p.color;ctx.lineWidth=2;ctx.stroke();
+    ctx.fillStyle=p.color;ctx.font='10px DM Sans,sans-serif';ctx.textAlign='center';
+    ctx.fillText(p.label.substring(0,14),px,py-14);
+  });
+}
+
+function genCompetitivo(){
+  var rows=COMP_ROWS.map(function(r,i){return r+': Nós='+(gv('comp-nos-'+i)||'—')+' | C1='+(gv('comp-c1-'+i)||'—');}).join('\n');
+  var prompt='Estrategista de marketing imobiliário premium. Mapa competitivo:\n'+rows
+    +'\nDiferencial: '+gv('comp-vant')+'\nAmeaça: '+gv('comp-ameaca')
+    +'\n'+buildAIContext()
+    +'\n\n1. Posicionamento real vs concorrência\n2. Onde somos vulneráveis\n3. Vantagem indefensável\n4. Estratégia de comunicação\n5. 3 ações para ganhar share\nResposta objetiva em português.';
+  callAI(prompt,'out-comp','btn-comp','Análise competitiva gerada!');
+}
+
+// =====================================================
+// MODULE 15 — SALES FUNNEL
+// =====================================================
+var FUNIL_BENCH={'Lead→Qualif':{bench:28},'Qualif→Visita':{bench:45},'Visita→Proposta':{bench:50},'Proposta→Contrato':{bench:65}};
+
+function calcFunil(){
+  var l=parseFloat(gv('funil-leads'))||0;
+  var q=parseFloat(gv('funil-qual'))||0;
+  var v=parseFloat(gv('funil-visitas'))||0;
+  var p=parseFloat(gv('funil-prop'))||0;
+  var c=parseFloat(gv('funil-contratos'))||0;
+  if(!l)return;
+  var funnelEl=document.getElementById('funil-visual');
+  if(funnelEl){
+    var stages=[
+      {label:'Leads',val:l,color:'#D6157A',icon:'📨'},
+      {label:'Qualificados',val:q,color:'#7C3AED',icon:'✓'},
+      {label:'Visitas',val:v,color:'#0284C7',icon:'🏠'},
+      {label:'Propostas',val:p,color:'#D97706',icon:'📋'},
+      {label:'Contratos',val:c,color:'#059669',icon:'✅'}
+    ];
+    funnelEl.innerHTML=stages.map(function(s,i){
+      var pct=l>0?Math.round(s.val/l*100):0;
+      var w=Math.max(pct,8);
+      var conv=i>0&&stages[i-1].val>0?Math.round(s.val/stages[i-1].val*100)+'%':'';
+      return'<div style="margin-bottom:4px"><div style="height:40px;background:'+s.color+'18;border:1px solid '+s.color+'44;border-radius:6px;width:'+w+'%;min-width:180px;display:flex;align-items:center;justify-content:space-between;padding:0 12px">'
+        +'<div style="font-weight:700;font-size:11px;color:'+s.color+'">'+s.icon+' '+s.label+'</div>'
+        +'<div style="text-align:right"><div style="font-size:18px;font-weight:900;color:'+s.color+'">'+s.val.toLocaleString('pt-BR')+'</div>'
+        +(conv?'<div style="font-size:9px;color:var(--tx4)">conv: '+conv+'</div>':'')
+        +'</div></div></div>';
+    }).join('');
+  }
+  var benchEl=document.getElementById('funil-benchmark');
+  if(benchEl){
+    var rates=[
+      {name:'Lead → Qualificado',real:l>0?Math.round(q/l*100):0,bench:28},
+      {name:'Qualificado → Visita',real:q>0?Math.round(v/q*100):0,bench:45},
+      {name:'Visita → Proposta',real:v>0?Math.round(p/v*100):0,bench:50},
+      {name:'Proposta → Contrato',real:p>0?Math.round(c/p*100):0,bench:65}
+    ];
+    benchEl.innerHTML=rates.map(function(r){
+      var ok=r.real>=r.bench;
+      var col=ok?'var(--gn)':r.real>=r.bench*.6?'var(--or)':'var(--re)';
+      return'<div style="margin-bottom:10px">'
+        +'<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">'
+        +'<span style="color:var(--tx2);font-weight:600">'+r.name+'</span>'
+        +'<span style="color:'+col+';font-weight:800">'+r.real+'% <span style="color:var(--tx4);font-weight:400">/ bench '+r.bench+'%</span></span></div>'
+        +'<div style="height:6px;background:var(--surf3);border-radius:3px;overflow:hidden">'
+        +'<div style="height:100%;background:'+col+';width:'+Math.min(r.real/r.bench*100,100)+'%;border-radius:3px;transition:width .5s"></div>'
+        +'</div></div>';
+    }).join('');
+  }
+  var diagEl=document.getElementById('funil-diag');
+  if(diagEl){
+    var rate=l>0?Math.round(c/l*100):0;
+    diagEl.innerHTML='<div style="margin-bottom:8px"><strong style="color:var(--pk)">Taxa de fechamento geral: '+rate+'%</strong> (benchmark: 4–8%)</div>'
+      +(rate<4?'<div style="color:var(--re);font-size:11px">⚠ Abaixo do benchmark. Revise o funil.</div>':'<div style="color:var(--gn);font-size:11px">✅ Dentro do esperado para o mercado premium.</div>');
+  }
+  sv();
+}
+
+function genFunil(){
+  var prompt='Analise o funil de vendas imobiliário:\nLeads: '+gv('funil-leads')+' | Qualificados: '+gv('funil-qual')+' | Visitas: '+gv('funil-visitas')+' | Propostas: '+gv('funil-prop')+' | Contratos: '+gv('funil-contratos')
+    +'\nGargalo: '+gv('funil-gargalo')+'\n'+buildAIContext()
+    +'\n\n1. Onde está a maior perda?\n2. Como resolver o gargalo?\n3. 3 ações táticas\n4. KPIs semanais\nResposta estratégica em português.';
+  callAI(prompt,'out-funil','btn-funil','Análise do funil gerada!');
+}
+
+// =====================================================
+// MODULE 16 — LAUNCH CALENDAR
+// =====================================================
+var LT_TRIGGERS={
+  1:['Teaser nas redes (sem revelar o produto)','Landing page de cadastro VIP','Ativação com brokers parceiros (briefing)','Eventos de relacionamento com lista','SEO antecipado para palavras-chave do bairro'],
+  2:['Convite personalizado para o evento','Pré-apresentação para top brokers','Anúncio do benefício especial VIP','Envio do book digital 48h antes','WhatsApp 1:1 com SDR dedicado'],
+  3:['Abertura para mercado geral (portais + Google)','Press release para imprensa especializada','Conteúdo de bastidores no Instagram','E-mail marketing para base qualificada','Lives e tours virtuais do decorado'],
+  4:['Programa de indicação ativo (embaixadores)','Conteúdo da obra (milestones mensais)','Anúncios de últimas unidades com escassez','Assessoria de imprensa para casos de sucesso','Eventos exclusivos para moradores confirmados']
+};
+
+function toggleLTPhase(n){var el=document.getElementById('ltp-'+n);if(el)el.classList.toggle('open');}
+
+function buildLTTriggers(){
+  [1,2,3,4].forEach(function(n){
+    var el=document.getElementById('lt-triggers-'+n);
+    if(!el||el.dataset.init)return;
+    el.dataset.init='1';
+    el.innerHTML=LT_TRIGGERS[n].map(function(t,i){
+      return'<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--surf2);border:1px solid var(--brd);border-radius:7px;margin-bottom:6px;font-size:11px;color:var(--tx2)">'
+        +'<input type="checkbox" id="lt-chk-'+n+'-'+i+'" onchange="sv()" style="accent-color:var(--pk);cursor:pointer"><label for="lt-chk-'+n+'-'+i+'" style="cursor:pointer">'+t+'</label></div>';
+    }).join('');
+  });
+}
+
+function buildLaunchTimeline(){
+  var cv=document.getElementById('launch-timeline-cv');if(!cv)return;
+  var dpr=window.devicePixelRatio||1;var W=cv.offsetWidth||600;var H=80;
+  cv.width=W*dpr;cv.height=H*dpr;var ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+  var phases=[{label:'Pré-Lançamento',color:'#0284C7',sub:'8–12 sem'},{label:'Lista VIP',color:'#D6157A',sub:'2 sem'},{label:'Lançamento',color:'#D97706',sub:'4 sem'},{label:'Estabilização',color:'#059669',sub:'Meses 2–12'}];
+  var segW=W/phases.length;
+  phases.forEach(function(ph,i){
+    var x=i*segW;
+    ctx.fillStyle=ph.color+'18';ctx.fillRect(x+2,10,segW-4,50);
+    ctx.strokeStyle=ph.color;ctx.strokeRect(x+2,10,segW-4,50);
+    ctx.fillStyle=ph.color;ctx.font='bold 10px DM Sans,sans-serif';ctx.textAlign='center';
+    ctx.fillText(ph.label,x+segW/2,35);
+    ctx.fillStyle='#6B7280';ctx.font='9px DM Sans,sans-serif';
+    ctx.fillText(ph.sub,x+segW/2,52);
+  });
+}
+
+function genLaunch(){
+  var prompt='Plano de lançamento imobiliário:\nMeta VIP: '+gv('lt-vip-meta')+' | Canais: '+gv('lt-vip-canais')
+    +'\nMeta evento: '+gv('lt-vip-pct')+'% | Condição VIP: '+gv('lt-vip-cond')
+    +'\nMeta 30 dias: '+gv('lt-30d')+'% | Canal: '+gv('lt-canal-30')
+    +'\n'+buildAIContext()
+    +'\n\nCronograma detalhado semana a semana, gatilhos e KPIs por fase. Resposta em português.';
+  callAI(prompt,'out-launch','btn-launch','Plano de lançamento gerado!');
+}
+
+// =====================================================
+// MODULE 17 — PRICING SIMULATOR
+// =====================================================
+var priceStatus={};
+
+function buildPriceTable(){
+  var andares=parseInt(gv('price-andares'))||12;
+  var upm=parseInt(gv('price-upm'))||4;
+  var base=parseFloat(gv('price-base'))||15000;
+  var area=parseFloat(gv('price-area'))||110;
+  var incr=parseFloat(gv('price-incr'))||1.5;
+  var cobert=parseFloat(gv('price-cobert'))||25;
+  var wrap=document.getElementById('price-table-wrap');if(!wrap)return;
+  var h='<table style="border-collapse:collapse;width:100%;font-size:10px">';
+  h+='<tr><th style="padding:5px 8px;background:var(--surf2);border:1px solid var(--brd);color:var(--tx4);text-align:left">Andar</th>';
+  for(var u=0;u<upm;u++)h+='<th style="padding:5px 8px;background:var(--surf2);border:1px solid var(--brd);color:var(--tx4);text-align:center">Unid.'+(u+1)+'</th>';
+  h+='</tr>';
+  var totVGV=0,vendVGV=0,totUnid=0,vendUnid=0;
+  for(var a=andares;a>=1;a--){
+    var mult=1+((a-1)*incr/100);
+    if(a===andares)mult=mult*(1+cobert/100);
+    var priceM2=base*mult;var unitP=priceM2*area;
+    h+='<tr><td style="padding:4px 8px;border:1px solid var(--brd);font-weight:700;color:var(--tx2)">'+a+'º</td>';
+    for(var u=0;u<upm;u++){
+      var key=a+'-'+u;var status=priceStatus[key]||'available';
+      var bg=status==='sold'?'rgba(5,150,105,.08)':status==='reserved'?'rgba(217,119,6,.08)':'transparent';
+      var tag=status==='sold'?'<div style="font-size:8px;background:rgba(5,150,105,.15);color:var(--gn);padding:1px 4px;border-radius:3px;font-weight:700">VENDIDA</div>':status==='reserved'?'<div style="font-size:8px;background:rgba(217,119,6,.15);color:var(--or);padding:1px 4px;border-radius:3px;font-weight:700">RESERVADA</div>':'';
+      h+='<td style="padding:3px;border:1px solid var(--brd)"><div style="background:'+bg+';border-radius:5px;padding:6px 4px;text-align:center;cursor:pointer;transition:all .15s" onclick="togglePriceStatus(\''+key+'\')">'
+        +'<div style="font-size:9px;color:var(--tx4)">Unid.'+(u+1)+'</div>'
+        +'<div style="font-size:12px;font-weight:800;color:var(--pk)">'+(unitP/1e6).toFixed(2)+'M</div>'
+        +'<div style="font-size:9px;color:var(--tx4)">R$'+Math.round(priceM2).toLocaleString('pt-BR')+'/m²</div>'
+        +tag+'</div></td>';
+      totVGV+=unitP;totUnid++;
+      if(status==='sold'){vendVGV+=unitP;vendUnid++;}
+    }
+    h+='</tr>';
+  }
+  h+='</table>';
+  wrap.innerHTML=h;
+  var vt=document.getElementById('price-vgv-tot');var vv=document.getElementById('price-vgv-vend');var vs=document.getElementById('price-vso-pct');
+  if(vt)vt.textContent='R$'+(totVGV/1e6).toFixed(1)+'M';
+  if(vv)vv.textContent='R$'+(vendVGV/1e6).toFixed(1)+'M';
+  if(vs)vs.textContent=totUnid>0?Math.round(vendUnid/totUnid*100)+'%':'0%';
+  calcElasticidade();
+}
+
+function togglePriceStatus(key){
+  var cur=priceStatus[key]||'available';
+  priceStatus[key]=cur==='available'?'reserved':cur==='reserved'?'sold':'available';
+  buildPriceTable();
+}
+
+function calcElasticidade(){
+  var slider=document.getElementById('elast-slider');
+  var valEl=document.getElementById('elast-val');
+  var resultEl=document.getElementById('elast-result');
+  if(!slider||!resultEl)return;
+  var pct=parseInt(slider.value);
+  if(valEl)valEl.textContent=(pct>=0?'+':'')+pct+'%';
+  var base=parseFloat(gv('price-base'))||15000;
+  var area=parseFloat(gv('price-area'))||110;
+  var andares=parseInt(gv('price-andares'))||12;
+  var upm=parseInt(gv('price-upm'))||4;
+  var newBase=base*(1+pct/100);
+  var newVGV=newBase*area*andares*upm;
+  var impVSO=pct>0?-pct*.8:Math.abs(pct)*.6;
+  var col=pct===0?'var(--tx)':pct>0?'var(--or)':'var(--gn)';
+  resultEl.innerHTML=[
+    {label:'Novo preço/m²',val:'R$'+Math.round(newBase).toLocaleString('pt-BR'),col:col},
+    {label:'Novo VGV total',val:'R$'+(newVGV/1e6).toFixed(1)+'M',col:col},
+    {label:'Impacto VSO est.',val:(impVSO>=0?'+':'')+impVSO.toFixed(1)+'%',col:impVSO>0?'var(--gn)':'var(--re)'}
+  ].map(function(k){
+    return'<div style="background:var(--surf2);border:1px solid var(--brd);border-radius:7px;padding:8px;text-align:center">'
+      +'<div style="font-size:9px;color:var(--tx4);text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px">'+k.label+'</div>'
+      +'<div style="font-size:16px;font-weight:900;color:'+k.col+'">'+k.val+'</div></div>';
+  }).join('');
+}
+
+// =====================================================
+// MODULE 18 — SALES ECOSYSTEM
+// =====================================================
+var ecoItems={brokers:[],influencers:[],assessores:[],arquitetos:[]};
+var ECO_TYPES={
+  brokers:{label:'Broker / Imobiliária',icon:'🏢',badge:'B'},
+  influencers:{label:'Influenciador',icon:'📱',badge:'I'},
+  assessores:{label:'Assessor',icon:'💼',badge:'A'},
+  arquitetos:{label:'Arquiteto',icon:'🏛',badge:'D'}
+};
+
+function ecoTab(btn,id){
+  document.querySelectorAll('#eco-tabs .tab').forEach(function(t){t.classList.remove('on')});
+  document.querySelectorAll('#s18 .tp').forEach(function(t){t.classList.remove('on')});
+  btn.classList.add('on');var el=document.getElementById(id);if(el)el.classList.add('on');
+}
+
+function addEcoItem(type){
+  var listEl=document.getElementById('eco-'+type+'-list');if(!listEl)return;
+  var id=Date.now();ecoItems[type].push(id);
+  var div=document.createElement('div');
+  var t=ECO_TYPES[type];
+  div.className='inf-card';div.id='eco-item-'+id;
+  div.innerHTML='<div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--pk),var(--or));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0">'+t.badge+'</div>'
+    +'<div style="flex:1">'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:4px">'
+    +'<input type="text" placeholder="Nome" id="eco-nome-'+id+'" oninput="sv()" style="font-size:11px;font-weight:700">'
+    +'<input type="text" placeholder="Empresa / Canal" id="eco-emp-'+id+'" oninput="sv()" style="font-size:11px"></div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">'
+    +'<input type="text" placeholder="Especialidade" id="eco-esp-'+id+'" oninput="sv()" style="font-size:10px">'
+    +'<input type="text" placeholder="Contato" id="eco-cont-'+id+'" oninput="sv()" style="font-size:10px">'
+    +'<select id="eco-prior-'+id+'" onchange="sv()" style="font-size:10px"><option>Alta prioridade</option><option>Média</option><option>Explorar</option></select>'
+    +'</div></div>'
+    +'<button onclick="document.getElementById(\'eco-item-'+id+'\').remove()" style="background:none;border:1px solid var(--brd);color:var(--tx4);padding:4px 8px;border-radius:6px;cursor:pointer;font-size:12px">✕</button>';
+  var empty=listEl.querySelector('[style*="text-align:center"]');if(empty)empty.remove();
+  listEl.appendChild(div);drawEcoMap();
+}
+
+function drawEcoMap(){
+  var cv=document.getElementById('eco-map-cv');if(!cv)return;
+  var dpr=window.devicePixelRatio||1;var W=cv.offsetWidth||600;var H=240;
+  cv.width=W*dpr;cv.height=H*dpr;var ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+  var cx=W/2;var cy=H/2;
+  [40,80,120].forEach(function(r){
+    ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.strokeStyle='rgba(0,0,0,.07)';ctx.lineWidth=1;ctx.stroke();
+  });
+  ctx.beginPath();ctx.arc(cx,cy,18,0,Math.PI*2);
+  var g=ctx.createRadialGradient(cx,cy,0,cx,cy,18);
+  g.addColorStop(0,'#D6157A');g.addColorStop(1,'#D97706');
+  ctx.fillStyle=g;ctx.fill();
+  ctx.fillStyle='#fff';ctx.font='bold 10px DM Sans,sans-serif';ctx.textAlign='center';
+  ctx.fillText(gv('nome')||'6D®',cx,cy+4);
+  var types=[
+    {type:'brokers',color:'#0284C7',angle:0},
+    {type:'influencers',color:'#7C3AED',angle:Math.PI/2},
+    {type:'assessores',color:'#D97706',angle:Math.PI},
+    {type:'arquitetos',color:'#059669',angle:3*Math.PI/2}
+  ];
+  types.forEach(function(t){
+    var count=ecoItems[t.type].length;
+    for(var i=0;i<Math.min(count,3);i++){
+      var r=80+i*15;var a=t.angle+(i-1)*.4;
+      var nx=cx+r*Math.cos(a);var ny=cy+r*Math.sin(a);
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(nx,ny);
+      ctx.strokeStyle=t.color+'44';ctx.lineWidth=1;ctx.stroke();
+      ctx.beginPath();ctx.arc(nx,ny,10,0,Math.PI*2);
+      ctx.fillStyle=t.color+'22';ctx.fill();ctx.strokeStyle=t.color;ctx.lineWidth=1.5;ctx.stroke();
+    }
+    var lx=cx+115*Math.cos(t.angle);var ly=cy+115*Math.sin(t.angle);
+    ctx.font='9px DM Sans,sans-serif';ctx.fillStyle=t.color;ctx.textAlign='center';
+    ctx.fillText(ECO_TYPES[t.type].label,lx,ly);
+  });
+}
+
+function genEcossistema(){
+  var prompt='Estratégia de ecossistema de vendas para empreendimento imobiliário premium:\n'+buildAIContext()
+    +'\nBrokers: '+ecoItems.brokers.length+' | Influenciadores: '+ecoItems.influencers.length+' | Assessores: '+ecoItems.assessores.length
+    +'\n\n1. Estrutura de comissionamento e incentivos\n2. Co-marketing com influenciadores\n3. Abordagem para private banking\n4. Ativação de arquitetos e designers\n5. Métricas por parceiro\nResposta prática em português.';
+  callAI(prompt,'out-eco','btn-eco','Estratégia de ecossistema gerada!');
+}
+
+// =====================================================
+// MODULE 19 — PÓS-VENDA & CRM
+// =====================================================
+var reguaSteps=[];
+var REGUA_DEFAULTS=[
+  {day:'D+1',acao:'Ligação de agradecimento do gerente',canal:'Telefone',resp:'Gerente comercial'},
+  {day:'D+7',acao:'Envio do kit boas-vindas',canal:'Courier',resp:'Marketing'},
+  {day:'D+30',acao:'Visita de obra — milestone 1',canal:'Presencial',resp:'Obras + Comercial'},
+  {day:'D+90',acao:'Pesquisa NPS + evento exclusivo',canal:'WhatsApp',resp:'CRM'},
+  {day:'D+180',acao:'Newsletter do projeto',canal:'Digital + impresso',resp:'Marketing'},
+  {day:'Entrega',acao:'Cerimônia de entrega das chaves',canal:'Presencial',resp:'Diretoria'}
+];
+
+function initRegua(){
+  var listEl=document.getElementById('regua-list');if(!listEl||listEl.dataset.init)return;
+  listEl.dataset.init='1';
+  REGUA_DEFAULTS.forEach(function(d){addReguaStep(d);});
+}
+
+function addReguaStep(data){
+  var listEl=document.getElementById('regua-list');if(!listEl)return;
+  var d=data||{};
+  var div=document.createElement('div');
+  div.style.cssText='display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--brd)';
+  div.innerHTML='<div style="width:48px;flex-shrink:0;text-align:center;background:var(--surf2);border:1px solid var(--brd);border-radius:7px;padding:6px 4px">'
+    +'<div style="font-size:14px;font-weight:900;color:var(--pk);line-height:1">'+(d.day||'D+?')+'</div>'
+    +'<div style="font-size:8px;color:var(--tx4);letter-spacing:.5px;text-transform:uppercase">Momento</div></div>'
+    +'<div style="flex:1">'
+    +'<input type="text" placeholder="Ação de relacionamento" value="'+(d.acao||'')+'" oninput="sv()" style="font-size:11px;font-weight:600;margin-bottom:4px">'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">'
+    +'<input type="text" placeholder="Canal" value="'+(d.canal||'')+'" oninput="sv()" style="font-size:10px">'
+    +'<input type="text" placeholder="Responsável" value="'+(d.resp||'')+'" oninput="sv()" style="font-size:10px">'
+    +'</div></div>';
+  listEl.appendChild(div);
+}
+
+// =====================================================
+// MODULE 20 — RISK ANALYSIS
+// =====================================================
+var RISK_DEFAULTS=[
+  {name:'Alta taxa de juros SELIC',prob:'Alta',imp:'Alto',plan:'Oferecer tabela IPCA com carência de 2 anos'},
+  {name:'Concorrente lança produto similar',prob:'Média',imp:'Médio',plan:'Acelerar ativação lista VIP e reforçar diferenciais'},
+  {name:'Prazo de entrega atrasado',prob:'Média',imp:'Alto',plan:'Cláusula contratual + comunicação proativa'},
+  {name:'Queda na renda da persona',prob:'Baixa',imp:'Alto',plan:'Oferecer condições de parcelamento flexíveis'}
+];
+
+function initRiskMatrix(){
+  var el=document.getElementById('risk-matrix');if(!el||el.dataset.init)return;
+  el.dataset.init='1';
+  RISK_DEFAULTS.forEach(function(r){addRisk(r);});
+}
+
+function addRisk(data){
+  var el=document.getElementById('risk-matrix');if(!el)return;
+  var d=data||{};
+  var prob=d.prob||'Média';var imp=d.imp||'Médio';
+  var isHigh=prob==='Alta'&&imp==='Alto';var isLow=prob==='Baixa'||imp==='Baixo';
+  var col=isHigh?'var(--re)':isLow?'var(--gn)':'var(--or)';
+  var bg=isHigh?'rgba(220,38,38,.06)':isLow?'rgba(5,150,105,.06)':'rgba(217,119,6,.06)';
+  var div=document.createElement('div');
+  div.style.cssText='border-radius:8px;padding:10px;border:1px solid '+col+'44;background:'+bg+';cursor:pointer;font-size:11px';
+  div.innerHTML='<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:'+col+';margin-bottom:5px">'+(d.name||'Novo Risco')+'</div>'
+    +'<div style="display:flex;gap:4px;margin-bottom:5px"><span style="font-size:8px;padding:1px 5px;border-radius:3px;background:'+col+'15;color:'+col+';font-weight:700">P: '+prob+'</span><span style="font-size:8px;padding:1px 5px;border-radius:3px;background:'+col+'15;color:'+col+';font-weight:700">I: '+imp+'</span></div>'
+    +'<div style="font-size:10px;color:var(--tx3);line-height:1.4">'+(d.plan||'Defina o plano de contingência')+'</div>';
+  el.appendChild(div);
+}
+
+function drawRiskChart(){
+  var cv=document.getElementById('risk-cv');if(!cv)return;
+  var dpr=window.devicePixelRatio||1;var W=cv.offsetWidth||600;var H=220;
+  cv.width=W*dpr;cv.height=H*dpr;var ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+  var pad={l:40,r:20,t:20,b:30};var w=W-pad.l-pad.r;var h=H-pad.t-pad.b;
+  [0,25,50,75,100].forEach(function(v){
+    var y=pad.t+h-(v/100)*h;
+    ctx.strokeStyle='rgba(0,0,0,.06)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();
+    ctx.fillStyle='#9CA3AF';ctx.font='8px DM Sans';ctx.textAlign='right';
+    ctx.fillText(v+'%',pad.l-4,y+3);
+  });
+  var scenarios=[
+    {id:'ot',color:'#059669',label:'Otimista'},
+    {id:'re',color:'#D97706',label:'Realista'},
+    {id:'pe',color:'#D6157A',label:'Pessimista'}
+  ];
+  scenarios.forEach(function(sc){
+    var v3=parseFloat(gv('risk-'+sc.id+'-3'))||0;
+    var v12=parseFloat(gv('risk-'+sc.id+'-12'))||0;
+    if(!v3&&!v12)return;
+    var pts=[{x:0,y:0},{x:3,y:v3},{x:12,y:v12}];
+    ctx.beginPath();
+    pts.forEach(function(p,i){
+      var px=pad.l+(p.x/12)*w;var py=pad.t+h-(p.y/100)*h;
+      if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+    });
+    ctx.strokeStyle=sc.color;ctx.lineWidth=2;ctx.stroke();
+    pts.forEach(function(p){
+      var px=pad.l+(p.x/12)*w;var py=pad.t+h-(p.y/100)*h;
+      ctx.beginPath();ctx.arc(px,py,4,0,Math.PI*2);
+      ctx.fillStyle=sc.color;ctx.fill();
+    });
+    ctx.fillStyle=sc.color;ctx.font='9px DM Sans';ctx.textAlign='left';
+    ctx.fillText(sc.label,pad.l+(12/12)*w-28,pad.t+h-(v12/100)*h-8);
+  });
+  [0,3,6,9,12].forEach(function(m){
+    var px=pad.l+(m/12)*w;
+    ctx.fillStyle='#9CA3AF';ctx.font='8px DM Sans';ctx.textAlign='center';
+    ctx.fillText('M'+m,px,H-pad.b+12);
+  });
+}
+
+function genRisk(){
+  var prompt='Análise de risco para lançamento imobiliário:\n'
+    +'Otimista — 3m: '+gv('risk-ot-3')+'% / 12m: '+gv('risk-ot-12')+'%\n'
+    +'Realista — 3m: '+gv('risk-re-3')+'% / 12m: '+gv('risk-re-12')+'%\n'
+    +'Pessimista — 3m: '+gv('risk-pe-3')+'% / 12m: '+gv('risk-pe-12')+'%\n'
+    +buildAIContext()
+    +'\n\n1. Cenário mais provável dado o contexto macro?\n2. 3 maiores riscos\n3. Planos de contingência específicos\n4. Early warning KPIs\nResposta estratégica em português.';
+  callAI(prompt,'out-risk','btn-risk','Análise de risco gerada!');
+}
+
+// =====================================================
+// MODULE 21 — ROI CALCULATOR
+// =====================================================
+function calcROI(){
+  var preco=parseFloat(gv('roi-preco'))||0;
+  var entrada=parseFloat(gv('roi-entrada'))||0;
+  var valorizacao=parseFloat(gv('roi-valorizacao'))||12;
+  var aluguel=parseFloat(gv('roi-aluguel'))||0;
+  var prazo=parseInt(gv('roi-prazo'))||5;
+  if(!preco||!entrada)return;
+  var lbl=document.getElementById('roi-prazo-lbl');if(lbl)lbl.textContent=prazo;
+  var valorFut=preco*Math.pow(1+valorizacao/100,prazo);
+  var ganho=valorFut-preco;
+  var retEntrada=(ganho/entrada)*100;
+  var v1=document.getElementById('roi-vl-5a');
+  var v2=document.getElementById('roi-ganho');
+  var v3=document.getElementById('roi-retorno');
+  if(v1)v1.textContent='R$'+(valorFut/1e6).toFixed(2)+'M';
+  if(v2)v2.textContent='R$'+(ganho/1e6).toFixed(2)+'M';
+  if(v3)v3.textContent=Math.round(retEntrada)+'%';
+  var cdiRet=entrada*Math.pow(1.105,prazo);
+  var diff=ganho-(cdiRet-entrada);
+  var vsEl=document.getElementById('roi-vs-cdi');
+  if(vsEl)vsEl.innerHTML='<strong style="color:var(--gn)">vs CDI:</strong> Imóvel '+(diff>0?'supera':'fica abaixo do')+' CDI em <strong style="color:var(--pk)">R$'+(Math.abs(diff)/1e6).toFixed(2)+'M</strong> em '+prazo+' anos.';
+  var cv=document.getElementById('roi-cv');if(!cv)return;
+  var dpr=window.devicePixelRatio||1;var W=cv.offsetWidth||400;var H=160;
+  cv.width=W*dpr;cv.height=H*dpr;var ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+  var pts=[];var cdiPts=[];
+  for(var y=0;y<=prazo;y++){
+    pts.push(preco*Math.pow(1+valorizacao/100,y));
+    cdiPts.push(preco*Math.pow(1.105,y));
+  }
+  var maxV=Math.max.apply(null,pts.concat(cdiPts));
+  var pad={l:30,r:10,t:10,b:20};
+  function drawLine(arr,color){
+    ctx.beginPath();
+    arr.forEach(function(v,i){
+      var x=pad.l+(i/prazo)*(W-pad.l-pad.r);
+      var y=(H-pad.b)-(v/maxV)*(H-pad.t-pad.b);
+      if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+    });
+    ctx.strokeStyle=color;ctx.lineWidth=2;ctx.stroke();
+  }
+  drawLine(pts,'#D6157A');drawLine(cdiPts,'#D97706');
+  ctx.fillStyle='#D6157A';ctx.font='9px DM Sans';ctx.textAlign='left';ctx.fillText('Imóvel',pad.l+4,pad.t+14);
+  ctx.fillStyle='#D97706';ctx.fillText('CDI',pad.l+4,pad.t+26);
+  sv();
+}
+
+function genROI(){
+  var prompt='Argumento de venda baseado em ROI. Perfil: '+gv('roi-perfil')
+    +'\nPreço: R$'+Number(gv('roi-preco')).toLocaleString('pt-BR')
+    +' | Valorização: '+gv('roi-valorizacao')+'%/ano | Prazo: '+gv('roi-prazo')+' anos'
+    +'\n'+buildAIContext()
+    +'\n\n1. Argumento para o perfil deste investidor\n2. Comparativo com CDI, ações, fundos imobiliários\n3. Custo de oportunidade de NÃO comprar\n4. Elementos emocionais além dos racionais\n5. Call-to-action claro\nTom consultivo, não de vendedor. Em português.';
+  callAI(prompt,'out-roi','btn-roi','Argumento de ROI gerado!');
+}
+
 // PATCH go() FOR NEW MODULES
 // =====================================================
 var _orig_go_newmods = window.go;
