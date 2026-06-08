@@ -1,35 +1,273 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// =====================================================
+// SUPABASE CONFIG — Framework 6D® / MKT 12D
+// =====================================================
+var SUPA_URL = 'https://hotwxduptbhanhopzxud.supabase.co';
+var SUPA_KEY = 'sb_publishable_JWkZYlvqYQToVGnvyJegxQ_cE07ZRYb';
+var supa = null;
+var GRUPO_ID = null;  // uuid do grupo no banco
+var SUPA_READY = false;
+var SYNC_INTERVAL = null;
+
+function initSupabase(){
+  try{
+    supa = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+    SUPA_READY = true;
+    console.log('[6D] Supabase conectado ✓');
+  }catch(e){
+    console.warn('[6D] Supabase offline:', e.message);
+  }
+}
+
+// ── Coleta TODOS os campos do plano ──
+function coletaTodosCampos(){
+  var campos = {};
+  document.querySelectorAll('input[id], textarea[id], select[id]').forEach(function(el){
+    if(el.id && !el.id.startsWith('key-') && el.id !== 'api-key' && el.id !== 'setup-api-key') {
+      campos[el.id] = el.value;
+    }
+  });
+  return campos;
+}
+
+// ── Salva grupo no Supabase ──
+async function syncSupabase(forceNew){
+  if(!SUPA_READY || !supa || !S.groupName) return;
+  try{
+    var sc = calcScore();
+    var payload = {
+      nome:          S.groupName,
+      participantes: S.participants || [],
+      score:         sc.total || 0,
+      modulos_done:  Array.from(S.done || []),
+      ansoff:        S.ansoff || '',
+      tipo_produto:  S.tipo || '',
+      dados_campos:  coletaTodosCampos(),
+      updated_at:    new Date().toISOString()
+    };
+
+    if(GRUPO_ID && !forceNew){
+      // Atualiza registro existente
+      var r = await supa.from('grupos').update(payload).eq('id', GRUPO_ID);
+      if(r.error) throw r.error;
+    } else {
+      // Verifica se já existe grupo com este nome
+      var check = await supa.from('grupos').select('id').eq('nome', S.groupName).maybeSingle();
+      if(check.data){
+        GRUPO_ID = check.data.id;
+        var r2 = await supa.from('grupos').update(payload).eq('id', GRUPO_ID);
+        if(r2.error) throw r2.error;
+      } else {
+        // Cria novo grupo
+        var r3 = await supa.from('grupos').insert(payload).select('id').single();
+        if(r3.error) throw r3.error;
+        GRUPO_ID = r3.data.id;
+      }
+    }
+
+    // Salva snapshot em sessoes
+    await supa.from('sessoes').insert({
+      grupo_id: GRUPO_ID,
+      modulo:   S.cur || 0,
+      dados:    payload.dados_campos
+    });
+
+    // Sync chaves de API configuradas pelo professor
+    await syncChavesSupabase();
+
+    updSyncStatus(true);
+    console.log('[6D] Sync OK →', GRUPO_ID);
+  }catch(ex){
+    updSyncStatus(false);
+    console.warn('[6D] Sync erro:', ex.message);
+  }
+}
+
+// ── Salva imagem gerada no banco ──
+async function saveImagemSupabase(url, prompt, modelo, tipo){
+  if(!SUPA_READY || !supa || !GRUPO_ID) return;
+  try{
+    await supa.from('imagens').insert({
+      grupo_id: GRUPO_ID, url, prompt, modelo, tipo: tipo||'geral'
+    });
+  }catch(e){ console.warn('[6D] Imagem não salva:', e.message); }
+}
+
+// ── Carrega dados do grupo do banco ──
+async function loadFromSupabase(){
+  if(!SUPA_READY || !supa || !S.groupName) return false;
+  try{
+    var r = await supa.from('grupos').select('*').eq('nome', S.groupName).maybeSingle();
+    if(!r.data) return false;
+    var d = r.data;
+    GRUPO_ID = d.id;
+    S.participants = d.participantes || [];
+    S.ansoff = d.ansoff || '';
+    S.tipo = d.tipo_produto || '';
+    S.done = new Set(d.modulos_done || []);
+    // Restaura todos os campos
+    if(d.dados_campos){
+      setTimeout(function(){
+        Object.entries(d.dados_campos).forEach(function(kv){
+          var el = document.getElementById(kv[0]);
+          if(el) el.value = kv[1];
+        });
+        if(S.ansoff) selA && selA(S.ansoff);
+        calcScore && calcScore();
+        updPrev && updPrev();
+        d.modulos_done.forEach(function(m){ markDone && markDone(m); });
+      }, 300);
+    }
+    console.log('[6D] Restaurado do Supabase:', d.nome);
+    return true;
+  }catch(e){
+    console.warn('[6D] Load erro:', e.message);
+    return false;
+  }
+}
+
+// ── Carrega leaderboard do banco (tempo real) ──
+async function loadLBSupabase(){
+  if(!SUPA_READY || !supa) return;
+  try{
+    var r = await supa.from('leaderboard').select('*').order('score', {ascending:false}).limit(20);
+    if(r.error || !r.data) return;
+    var medals = ['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟'];
+    var html = '';
+    r.data.forEach(function(row, i){
+      var mine = row.grupo_nome === S.groupName;
+      var parts = row.participantes ? row.participantes.length : 0;
+      var partsStr = parts ? '<span class="lb-mods" style="color:var(--tx4)">'+parts+'p</span>' : '';
+      html += '<div class="lb-row'+(mine?' mine':'')+'"><span class="lb-rank">'+(medals[i]||i+1)+'</span><span class="lb-name">'+row.grupo_nome+'</span>'+partsStr+'<span class="lb-score">'+row.score+'pts</span><span class="lb-mods">'+row.mods_done+'/23</span></div>';
+    });
+    var el = document.getElementById('lb-body');
+    if(el) el.innerHTML = html || '<div style="padding:12px;text-align:center;color:var(--tx3);font-size:11px">Nenhum grupo ainda</div>';
+    // Update rank badge
+    var myRank = r.data.findIndex(function(r){return r.grupo_nome===S.groupName})+1;
+    var rankEl = document.getElementById('lb-rank');
+    if(rankEl && myRank>0) rankEl.textContent = '#'+myRank+' Ranking';
+  }catch(e){ console.warn('[6D] LB erro:', e); }
+}
+
+// ── Sync chaves de API no banco (professor → alunos) ──
+async function syncChavesSupabase(){
+  if(!SUPA_READY || !supa) return;
+  try{
+    // Professor salva → todos recebem
+    var chaves = [
+      {chave:'anthropic_key', storageKey:'ak'},
+      {chave:'openai_key',    storageKey:'oai_key'},
+      {chave:'google_key',    storageKey:'goog_key'},
+      {chave:'replicate_key', storageKey:'rep_key'}
+    ];
+    // Carrega do banco → preenche localmente
+    var r = await supa.from('configs').select('chave,valor');
+    if(r.data){
+      r.data.forEach(function(row){
+        if(row.valor){
+          var k = chaves.find(function(c){return c.chave===row.chave});
+          if(k){
+            try{ localStorage.setItem(k.storageKey, row.valor); }catch(e){}
+          }
+        }
+      });
+    }
+  }catch(e){ console.warn('[6D] Chaves sync erro:', e.message); }
+}
+
+// ── Salva chave de API no banco (pelo professor) ──
+async function saveChaveSupabase(chaveNome, valor){
+  if(!SUPA_READY || !supa) return;
+  try{
+    await supa.from('configs').update({valor: valor, updated_at: new Date().toISOString()}).eq('chave', chaveNome);
+    toast('Chave salva no banco! Todos os grupos irão receber ✓');
+  }catch(e){ toast('Erro ao salvar chave: '+e.message); }
+}
+
+// ── Carrega todos os grupos (painel do professor) ──
+async function loadGruposSupabase(){
+  if(!SUPA_READY || !supa) return null;
+  try{
+    var r = await supa.from('grupos').select('*').order('updated_at', {ascending:false});
+    return r.data || [];
+  }catch(e){ return null; }
+}
+
+// ── Realtime subscription ──
+function startRealtime(){
+  if(!SUPA_READY || !supa) return;
+  supa.channel('leaderboard-changes')
+    .on('postgres_changes', {event:'*', schema:'public', table:'leaderboard'}, function(){
+      loadLBSupabase();
+    })
+    .on('postgres_changes', {event:'*', schema:'public', table:'grupos'}, function(){
+      loadLBSupabase();
+      if(S.cur === 13) loadProfData && loadProfData();
+    })
+    .subscribe();
+  console.log('[6D] Realtime ativo ✓');
+}
+
+// ── Indicador visual de sync ──
+function updSyncStatus(ok){
+  var el = document.getElementById('sync-status');
+  if(!el) return;
+  el.textContent = ok ? '☁ Salvo' : '⚠ Offline';
+  el.style.color = ok ? 'var(--gn)' : 'var(--or)';
+}
+
+// ── Auto-sync a cada 45s ──
+function startAutoSync(){
+  if(SYNC_INTERVAL) clearInterval(SYNC_INTERVAL);
+  SYNC_INTERVAL = setInterval(function(){
+    if(S.groupName) syncSupabase();
+  }, 45000);
+}
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Framework 6D® — Estratégia Imobiliária Premium</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0D0F14;--surf:#141720;--surf2:#1A1E2B;--surf3:#1F2535;--surf4:#252C3D;
-  --pk:#E91E8C;--pk2:#C4176F;--pklt:rgba(233,30,140,.09);--pkbrd:rgba(233,30,140,.25);
-  --or:#F59E0B;--orlt:rgba(245,158,11,.09);--orbrd:rgba(245,158,11,.25);
-  --tl:#38BDF8;--tllt:rgba(56,189,248,.09);--tlbrd:rgba(56,189,248,.25);
-  --gn:#34D399;--gnlt:rgba(52,211,153,.09);--gnbrd:rgba(52,211,153,.25);
-  --gd:#FBBF24;--gdlt:rgba(251,191,36,.09);
-  --pu:#A78BFA;--pult:rgba(167,139,250,.09);--pubrd:rgba(167,139,250,.25);
-  --vi:#7C3AED;--re:#F87171;
-  --tx:#F1F5F9;--tx2:#CBD5E1;--tx3:#94A3B8;--tx4:#64748B;
-  --brd:rgba(255,255,255,.07);--brd2:rgba(255,255,255,.12);
-  --sh:0 1px 3px rgba(0,0,0,.4);--shm:0 4px 20px rgba(0,0,0,.5);--shl:0 8px 40px rgba(0,0,0,.6);
+  /* LIGHT PROFESSIONAL THEME */
+  --bg:#F4F6FA;--surf:#FFFFFF;--surf2:#F1F3F8;--surf3:#E8ECF4;--surf4:#DDE2ED;
+
+  /* ACCENTS — mantém identidade da marca */
+  --pk:#D6157A;--pk2:#A8105E;--pklt:rgba(214,21,122,.07);--pkbrd:rgba(214,21,122,.22);
+  --or:#D97706;--orlt:rgba(217,119,6,.07);--orbrd:rgba(217,119,6,.22);
+  --tl:#0284C7;--tllt:rgba(2,132,199,.07);--tlbrd:rgba(2,132,199,.22);
+  --gn:#059669;--gnlt:rgba(5,150,105,.07);--gnbrd:rgba(5,150,105,.22);
+  --gd:#B45309;--gdlt:rgba(180,83,9,.07);
+  --pu:#7C3AED;--pult:rgba(124,58,237,.07);--pubrd:rgba(124,58,237,.22);
+  --vi:#5B21B6;--re:#DC2626;
+
+  /* TEXT */
+  --tx:#1E293B;--tx2:#374151;--tx3:#6B7280;--tx4:#9CA3AF;
+
+  /* BORDERS */
+  --brd:rgba(0,0,0,.08);--brd2:rgba(0,0,0,.14);
+
+  /* SHADOWS */
+  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
+  --shm:0 4px 16px rgba(0,0,0,.09);
+  --shl:0 8px 32px rgba(0,0,0,.12);
   --font-d:'DM Serif Display',serif;--font-b:'DM Sans',sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;overflow:hidden}
-body{font-family:var(--font-b);background:var(--bg);color:var(--tx);display:flex;flex-direction:column}
+body{font-family:var(--font-b);background:var(--bg);color:var(--tx);display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
 ::-webkit-scrollbar{width:3px;height:3px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:rgba(233,30,140,.3);border-radius:2px}
+::-webkit-scrollbar-track{background:var(--surf2)}
+::-webkit-scrollbar-thumb{background:rgba(214,21,122,.3);border-radius:2px}
 ::-webkit-scrollbar-thumb:hover{background:var(--pk)}
 
 /* TOP BAR */
-.top{height:52px;background:rgba(13,15,20,.95);border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;z-index:200;position:relative;backdrop-filter:blur(12px)}
+.top{height:52px;background:rgba(255,255,255,.98);border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;z-index:200;position:relative;backdrop-filter:blur(12px)}
 .top-brand{display:flex;align-items:center;gap:12px}
 .top-badge{background:linear-gradient(135deg,var(--pk),var(--or));color:#fff;font-family:var(--font-b);font-weight:800;font-size:11px;padding:4px 11px;border-radius:4px;letter-spacing:2px;text-transform:uppercase;box-shadow:0 0 16px rgba(233,30,140,.35)}
 .top-t{font-size:11px;font-weight:500;color:var(--tx3);letter-spacing:.3px}
@@ -40,7 +278,7 @@ body{font-family:var(--font-b);background:var(--bg);color:var(--tx);display:flex
 .app{display:flex;flex:1;overflow:hidden;height:calc(100vh - 52px)}
 
 /* SIDEBAR */
-.sb{width:232px;background:rgba(13,15,20,.8);border-right:1px solid var(--brd);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;backdrop-filter:blur(8px);transition:transform .3s ease}
+.sb{width:232px;background:rgba(255,255,255,.95);border-right:1px solid var(--brd);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;backdrop-filter:blur(8px);transition:transform .3s ease}
 .sb-grp{padding:14px 16px 4px;font-size:8px;font-weight:700;color:var(--tx4);letter-spacing:3px;text-transform:uppercase}
 .ni{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;transition:all .2s ease;border-left:2px solid transparent;position:relative}
 .ni:hover{background:rgba(255,255,255,.04)}
@@ -110,11 +348,11 @@ body{font-family:var(--font-b);background:var(--bg);color:var(--tx);display:flex
 /* FORMS */
 .fl{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
 label{font-size:9px;font-weight:700;color:var(--tx4);text-transform:uppercase;letter-spacing:1px}
-input[type=text],input[type=number],input[type=password],select,textarea{width:100%;background:var(--surf2);border:1px solid var(--brd);border-radius:6px;padding:9px 12px;color:var(--tx);font-family:var(--font-b);font-size:12px;outline:none;transition:all .2s;line-height:1.5}
+input[type=text],input[type=number],input[type=password],select,textarea{width:100%;background:#fff;border:1px solid var(--brd);border-radius:6px;padding:9px 12px;color:var(--tx);font-family:var(--font-b);font-size:12px;outline:none;transition:all .2s;line-height:1.5}
 input:hover,select:hover,textarea:hover{border-color:var(--brd2)}
-input:focus,select:focus,textarea:focus{border-color:var(--pk);background:rgba(233,30,140,.04);box-shadow:0 0 0 3px rgba(233,30,140,.1)}
+input:focus,select:focus,textarea:focus{border-color:var(--pk);background:rgba(214,21,122,.03);box-shadow:0 0 0 3px rgba(233,30,140,.1)}
 textarea{resize:vertical;min-height:64px}
-select option{background:var(--surf2);color:var(--tx)}
+select option{background:#fff;color:var(--tx)}
 input[type=range]{width:100%;accent-color:var(--pk);cursor:pointer}
 
 /* TABS */
@@ -177,7 +415,7 @@ input[type=range]{width:100%;accent-color:var(--pk);cursor:pointer}
 .sx-h{padding:10px 13px}
 .sx-tp{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
 .sx-sub{font-size:8.5px;opacity:.65;margin-top:2px}
-.sx-bd{background:rgba(0,0,0,.15);padding:8px;min-height:60px}
+.sx-bd{background:var(--surf2);padding:8px;min-height:60px}
 .sx-item{background:var(--surf);border:1px solid var(--brd);border-radius:5px;padding:8px;margin-bottom:4px;font-size:10.5px;line-height:1.5;color:var(--tx2);display:flex;gap:6px;box-shadow:var(--sh)}
 .sx-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:5px}
 
@@ -208,7 +446,7 @@ input[type=range]{width:100%;accent-color:var(--pk);cursor:pointer}
 .pri-b{background:rgba(52,211,153,.1);color:var(--gn);border:1px solid rgba(52,211,153,.2)}
 
 /* AI OUTPUT */
-.ai-out{background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(167,139,250,.04));border:1px solid rgba(167,139,250,.2);border-radius:10px;padding:18px;margin-top:14px;display:none}
+.ai-out{background:linear-gradient(135deg,rgba(124,58,237,.05),rgba(167,139,250,.03));border:1px solid rgba(167,139,250,.2);border-radius:10px;padding:18px;margin-top:14px;display:none}
 .ai-out.on{display:block;animation:fi .3s ease}
 .ai-hdr{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid rgba(167,139,250,.12)}
 .ai-bdg{background:linear-gradient(135deg,var(--vi),var(--pu));padding:3px 10px;border-radius:4px;font-size:8px;font-weight:800;letter-spacing:1.2px;color:#fff;text-transform:uppercase}
@@ -350,7 +588,7 @@ canvas{border-radius:8px}
 /* ===== SETUP MODAL ===== */
 #setup-modal{
   position:fixed;inset:0;
-  background:rgba(0,0,0,.85);
+  background:rgba(15,23,42,.5);
   z-index:900;
   display:flex;align-items:center;justify-content:center;
   backdrop-filter:blur(10px);
@@ -399,7 +637,7 @@ canvas{border-radius:8px}
   overflow-y:auto;
 }
 .setup-body::-webkit-scrollbar{width:3px}
-.setup-body::-webkit-scrollbar-thumb{background:rgba(233,30,140,.3);border-radius:2px}
+.setup-body::-webkit-scrollbar-thumb{background:rgba(214,21,122,.3);border-radius:2px}
 
 .setup-footer{
   padding:16px 24px 20px;
@@ -502,7 +740,7 @@ canvas{border-radius:8px}
   position:fixed;bottom:72px;left:16px;z-index:400;
 }
 #save-fab button{
-  background:rgba(20,23,32,.9);
+  background:rgba(255,255,255,.95);
   border:1px solid var(--brd2);
   color:var(--tx2);
   padding:8px 14px;
@@ -513,7 +751,7 @@ canvas{border-radius:8px}
   display:flex;align-items:center;gap:6px;
   transition:all .2s;
   backdrop-filter:blur(8px);
-  box-shadow:0 4px 16px rgba(0,0,0,.4);
+  box-shadow:0 4px 16px rgba(0,0,0,.12);
 }
 #save-fab button:hover{
   border-color:var(--gn);color:var(--gn);
@@ -532,7 +770,7 @@ canvas{border-radius:8px}
 .comp-tbl td{padding:5px 8px;border:1px solid var(--brd);vertical-align:top}
 .comp-tbl td input,.comp-tbl td textarea,.comp-tbl td select{background:transparent;border:none;width:100%;font-size:11px;color:var(--tx);font-family:var(--font-b);outline:none}
 .comp-tbl td input:focus,.comp-tbl td textarea:focus{background:rgba(233,30,140,.05);border-radius:4px}
-.comp-tbl .comp-our{background:rgba(233,30,140,.04);border-left:2px solid var(--pk)}
+.comp-tbl .comp-our{background:rgba(214,21,122,.03);border-left:2px solid var(--pk)}
 .comp-tag{font-size:8px;font-weight:800;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.6px}
 .comp-tag-nos{background:var(--pklt);color:var(--pk);border:1px solid var(--pkbrd)}
 .comp-tag-c1{background:rgba(56,189,248,.1);color:var(--tl);border:1px solid var(--tlbrd)}
@@ -674,7 +912,7 @@ canvas{border-radius:8px}
 }
 .roi-output.on{display:block}
 .roi-kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
-.roi-kpi{text-align:center;padding:12px;background:rgba(0,0,0,.15);border-radius:8px}
+.roi-kpi{text-align:center;padding:12px;background:var(--surf2);border-radius:8px}
 .roi-kpi-v{font-family:var(--font-d);font-size:22px;color:var(--gn);margin-bottom:2px}
 .roi-kpi-l{font-size:9px;color:var(--tx4);text-transform:uppercase;letter-spacing:.8px}
 
@@ -696,7 +934,7 @@ canvas{border-radius:8px}
 .comp-group-col{background:var(--surf2);border:1px solid var(--brd);border-radius:9px;padding:12px;font-size:11px}
 
 /* ===== MEDIA HUB CSS ===== */
-.media-tabs{display:flex;gap:2px;margin-bottom:18px;background:var(--surf2);border-radius:10px;padding:4px;overflow-x:auto}
+.media-tabs{display:flex;gap:2px;margin-bottom:18px;background:var(--surf3);border-radius:10px;padding:4px;overflow-x:auto;border:1px solid var(--brd)}
 .media-tab{
   padding:8px 14px;border-radius:7px;font-size:11px;font-weight:700;
   cursor:pointer;border:none;background:transparent;color:var(--tx3);
@@ -704,7 +942,7 @@ canvas{border-radius:8px}
   display:flex;align-items:center;gap:6px;
 }
 .media-tab:hover{color:var(--tx2)}
-.media-tab.on{background:var(--surf);color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.media-tab.on{background:#fff;color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.1)}
 .media-tp{display:none}.media-tp.on{display:block;animation:fi .25s ease}
 
 /* Tool cards */
@@ -715,7 +953,7 @@ canvas{border-radius:8px}
 }
 .tool-card::before{
   content:'';position:absolute;inset:0;opacity:0;transition:opacity .2s;
-  background:radial-gradient(ellipse at top left,rgba(233,30,140,.06),transparent 60%);
+  background:radial-gradient(ellipse at top left,rgba(214,21,122,.04),transparent 60%);
 }
 .tool-card:hover{border-color:var(--brd2);transform:translateY(-2px);box-shadow:var(--shm)}
 .tool-card:hover::before{opacity:1}
@@ -1292,7 +1530,7 @@ canvas{border-radius:8px}
 <div class="c">
   <div class="ct">Mapa de Empatia</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-    <div style="background:rgba(233,30,140,.04);border:1px solid var(--pkbrd);border-radius:9px;padding:14px">
+    <div style="background:rgba(214,21,122,.03);border:1px solid var(--pkbrd);border-radius:9px;padding:14px">
       <div style="font-weight:800;font-size:10px;color:var(--pk);margin-bottom:6px;text-transform:uppercase;letter-spacing:.8px">💭 O que PENSA e SENTE?</div>
       <textarea id="em-pensa" placeholder="Medos profundos, desejos, sonhos, frustrações internas..." oninput="sv()"></textarea>
     </div>
@@ -1796,7 +2034,7 @@ canvas{border-radius:8px}
       <button class="btn bai bsm" id="btn-master-prompt">✦ Gerar Prompt</button>
     </div>
   </div>
-  <div style="background:rgba(0,0,0,.2);border:1px solid var(--brd);border-radius:8px;padding:12px;font-size:11px;color:var(--tx2);line-height:1.7;font-family:'Courier New',monospace;min-height:56px;position:relative" id="master-prompt-out">Selecione o tipo e clique em Gerar Prompt →</div>
+  <div style="background:var(--surf2);border:1px solid var(--brd);border-radius:8px;padding:12px;font-size:11px;color:var(--tx2);line-height:1.7;font-family:'Courier New',monospace;min-height:56px;position:relative" id="master-prompt-out">Selecione o tipo e clique em Gerar Prompt →</div>
   <div style="display:flex;gap:6px;margin-top:8px">
     <button class="btn bg bsm" id="btn-copy-master">📋 Copiar Prompt</button>
     <span style="font-size:10px;color:var(--tx4);align-self:center">Cole em qualquer ferramenta abaixo</span>
@@ -1826,7 +2064,7 @@ canvas{border-radius:8px}
         <div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px" id="img-tool-lbl">Prompt para —</div>
         <button class="btn bg bsm" id="btn-copy-tool-prompt">📋 Copiar</button>
       </div>
-      <div style="background:rgba(0,0,0,.2);border:1px solid var(--brd);border-radius:7px;padding:12px;font-size:11px;color:var(--tx2);line-height:1.7;font-family:'Courier New',monospace;white-space:pre-wrap" id="img-tool-prompt-out"></div>
+      <div style="background:var(--surf2);border:1px solid var(--brd);border-radius:7px;padding:12px;font-size:11px;color:var(--tx2);line-height:1.7;font-family:'Courier New',monospace;white-space:pre-wrap" id="img-tool-prompt-out"></div>
       <div style="margin-top:6px;font-size:10px;color:var(--tx4);font-style:italic" id="img-tool-tip"></div>
     </div>
   </div>
@@ -1854,7 +2092,7 @@ canvas{border-radius:8px}
         <div style="font-size:10px;font-weight:700;color:var(--pu);text-transform:uppercase;letter-spacing:.8px">Prompt de Vídeo — cole na ferramenta</div>
         <button class="btn bg bsm" id="btn-copy-video-prompt">📋 Copiar</button>
       </div>
-      <div style="background:rgba(0,0,0,.2);border:1px solid var(--brd);border-radius:7px;padding:12px;font-size:11px;color:var(--tx2);line-height:1.7;font-family:'Courier New',monospace;white-space:pre-wrap" id="video-prompt-out"></div>
+      <div style="background:var(--surf2);border:1px solid var(--brd);border-radius:7px;padding:12px;font-size:11px;color:var(--tx2);line-height:1.7;font-family:'Courier New',monospace;white-space:pre-wrap" id="video-prompt-out"></div>
     </div>
   </div>
   <div class="tool-grid" id="tool-grid-video">
@@ -1882,7 +2120,7 @@ canvas{border-radius:8px}
         <div style="font-size:10px;font-weight:700;color:var(--tl);text-transform:uppercase;letter-spacing:.8px">Prompt — cole no Claude.ai</div>
         <button class="btn bg bsm" id="btn-copy-site-prompt">📋 Copiar</button>
       </div>
-      <div style="background:rgba(0,0,0,.2);border:1px solid var(--brd);border-radius:7px;padding:12px;font-size:11px;color:var(--tx2);line-height:1.7;white-space:pre-wrap" id="site-prompt-out"></div>
+      <div style="background:var(--surf2);border:1px solid var(--brd);border-radius:7px;padding:12px;font-size:11px;color:var(--tx2);line-height:1.7;white-space:pre-wrap" id="site-prompt-out"></div>
     </div>
   </div>
   <div class="tool-grid" id="tool-grid-site"></div>
@@ -2068,7 +2306,7 @@ canvas{border-radius:8px}
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px" id="keys-status-grid">
       <!-- preenchido por JS -->
     </div>
-    <div style="margin-top:12px;padding:10px 12px;background:rgba(0,0,0,.15);border-radius:7px;font-size:11px;color:var(--tx3);line-height:1.65">
+    <div style="margin-top:12px;padding:10px 12px;background:var(--surf2);border-radius:7px;font-size:11px;color:var(--tx3);line-height:1.65">
       <strong style="color:var(--tx2)">💡 Dica para o professor:</strong> Configure as chaves aqui uma vez — elas ficam salvas no navegador desta máquina. Os alunos que não tiverem chave serão direcionados para as ferramentas gratuitas equivalentes automaticamente.
     </div>
   </div>
@@ -4040,7 +4278,41 @@ function genSintese(){
 // =====================================================
 // PROFESSOR PANEL
 // =====================================================
-function loadProfData(){
+async function loadProfData(){
+  // Tenta carregar do Supabase primeiro
+  if(SUPA_READY && supa){
+    var grupos = await loadGruposSupabase();
+    if(grupos && grupos.length > 0){
+      renderProfGrupos(grupos);
+      return;
+    }
+  }
+  // Fallback localStorage
+  loadProfDataLocal();
+}
+function renderProfGrupos(grupos){
+  var el = document.getElementById('prof-grupos');
+  if(!el) return;
+  var html = grupos.map(function(g){
+    var parts = g.participantes || [];
+    var mods = g.modulos_done ? g.modulos_done.length : 0;
+    var updated = g.updated_at ? new Date(g.updated_at).toLocaleTimeString('pt-BR') : '—';
+    var pct = Math.round(mods/23*100);
+    return '<div style="background:var(--surf2);border:1px solid var(--brd);border-radius:9px;padding:12px">'
+      + '<div style="font-weight:700;font-size:12px;color:var(--tx);margin-bottom:4px">'+g.nome+'</div>'
+      + '<div style="font-size:10px;color:var(--tx4);margin-bottom:6px">'+parts.join(' · ')+'</div>'
+      + '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--tx3);margin-bottom:4px">'
+      + '<span>'+mods+'/23 módulos</span><span style="color:var(--pk);font-weight:700">'+g.score+' pts</span></div>'
+      + '<div style="height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden">'
+      + '<div style="width:'+pct+'%;height:100%;background:linear-gradient(90deg,var(--pk),var(--or));border-radius:2px"></div></div>'
+      + '<div style="font-size:9px;color:var(--tx4);margin-top:4px">Atualizado: '+updated+'</div>'
+      + '</div>';
+  }).join('');
+  el.innerHTML = html || '<div style="color:var(--tx4);font-size:11px">Nenhum grupo encontrado</div>';
+  // Also update leaderboard
+  loadLBSupabase();
+}
+function loadProfDataLocal(){
   var data=loadLBData();
   var grupos=Object.values(data).sort((a,b)=>b.score-a.score);
   renderProfGrupos(grupos);
@@ -4175,13 +4447,22 @@ function loadAllKeys(){
 }
 
 function saveAllKeys(){
-  Object.values(KEY_NAMES).forEach(function(k){
-    try{
-      var el = document.getElementById(k.id);
-      if(el && el.value.trim()) localStorage.setItem(k.storageKey, el.value.trim());
-    }catch(e){}
+  var keyMap = {
+    'key-anthropic': {storage:'ak',          supabase:'anthropic_key'},
+    'key-openai':    {storage:'oai_key',      supabase:'openai_key'},
+    'key-google':    {storage:'goog_key',     supabase:'google_key'},
+    'key-replicate': {storage:'rep_key',      supabase:'replicate_key'}
+  };
+  Object.entries(keyMap).forEach(function(entry){
+    var elId = entry[0]; var k = entry[1];
+    var el = document.getElementById(elId);
+    if(el && el.value.trim()){
+      try{ localStorage.setItem(k.storage, el.value.trim()); }catch(e){}
+      // Salva no banco para todos os grupos receberem
+      saveChaveSupabase(k.supabase, el.value.trim());
+    }
   });
-  // Also sync anthropic key to the main api-key input
+  // Sync anthropic key to main input
   try{
     var ant = document.getElementById('key-anthropic');
     var main = document.getElementById('api-key');
@@ -4362,7 +4643,8 @@ async function genImageReal(){
     if(!imgUrl) throw new Error('Nenhuma imagem retornada');
     displayGeneratedImage(grid, imgUrl, prompt, model);
     generatedImages.push({url:imgUrl, prompt:prompt, model:model, ts:Date.now()});
-    toast('Imagem gerada com sucesso! ✓');
+    saveImagemSupabase(imgUrl, prompt, model, gv('prompt-tipo')||'geral');
+    toast('Imagem gerada e salva no banco ✓');
 
   }catch(ex){
     if(grid) grid.innerHTML = '<div style="grid-column:1/-1;padding:20px;text-align:center;font-size:11px;color:var(--re)">❌ Erro: '+ex.message+'</div>';
@@ -4803,7 +5085,8 @@ function saveAll(showMsg){
   // Collect all input/textarea/select values
   var fields = {};
   document.querySelectorAll('input[id],textarea[id],select[id]').forEach(function(el){
-    if(el.id) fields[el.id] = el.value;
+    if(el.id && !el.id.startsWith('key-') && el.id !== 'api-key' && el.id !== 'setup-api-key')
+      fields[el.id] = el.value;
   });
   // State
   var payload = {
@@ -4820,21 +5103,31 @@ function saveAll(showMsg){
   try{
     localStorage.setItem(SAVE_KEY, JSON.stringify(payload));
   }catch(e){
-    toast('Erro ao salvar: ' + e.message);
-    return;
+    toast('Erro ao salvar local: ' + e.message);
   }
-  // Visual feedback
-  var btn = document.getElementById('save-btn');
-  if(btn){
-    btn.classList.add('saved');
-    btn.textContent = '✓ Salvo!';
-    setTimeout(function(){
-      btn.classList.remove('saved');
-      btn.textContent = '💾 Salvar';
-    }, 2000);
-  }
-  if(showMsg !== false) toast('Progresso salvo! ✓');
+  // Sync Supabase (async, não bloqueia)
+  syncSupabase().then(function(){
+    var btn = document.getElementById('save-btn');
+    if(btn){
+      btn.classList.add('saved');
+      btn.textContent = '✓ Salvo!';
+      setTimeout(function(){
+        btn.classList.remove('saved');
+        btn.textContent = '💾 Salvar';
+      }, 2500);
+    }
+    if(showMsg !== false) toast('Salvo localmente e na nuvem ✓');
+  }).catch(function(){
+    var btn = document.getElementById('save-btn');
+    if(btn){
+      btn.classList.add('saved');
+      btn.textContent = '✓ Salvo local';
+      setTimeout(function(){ btn.classList.remove('saved'); btn.textContent = '💾 Salvar'; }, 2500);
+    }
+    if(showMsg !== false) toast('Salvo localmente ✓ (banco offline)');
+  });
   saveLB();
+  loadLBSupabase();
 }
 
 function loadSaved(){
@@ -4962,6 +5255,7 @@ function confirmSetup(){
   document.getElementById('setup-modal').classList.add('hidden');
   toast('Bem-vindos, ' + grpName + '! (' + (S.participants.length||0) + ' participante(s)) 🚀');
   saveLB();
+  syncSupabase(true); // cria novo grupo no banco
 }
 
 function saveKey2(){
@@ -5312,7 +5606,7 @@ function openSimulador(){
   }
   var panel = document.createElement('div');
   panel.id = 'sim-panel';
-  panel.style.cssText = 'position:fixed;right:0;top:52px;bottom:0;width:360px;background:var(--surf);border-left:1px solid var(--brd);display:flex;flex-direction:column;z-index:400;transform:translateX(100%);transition:transform .3s ease;box-shadow:-4px 0 24px rgba(0,0,0,.4)';
+  panel.style.cssText = 'position:fixed;right:0;top:52px;bottom:0;width:360px;background:var(--surf);border-left:1px solid var(--brd);display:flex;flex-direction:column;z-index:400;transform:translateX(100%);transition:transform .3s ease;box-shadow:-4px 0 24px rgba(0,0,0,.15)';
   panel.innerHTML = [
     '<div style="padding:14px 16px;border-bottom:1px solid var(--brd);display:flex;justify-content:space-between;align-items:center;background:rgba(233,30,140,.05)">',
       '<div>',
