@@ -1086,6 +1086,27 @@ canvas{border-radius:8px}
   font-size:11px;color:var(--tx4);
 }
 
+/* ===== HELP MODAL ===== */
+.help-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:900;display:flex;align-items:center;justify-content:center;animation:fi .2s ease}
+.help-modal{background:var(--surf);border-radius:14px;width:90%;max-width:560px;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden;animation:slideUp .25s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.help-modal-head{padding:18px 20px 14px;border-bottom:1px solid var(--brd);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;background:linear-gradient(135deg,rgba(214,21,122,.05),rgba(217,119,6,.04))}
+.help-modal-tag{font-size:9px;font-weight:800;color:var(--pk);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px}
+.help-modal-title{font-family:var(--font-d);font-size:20px;color:var(--tx);line-height:1.2}
+.help-close{background:none;border:none;font-size:22px;color:var(--tx4);cursor:pointer;line-height:1;flex-shrink:0;margin-top:2px}
+.help-close:hover{color:var(--tx)}
+.help-modal-body{padding:18px 20px;max-height:65vh;overflow-y:auto}
+.help-obj{background:var(--pklt);border:1px solid var(--pkbrd);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--tx2);line-height:1.6}
+.help-obj strong{color:var(--pk)}
+.help-steps{list-style:none;margin-bottom:14px}
+.help-steps li{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--brd);font-size:12px;color:var(--tx2);line-height:1.5}
+.help-steps li:last-child{border-bottom:none}
+.help-step-num{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--pk),var(--or));color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.help-tip{background:var(--orlt);border:1px solid var(--orbrd);border-radius:8px;padding:10px 14px;font-size:11px;color:var(--tx2);line-height:1.6}
+.help-tip strong{color:var(--or)}
+.help-btn{display:inline-flex;align-items:center;gap:5px;background:none;border:1px solid var(--brd2);color:var(--tx3);padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--font-b);transition:all .2s;margin-left:8px;vertical-align:middle}
+.help-btn:hover{border-color:var(--pk);color:var(--pk)}
+
 </style>
 </head>
 <body>
@@ -1265,7 +1286,7 @@ canvas{border-radius:8px}
 
 <!-- ===== S1 ANSOFF ===== -->
 <div class="scr" id="s1">
-<div class="sh2"><div class="stag">Módulo 1 • 100 pts</div><div class="st">Matriz de Ansoff</div><div class="sd">Defina o quadrante estratégico. Esta escolha orienta toda a estratégia de marketing do empreendimento.</div></div>
+<div class="sh2"><div class="stag">Módulo 1 • 100 pts</div><div class="st">Matriz de Ansoff</div><div class="sd">Defina o quadrante estratégico. Esta escolha orienta toda a estratégia de marketing do empreendimento.<button class="help-btn" onclick="openHelp(1)">❓ Ajuda</button></div></div>
 <div class="g2" style="margin-bottom:14px">
   <div>
     <div style="font-size:9px;font-weight:700;color:var(--tx4);text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:5px">▲ NOVOS MERCADOS</div>
@@ -1306,7 +1327,7 @@ canvas{border-radius:8px}
 
 <!-- ===== S2 CONCEITO + NAMING ===== -->
 <div class="scr" id="s2">
-<div class="sh2"><div class="stag">Módulo 2 • 100 pts</div><div class="st">Conceito + Naming Workshop</div><div class="sd">Construa o DNA do produto. A IA gera sugestões de naming e posicionamento com base no que o grupo preencher.</div></div>
+<div class="sh2"><div class="stag">Módulo 2 • 100 pts</div><div class="st">Conceito + Naming Workshop</div><div class="sd">Construa o DNA do produto. A IA gera sugestões de naming e posicionamento com base no que o grupo preencher.<button class="help-btn" onclick="openHelp(2)">❓ Ajuda</button></div></div>
 <div class="hi" style="margin-bottom:14px;text-align:center">
   <div style="font-size:10px;font-weight:700;color:var(--pk);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px" id="prev-tipo">Selecione a Definição Estruturante</div>
   <div style="font-family:var(--font-d);font-size:22px;background:linear-gradient(135deg,var(--pk),var(--or));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:2px" id="prev-nome">Nome do Empreendimento</div>
@@ -1396,7 +1417,7 @@ canvas{border-radius:8px}
 
 <!-- ===== S3 PERSONA ===== -->
 <div class="scr" id="s3">
-<div class="sh2"><div class="stag">Módulo 3 • 120 pts</div><div class="st">Persona Estratégica</div><div class="sd">Perfil socioeconômico + 12 perguntas estratégicas + Mapa de Empatia. Alimenta toda a estratégia de comunicação.</div></div>
+<div class="sh2"><div class="stag">Módulo 3 • 120 pts</div><div class="st">Persona Estratégica</div><div class="sd">Perfil socioeconômico + 12 perguntas estratégicas + Mapa de Empatia. Alimenta toda a estratégia de comunicação.<button class="help-btn" onclick="openHelp(3)">❓ Ajuda</button></div></div>
 
 <div class="tabs">
   <button class="tab on" onclick="perTab(this,'per-socio')">📊 Socioeconômico</button>
@@ -1623,7 +1644,7 @@ canvas{border-radius:8px}
 
 <!-- ===== S4 JORNADA ===== -->
 <div class="scr" id="s4">
-<div class="sh2"><div class="stag">Módulo 4 • 80 pts</div><div class="st">Jornada do Consumidor Imobiliário</div><div class="sd">Mapeie touchpoints em cada fase da jornada de compra. Identifique emoções, fricções e oportunidades de ativação.</div></div>
+<div class="sh2"><div class="stag">Módulo 4 • 80 pts</div><div class="st">Jornada do Consumidor Imobiliário</div><div class="sd">Mapeie touchpoints em cada fase da jornada de compra. Identifique emoções, fricções e oportunidades de ativação.<button class="help-btn" onclick="openHelp(4)">❓ Ajuda</button></div></div>
 <div class="c" style="margin-bottom:14px">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
     <div><div class="ct" style="margin-bottom:0">Teia de Relacionamento</div><div style="font-size:11px;color:var(--tx3)">Mapa visual dos touchpoints marcados</div></div>
@@ -1726,7 +1747,7 @@ canvas{border-radius:8px}
 
 <!-- ===== S5 DIAGNÓSTICO DE CANAIS ===== -->
 <div class="scr" id="s5">
-<div class="sh2"><div class="stag">Módulo 5 • 100 pts</div><div class="st">Diagnóstico de Canais</div><div class="sd">Avalie maturidade, investimento e estratégia de cada canal. O sistema calcula o Score de Presença e o Mix Ideal.</div></div>
+<div class="sh2"><div class="stag">Módulo 5 • 100 pts</div><div class="st">Diagnóstico de Canais</div><div class="sd">Avalie maturidade, investimento e estratégia de cada canal. O sistema calcula o Score de Presença e o Mix Ideal.<button class="help-btn" onclick="openHelp(5)">❓ Ajuda</button></div></div>
 
 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
   <div class="kpi-c c-pk"><div class="kpi-l">Score Digital</div><div class="kpi-v" id="sc-digital" style="color:var(--pk)">—</div><div style="font-size:9px;color:var(--tx4)">média canais dig.</div></div>
@@ -1777,7 +1798,7 @@ canvas{border-radius:8px}
 
 <!-- ===== S6 4Cs × 4Ps ===== -->
 <div class="scr" id="s6">
-<div class="sh2"><div class="stag">Módulo 6 • 80 pts</div><div class="st">4Cs × 4Ps</div><div class="sd">Confronte a visão da empresa com a percepção do cliente em cada dimensão de marketing. A IA identifica gaps e recomenda ajustes estratégicos.</div></div>
+<div class="sh2"><div class="stag">Módulo 6 • 80 pts</div><div class="st">4Cs × 4Ps</div><div class="sd">Confronte a visão da empresa com a percepção do cliente em cada dimensão de marketing. A IA identifica gaps e recomenda ajustes estratégicos.<button class="help-btn" onclick="openHelp(6)">❓ Ajuda</button></div></div>
 
 <!-- GUIDE CARDS -->
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
@@ -1824,7 +1845,7 @@ canvas{border-radius:8px}
 
 <!-- ===== S7 SWOT ===== -->
 <div class="scr" id="s7">
-<div class="sh2"><div class="stag">Módulo 7 • 80 pts</div><div class="st">Análise SWOT</div><div class="sd">Mapeie os 4 quadrantes. Os dados serão usados na SWOT Cruzada para gerar estratégias TOWS no módulo seguinte.</div></div>
+<div class="sh2"><div class="stag">Módulo 7 • 80 pts</div><div class="st">Análise SWOT</div><div class="sd">Mapeie os 4 quadrantes. Os dados serão usados na SWOT Cruzada para gerar estratégias TOWS no módulo seguinte.<button class="help-btn" onclick="openHelp(7)">❓ Ajuda</button></div></div>
 <div class="swot-g" style="margin-bottom:14px">
   <div class="sq sq-s"><div class="sq-hdr"><div class="sq-ico">💪</div><div><div class="sl">FORÇAS</div><div style="font-size:9px;color:var(--tx4)">Interno · Positivo</div></div></div><textarea id="sw-f" rows="5" placeholder="• Localização privilegiada&#10;• Incorporadora reconhecida&#10;• Projeto diferenciado&#10;• Equipe comercial experiente" oninput="sv()"></textarea></div>
   <div class="sq sq-w"><div class="sq-hdr"><div class="sq-ico">⚠️</div><div><div class="sl">FRAQUEZAS</div><div style="font-size:9px;color:var(--tx4)">Interno · Negativo</div></div></div><textarea id="sw-fr" rows="5" placeholder="• Ticket mais alto que concorrência&#10;• Prazo de entrega longo&#10;• Brand awareness regional limitado" oninput="sv()"></textarea></div>
@@ -1836,7 +1857,7 @@ canvas{border-radius:8px}
 
 <!-- ===== S8 SWOT CRUZADA ===== -->
 <div class="scr" id="s8">
-<div class="sh2"><div class="stag">Módulo 8 • 100 pts</div><div class="st">SWOT Cruzada + TOWS</div><div class="sd">Combine os quadrantes para gerar estratégias. A IA cria estratégias com base nas combinações e nos dados do produto.</div></div>
+<div class="sh2"><div class="stag">Módulo 8 • 100 pts</div><div class="st">SWOT Cruzada + TOWS</div><div class="sd">Combine os quadrantes para gerar estratégias. A IA cria estratégias com base nas combinações e nos dados do produto.<button class="help-btn" onclick="openHelp(8)">❓ Ajuda</button></div></div>
 <div class="sx-g" style="margin-bottom:12px">
   <div class="sx-col" style="border-color:rgba(52,211,153,.2)">
     <div class="sx-h" style="background:rgba(52,211,153,.08)"><div class="sx-tp" style="color:var(--gn)">SO — Ofensivas</div><div class="sx-sub">Força × Oportunidade</div></div>
@@ -1864,7 +1885,7 @@ canvas{border-radius:8px}
 
 <!-- ===== S9 NSM + PLANO DE AÇÕES ===== -->
 <div class="scr" id="s9">
-<div class="sh2"><div class="stag">Módulo 9 • 120 pts</div><div class="st">NSM + Plano de Ações 5W2H</div><div class="sd">Defina sua North Star Metric e construa o plano de ações táticas com responsáveis, prazos e custos.</div></div>
+<div class="sh2"><div class="stag">Módulo 9 • 120 pts</div><div class="st">NSM + Plano de Ações 5W2H</div><div class="sd">Defina sua North Star Metric e construa o plano de ações táticas com responsáveis, prazos e custos.<button class="help-btn" onclick="openHelp(9)">❓ Ajuda</button></div></div>
 <div class="c c-pk" style="margin-bottom:14px">
   <div class="ct">North Star Metric (NSM)</div>
   <div class="g2">
@@ -1909,7 +1930,7 @@ canvas{border-radius:8px}
 
 <!-- ===== S10 ORÇAMENTO + KPIs ===== -->
 <div class="scr" id="s10">
-<div class="sh2"><div class="stag">Módulo 10 • 100 pts</div><div class="st">Orçamento VGV + KPIs Imobiliários</div><div class="sd">Aloque o budget por canal e visualize em tempo real os KPIs: CAC, CPL, ROI, VSO, CPV e Break-Even.</div></div>
+<div class="sh2"><div class="stag">Módulo 10 • 100 pts</div><div class="st">Orçamento VGV + KPIs Imobiliários</div><div class="sd">Aloque o budget por canal e visualize em tempo real os KPIs: CAC, CPL, ROI, VSO, CPV e Break-Even.<button class="help-btn" onclick="openHelp(10)">❓ Ajuda</button></div></div>
 
 <!-- KPI CARDS -->
 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px" id="kpi-cards">
@@ -2477,7 +2498,7 @@ canvas{border-radius:8px}
 
 <!-- ===== S14 POSICIONAMENTO COMPETITIVO ===== -->
 <div class="scr" id="s14">
-<div class="sh2"><div class="stag">Módulo 14 • Estratégia Avançada</div><div class="st">Posicionamento Competitivo</div><div class="sd">Compare seu produto com até 3 concorrentes diretos. Identifique diferenciais reais e gaps de posicionamento no mercado.</div></div>
+<div class="sh2"><div class="stag">Módulo 14 • Estratégia Avançada</div><div class="st">Posicionamento Competitivo</div><div class="sd">Compare seu produto com até 3 concorrentes diretos. Identifique diferenciais reais e gaps de posicionamento no mercado.<button class="help-btn" onclick="openHelp(14)">❓ Ajuda</button></div></div>
 
 <div class="c c-pk" style="margin-bottom:14px">
   <div class="ct">Mapa de Posicionamento — Preço × Conceito</div>
@@ -2529,7 +2550,7 @@ canvas{border-radius:8px}
 
 <!-- ===== S15 FUNIL DE VENDAS ===== -->
 <div class="scr" id="s15">
-<div class="sh2"><div class="stag">Módulo 15 • Funil Imobiliário</div><div class="st">Funil de Vendas Imobiliário</div><div class="sd">Mapeie o funil completo: Leads → Qualificados → Visitas → Propostas → Contratos. Identifique onde o produto perde e onde ganha.</div></div>
+<div class="sh2"><div class="stag">Módulo 15 • Funil Imobiliário</div><div class="st">Funil de Vendas Imobiliário</div><div class="sd">Mapeie o funil completo: Leads → Qualificados → Visitas → Propostas → Contratos. Identifique onde o produto perde e onde ganha.<button class="help-btn" onclick="openHelp(15)">❓ Ajuda</button></div></div>
 
 <div class="g2" style="margin-bottom:14px">
   <div>
@@ -2580,7 +2601,7 @@ canvas{border-radius:8px}
 
 <!-- ===== S16 CALENDÁRIO DE LANÇAMENTO ===== -->
 <div class="scr" id="s16">
-<div class="sh2"><div class="stag">Módulo 16 • Launch Strategy</div><div class="st">Calendário de Lançamento</div><div class="sd">Estruture as 4 fases do lançamento imobiliário: Pré-lançamento → Lista VIP → Evento → Estabilização. Com gatilhos de ativação por fase.</div></div>
+<div class="sh2"><div class="stag">Módulo 16 • Launch Strategy</div><div class="st">Calendário de Lançamento</div><div class="sd">Estruture as 4 fases do lançamento imobiliário: Pré-lançamento → Lista VIP → Evento → Estabilização. Com gatilhos de ativação por fase.<button class="help-btn" onclick="openHelp(16)">❓ Ajuda</button></div></div>
 
 <div style="margin-bottom:14px">
   <div class="g2" style="margin-bottom:10px">
@@ -2679,7 +2700,7 @@ canvas{border-radius:8px}
 
 <!-- ===== S17 SIMULADOR DE PRECIFICAÇÃO ===== -->
 <div class="scr" id="s17">
-<div class="sh2"><div class="stag">Módulo 17 • Pricing Strategy</div><div class="st">Simulador de Precificação</div><div class="sd">Monte a tabela de preços por andar e tipologia. Simule cenários de elasticidade e calcule o impacto no VGV e VSO.</div></div>
+<div class="sh2"><div class="stag">Módulo 17 • Pricing Strategy</div><div class="st">Simulador de Precificação</div><div class="sd">Monte a tabela de preços por andar e tipologia. Simule cenários de elasticidade e calcule o impacto no VGV e VSO.<button class="help-btn" onclick="openHelp(17)">❓ Ajuda</button></div></div>
 
 <div class="g2" style="margin-bottom:14px">
   <div>
@@ -2732,7 +2753,7 @@ canvas{border-radius:8px}
 
 <!-- ===== S18 ECOSSISTEMA DE VENDAS ===== -->
 <div class="scr" id="s18">
-<div class="sh2"><div class="stag">Módulo 18 • Ecossistema</div><div class="st">Ecossistema de Vendas & Influência</div><div class="sd">Mapeie brokers, imobiliárias parceiras, influenciadores e assessores. Este ecossistema move 40–60% das vendas premium.</div></div>
+<div class="sh2"><div class="stag">Módulo 18 • Ecossistema</div><div class="st">Ecossistema de Vendas & Influência</div><div class="sd">Mapeie brokers, imobiliárias parceiras, influenciadores e assessores. Este ecossistema move 40–60% das vendas premium.<button class="help-btn" onclick="openHelp(18)">❓ Ajuda</button></div></div>
 
 <div class="c c-tl" style="margin-bottom:14px">
   <div class="ct">Mapa do Ecossistema</div>
@@ -2800,7 +2821,7 @@ canvas{border-radius:8px}
 
 <!-- ===== S19 PÓS-VENDA & CRM ===== -->
 <div class="scr" id="s19">
-<div class="sh2"><div class="stag">Módulo 19 • Customer Success</div><div class="st">Régua de Pós-Venda & CRM</div><div class="sd">O que acontece com o comprador depois do contrato? A experiência pós-venda é o que transforma compradores em promotores e gera as vendas da próxima fase.</div></div>
+<div class="sh2"><div class="stag">Módulo 19 • Customer Success</div><div class="st">Régua de Pós-Venda & CRM</div><div class="sd">O que acontece com o comprador depois do contrato? A experiência pós-venda é o que transforma compradores em promotores e gera as vendas da próxima fase.<button class="help-btn" onclick="openHelp(19)">❓ Ajuda</button></div></div>
 
 <div class="g2" style="margin-bottom:14px">
   <div>
@@ -3010,7 +3031,7 @@ canvas{border-radius:8px}
 
 <!-- ===== S20 ANÁLISE DE RISCO ===== -->
 <div class="scr" id="s20">
-<div class="sh2"><div class="stag">Módulo 20 • Gestão de Risco</div><div class="st">Análise de Risco do Projeto</div><div class="sd">Identifique, avalie e mitigue os principais riscos do lançamento. Uma boa gestão de riscos diferencia empreendedores estratégicos de improvisadores.</div></div>
+<div class="sh2"><div class="stag">Módulo 20 • Gestão de Risco</div><div class="st">Análise de Risco do Projeto</div><div class="sd">Identifique, avalie e mitigue os principais riscos do lançamento. Uma boa gestão de riscos diferencia empreendedores estratégicos de improvisadores.<button class="help-btn" onclick="openHelp(20)">❓ Ajuda</button></div></div>
 
 <div class="g2" style="margin-bottom:14px">
   <div>
@@ -3058,7 +3079,7 @@ canvas{border-radius:8px}
 
 <!-- ===== S21 ROI PARA O COMPRADOR ===== -->
 <div class="scr" id="s21">
-<div class="sh2"><div class="stag">Módulo 21 • Argumento de Venda</div><div class="st">Calculadora de ROI para o Comprador</div><div class="sd">O cliente não compra imóvel — compra um investimento. Prove com números: valorização, comparativo com CDI/ações, custo de oportunidade do aluguel.</div></div>
+<div class="sh2"><div class="stag">Módulo 21 • Argumento de Venda</div><div class="st">Calculadora de ROI para o Comprador</div><div class="sd">O cliente não compra imóvel — compra um investimento. Prove com números: valorização, comparativo com CDI/ações, custo de oportunidade do aluguel.<button class="help-btn" onclick="openHelp(21)">❓ Ajuda</button></div></div>
 
 <div class="g2" style="margin-bottom:14px">
   <div>
@@ -3113,7 +3134,7 @@ canvas{border-radius:8px}
 
 <!-- ===== S22 PITCH DECK ===== -->
 <div class="scr" id="s22">
-<div class="sh2"><div class="stag">Módulo 22 • Investor Pitch</div><div class="st">Pitch Deck para Investidores</div><div class="sd">A IA gera o conteúdo completo de 10 slides com base em todo o planejamento. Pronto para apresentar a investidores e stakeholders.</div></div>
+<div class="sh2"><div class="stag">Módulo 22 • Investor Pitch</div><div class="st">Pitch Deck para Investidores</div><div class="sd">A IA gera o conteúdo completo de 10 slides com base em todo o planejamento. Pronto para apresentar a investidores e stakeholders.<button class="help-btn" onclick="openHelp(22)">❓ Ajuda</button></div></div>
 
 <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px" id="pitch-grid">
   <div class="pitch-slide" onclick="genPitchSlide(0)">
@@ -3167,7 +3188,7 @@ canvas{border-radius:8px}
 
 <!-- ===== S23 MODO APRESENTAÇÃO ===== -->
 <div class="scr" id="s23">
-<div class="sh2"><div class="stag">Módulo 23 • Apresentação</div><div class="st">Modo Apresentação</div><div class="sd">Apresente o plano estratégico completo em tela cheia, slide a slide. Ideal para a defesa em sala de aula.</div></div>
+<div class="sh2"><div class="stag">Módulo 23 • Apresentação</div><div class="st">Modo Apresentação</div><div class="sd">Apresente o plano estratégico completo em tela cheia, slide a slide. Ideal para a defesa em sala de aula.<button class="help-btn" onclick="openHelp(23)">❓ Ajuda</button></div></div>
 
 <div class="g2" style="margin-bottom:14px">
   <div class="c">
@@ -6890,6 +6911,317 @@ window.init = function(){
     </div>
   </div>
 </div>
+
+
+<!-- ===== HELP MODAL ===== -->
+<div id="help-overlay" class="help-overlay" style="display:none" onclick="if(event.target===this)closeHelp()">
+  <div class="help-modal">
+    <div class="help-modal-head">
+      <div>
+        <div class="help-modal-tag" id="help-tag">Módulo</div>
+        <div class="help-modal-title" id="help-title">Como usar este módulo</div>
+      </div>
+      <button class="help-close" onclick="closeHelp()">×</button>
+    </div>
+    <div class="help-modal-body" id="help-body"></div>
+  </div>
+</div>
+
+<script>
+// ===== HELP SYSTEM =====
+var HELP_DATA = {
+  1: {
+    tag: 'Módulo 1 • Ansoff',
+    title: 'Matriz de Ansoff',
+    obj: '🎯 <strong>Objetivo:</strong> Definir a estratégia de crescimento do empreendimento escolhendo um dos 4 quadrantes da matriz.',
+    steps: [
+      'Leia os 4 quadrantes e entenda o que cada um representa para o seu produto.',
+      'Clique no quadrante que melhor descreve a estratégia do grupo.',
+      'Preencha a Justificativa Estratégica explicando por que escolheram esse quadrante.',
+      'Defina o Objetivo Principal para os próximos 12 meses.',
+      'Preencha os campos de Meta VSO (velocidade de saída) por período.'
+    ],
+    tip: '💡 <strong>Dica:</strong> A escolha do quadrante vai influenciar todas as análises de IA nos módulos seguintes. Discutam em grupo antes de decidir!'
+  },
+  2: {
+    tag: 'Módulo 2 • Naming',
+    title: 'Conceito + Naming Workshop',
+    obj: '🎯 <strong>Objetivo:</strong> Criar o DNA do produto — nome, conceito, posicionamento e promessa de marca.',
+    steps: [
+      'Preencha os dados do produto: tipo, localização, metragem e faixa de preço.',
+      'Descreva o conceito do empreendimento e seus diferenciais.',
+      'Use a IA para gerar sugestões de naming clicando em "Gerar Nomes com IA".',
+      'Escolha ou adapte o nome gerado e preencha o campo de nome final.',
+      'Defina o tagline e a promessa principal da marca.'
+    ],
+    tip: '💡 <strong>Dica:</strong> Quanto mais detalhes vocês colocarem no conceito, melhores serão os nomes gerados pela IA!'
+  },
+  3: {
+    tag: 'Módulo 3 • Persona',
+    title: 'Persona Estratégica',
+    obj: '🎯 <strong>Objetivo:</strong> Construir o perfil detalhado do comprador ideal — quem é, o que quer, o que sente.',
+    steps: [
+      'Preencha os dados demográficos: idade, renda, profissão e estilo de vida.',
+      'Responda as 12 perguntas estratégicas sobre comportamento e motivações.',
+      'Complete o Mapa de Empatia (o que pensa, sente, vê e ouve).',
+      'Use a IA para gerar a persona completa e enriquecida.',
+      'Revise e ajuste a persona gerada com as particularidades do grupo.'
+    ],
+    tip: '💡 <strong>Dica:</strong> A persona alimenta os módulos de Jornada, SWOT, Copy e toda a comunicação. Vale a pena ser bem detalhista aqui!'
+  },
+  4: {
+    tag: 'Módulo 4 • Jornada',
+    title: 'Jornada do Consumidor',
+    obj: '🎯 <strong>Objetivo:</strong> Mapear todos os pontos de contato do comprador desde a descoberta até a fidelização.',
+    steps: [
+      'Para cada fase da jornada, identifique os touchpoints principais.',
+      'Avalie a emoção dominante do comprador em cada fase.',
+      'Identifique as principais fricções e barreiras.',
+      'Defina oportunidades de ativação em cada momento.',
+      'Use a IA para gerar insights e recomendações por fase.'
+    ],
+    tip: '💡 <strong>Dica:</strong> Pense do ponto de vista do comprador, não da empresa. O que ele sente em cada momento?'
+  },
+  5: {
+    tag: 'Módulo 5 • Canais',
+    title: 'Diagnóstico de Canais',
+    obj: '🎯 <strong>Objetivo:</strong> Avaliar a maturidade e o potencial de cada canal de marketing e vendas.',
+    steps: [
+      'Avalie cada canal de 1 a 5 em maturidade atual.',
+      'Defina o investimento percentual para cada canal.',
+      'Analise o Score de Presença calculado automaticamente.',
+      'Identifique canais prioritários vs. canais de suporte.',
+      'Use a IA para receber recomendações de mix de canais.'
+    ],
+    tip: '💡 <strong>Dica:</strong> O mix ideal varia conforme o perfil do produto. Imóveis premium tendem a performar melhor em mídia segmentada e indicação.'
+  },
+  6: {
+    tag: 'Módulo 6 • 4Cs × 4Ps',
+    title: '4Cs × 4Ps',
+    obj: '🎯 <strong>Objetivo:</strong> Confrontar a visão da empresa (4Ps) com a perspectiva do cliente (4Cs) e identificar gaps.',
+    steps: [
+      'Preencha os 4Ps: Produto, Preço, Praça e Promoção do ponto de vista da empresa.',
+      'Preencha os 4Cs: Cliente, Custo, Conveniência e Comunicação do ponto de vista do comprador.',
+      'Compare os dois lados e identifique onde há desalinhamento.',
+      'Use a IA para gerar análise dos gaps encontrados.',
+      'Defina ajustes estratégicos para alinhar os dois lados.'
+    ],
+    tip: '💡 <strong>Dica:</strong> O maior gap entre 4Ps e 4Cs geralmente revela o maior risco do lançamento!'
+  },
+  7: {
+    tag: 'Módulo 7 • SWOT',
+    title: 'Análise SWOT',
+    obj: '🎯 <strong>Objetivo:</strong> Mapear Forças, Fraquezas, Oportunidades e Ameaças do empreendimento.',
+    steps: [
+      'Liste as Forças internas do produto (diferenciais, localização, produto).',
+      'Liste as Fraquezas internas (limitações, pontos a melhorar).',
+      'Identifique Oportunidades externas de mercado.',
+      'Mapeie as Ameaças externas (concorrência, economia, regulação).',
+      'Os dados serão usados automaticamente no módulo SWOT Cruzada.'
+    ],
+    tip: '💡 <strong>Dica:</strong> Seja honesto nas fraquezas — elas são a base para as estratégias defensivas da TOWS!'
+  },
+  8: {
+    tag: 'Módulo 8 • TOWS',
+    title: 'SWOT Cruzada + TOWS',
+    obj: '🎯 <strong>Objetivo:</strong> Combinar os quadrantes da SWOT para gerar estratégias concretas de ação.',
+    steps: [
+      'Os dados da SWOT já estarão pré-carregados do módulo anterior.',
+      'Preencha as estratégias para cada cruzamento: SO, WO, ST, WT.',
+      'Use a IA para gerar estratégias TOWS baseadas nos dados do produto.',
+      'Revise e priorize as estratégias mais relevantes.',
+      'Selecione as top 3 estratégias para incluir no plano de ação.'
+    ],
+    tip: '💡 <strong>Dica:</strong> SO = usar forças para capturar oportunidades. WT = minimizar fraquezas e evitar ameaças.'
+  },
+  9: {
+    tag: 'Módulo 9 • NSM',
+    title: 'NSM + Plano de Ações',
+    obj: '🎯 <strong>Objetivo:</strong> Definir a North Star Metric e construir o plano tático 5W2H.',
+    steps: [
+      'Defina a North Star Metric — a única métrica que resume o sucesso do lançamento.',
+      'Estabeleça a meta quantitativa e o prazo.',
+      'Adicione as ações táticas usando o framework 5W2H.',
+      'Para cada ação: defina O QUE, QUEM, QUANDO, ONDE, POR QUÊ, COMO e QUANTO.',
+      'Use a IA para sugerir ações prioritárias baseadas no contexto do produto.'
+    ],
+    tip: '💡 <strong>Dica:</strong> A NSM ideal para imóveis costuma ser VSO (Velocidade de Saída) ou quantidade de leads qualificados por mês.'
+  },
+  10: {
+    tag: 'Módulo 10 • Orçamento',
+    title: 'Orçamento VGV + KPIs',
+    obj: '🎯 <strong>Objetivo:</strong> Definir o budget de marketing e visualizar os KPIs financeiros do lançamento.',
+    steps: [
+      'Informe o VGV total do empreendimento e o % de budget de marketing.',
+      'Aloque o budget entre os canais (digital, offline, eventos, corretagem).',
+      'Analise os KPIs calculados automaticamente: CAC, CPL, ROI, VSO.',
+      'Simule cenários ajustando a alocação de budget.',
+      'Defina as metas de KPI para o lançamento.'
+    ],
+    tip: '💡 <strong>Dica:</strong> Budget médio do setor é 3–5% do VGV. Lançamentos premium tendem a investir mais em eventos e experiência.'
+  },
+  14: {
+    tag: 'Módulo 14 • Competitivo',
+    title: 'Posicionamento Competitivo',
+    obj: '🎯 <strong>Objetivo:</strong> Comparar seu produto com até 3 concorrentes e identificar diferenciais reais.',
+    steps: [
+      'Adicione os concorrentes diretos com nome, preço e características.',
+      'Avalie cada atributo para o seu produto e para cada concorrente.',
+      'Analise o mapa de posicionamento gerado automaticamente.',
+      'Identifique o "white space" — espaço não ocupado pelos concorrentes.',
+      'Use a IA para gerar análise competitiva e recomendações de diferenciação.'
+    ],
+    tip: '💡 <strong>Dica:</strong> O objetivo não é ser melhor em tudo — é ser claramente superior nos atributos que a sua persona mais valoriza!'
+  },
+  15: {
+    tag: 'Módulo 15 • Funil',
+    title: 'Funil de Vendas Imobiliário',
+    obj: '🎯 <strong>Objetivo:</strong> Mapear o funil completo e identificar onde o produto perde e ganha conversões.',
+    steps: [
+      'Preencha os volumes em cada etapa: Leads → Qualificados → Visitas → Propostas → Contratos.',
+      'Analise as taxas de conversão entre etapas.',
+      'Identifique o maior gargalo de conversão.',
+      'Defina ações para melhorar a etapa crítica.',
+      'Use a IA para gerar estratégias de otimização do funil.'
+    ],
+    tip: '💡 <strong>Dica:</strong> Benchmarks do setor: Leads → Qualificados ~30%, Visitas → Proposta ~40%, Proposta → Contrato ~25%.'
+  },
+  16: {
+    tag: 'Módulo 16 • Lançamento',
+    title: 'Calendário de Lançamento',
+    obj: '🎯 <strong>Objetivo:</strong> Estruturar as 4 fases do lançamento com gatilhos e ativações por momento.',
+    steps: [
+      'Defina as datas de cada fase: Pré-lançamento, Lista VIP, Evento e Estabilização.',
+      'Para cada fase, defina os canais ativos e as ações principais.',
+      'Configure os gatilhos de escassez e urgência por fase.',
+      'Defina a estratégia de lista VIP e critérios de acesso.',
+      'Use a IA para gerar o plano de ativação completo por fase.'
+    ],
+    tip: '💡 <strong>Dica:</strong> A fase de Pré-lançamento deve durar pelo menos 60 dias para construir expectativa e lista qualificada.'
+  },
+  17: {
+    tag: 'Módulo 17 • Pricing',
+    title: 'Simulador de Precificação',
+    obj: '🎯 <strong>Objetivo:</strong> Montar a tabela de preços e simular o impacto no VGV e VSO.',
+    steps: [
+      'Defina as tipologias do produto (studio, 1Q, 2Q, coberturas etc.).',
+      'Configure os preços base e os incrementos por andar.',
+      'Simule cenários de desconto e condições especiais.',
+      'Analise o impacto de cada cenário no VGV total.',
+      'Use a IA para receber análise de elasticidade e recomendações de pricing.'
+    ],
+    tip: '💡 <strong>Dica:</strong> Incremento de andar típico: 0,5% a 1% por pavimento. Coberturas: 20–40% sobre o preço do último andar tipo.'
+  },
+  18: {
+    tag: 'Módulo 18 • Ecossistema',
+    title: 'Ecossistema de Vendas',
+    obj: '🎯 <strong>Objetivo:</strong> Mapear o ecossistema de parceiros que movem as vendas premium.',
+    steps: [
+      'Adicione os brokers e imobiliárias parceiras principais.',
+      'Mapeie influenciadores relevantes para o público-alvo.',
+      'Identifique assessores de investimento e private banking.',
+      'Liste arquitetos e designers com potencial de indicação.',
+      'Use a IA para gerar estratégia de ativação do ecossistema.'
+    ],
+    tip: '💡 <strong>Dica:</strong> Em produtos premium, 40–60% das vendas vêm de indicações. O ecossistema é tão importante quanto a mídia paga!'
+  },
+  19: {
+    tag: 'Módulo 19 • Pós-Venda',
+    title: 'Régua de Pós-Venda & CRM',
+    obj: '🎯 <strong>Objetivo:</strong> Planejar a experiência do comprador após o contrato para gerar promotores e indicações.',
+    steps: [
+      'Defina os KPIs de relacionamento: NPS meta e taxa de indicação.',
+      'Configure a régua de comunicação por momento (D+1, D+7, D+30...).',
+      'Planeje a experiência no stand de vendas.',
+      'Use a IA para gerar conteúdo personalizado por fase da régua.',
+      'Escolha a ferramenta de CRM e configure o fluxo de envio.'
+    ],
+    tip: '💡 <strong>Dica:</strong> O D+1 é o momento mais crítico. Uma ligação do gerente no dia seguinte ao contrato aumenta o NPS em média 15 pontos!'
+  },
+  20: {
+    tag: 'Módulo 20 • Risco',
+    title: 'Análise de Risco',
+    obj: '🎯 <strong>Objetivo:</strong> Antecipar riscos e construir planos de contingência para os cenários adversos.',
+    steps: [
+      'Preencha os 3 cenários de vendas: otimista, realista e pessimista.',
+      'Analise o gráfico de projeção por cenário.',
+      'Revise e complete a matriz de riscos com os riscos do seu produto.',
+      'Defina o gatilho para acionar o Plano B.',
+      'Use a IA para gerar análise completa de riscos e mitigações.'
+    ],
+    tip: '💡 <strong>Dica:</strong> O cenário realista deve ser o que o grupo acredita que vai acontecer. O pessimista é o mínimo aceitável para o projeto ser viável.'
+  },
+  21: {
+    tag: 'Módulo 21 • ROI',
+    title: 'ROI para o Comprador',
+    obj: '🎯 <strong>Objetivo:</strong> Construir o argumento de investimento com números que comprovem o retorno.',
+    steps: [
+      'Preencha os dados financeiros: preço, entrada e valorização projetada.',
+      'Informe o aluguel equivalente para o cálculo de custo de oportunidade.',
+      'Analise os KPIs calculados: valor futuro, ganho total e retorno.',
+      'Selecione o perfil do comprador como investidor.',
+      'Use a IA para gerar o argumento de venda personalizado por perfil.'
+    ],
+    tip: '💡 <strong>Dica:</strong> Compare sempre com CDI e IBOVESPA. O cliente precisa ver que o imóvel é superior a essas referências no longo prazo!'
+  },
+  22: {
+    tag: 'Módulo 22 • Pitch',
+    title: 'Pitch Deck para Investidores',
+    obj: '🎯 <strong>Objetivo:</strong> Gerar o conteúdo completo de 10 slides para apresentar o projeto a investidores.',
+    steps: [
+      'Certifique-se de que os módulos anteriores estão preenchidos.',
+      'Clique em cada slide para gerar o conteúdo com IA.',
+      'Revise e ajuste o conteúdo gerado em cada slide.',
+      'Use "Gerar Todos" para criar o deck completo de uma vez.',
+      'Exporte ou apresente diretamente pelo modo apresentação.'
+    ],
+    tip: '💡 <strong>Dica:</strong> A IA usa todos os dados preenchidos nos módulos anteriores. Quanto mais completo o plano, melhor o pitch!'
+  },
+  23: {
+    tag: 'Módulo 23 • Apresentação',
+    title: 'Modo Apresentação',
+    obj: '🎯 <strong>Objetivo:</strong> Apresentar o plano estratégico completo em tela cheia para a defesa em sala.',
+    steps: [
+      'Clique em "Iniciar Apresentação" para entrar no modo tela cheia.',
+      'Use os botões "Anterior" e "Próximo" para navegar entre slides.',
+      'Pressione ESC para sair do modo apresentação a qualquer momento.',
+      'Cada slide resume os principais dados do módulo correspondente.',
+      'Os dados são atualizados automaticamente conforme o plano é preenchido.'
+    ],
+    tip: '💡 <strong>Dica:</strong> Ensaiem a apresentação antes! Cada grupo tem tipicamente 15–20 minutos para defender o plano.'
+  }
+};
+
+function openHelp(mod){
+  var d = HELP_DATA[mod];
+  if(!d) return;
+  document.getElementById('help-tag').textContent = d.tag;
+  document.getElementById('help-title').textContent = d.title;
+  var body = '';
+  if(d.obj) body += '<div class="help-obj">'+d.obj+'</div>';
+  if(d.steps && d.steps.length){
+    body += '<ul class="help-steps">';
+    d.steps.forEach(function(s,i){
+      body += '<li><span class="help-step-num">'+(i+1)+'</span><span>'+s+'</span></li>';
+    });
+    body += '</ul>';
+  }
+  if(d.tip) body += '<div class="help-tip">'+d.tip+'</div>';
+  document.getElementById('help-body').innerHTML = body;
+  var ov = document.getElementById('help-overlay');
+  ov.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeHelp(){
+  document.getElementById('help-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape') closeHelp();
+});
+</script>
 
 </body>
 </html>
