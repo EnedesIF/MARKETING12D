@@ -221,17 +221,12 @@ async function loadGruposSupabase(){
 
 // ── Realtime subscription ──
 function startRealtime(){
-  if(!SUPA_READY || !supa) return;
-  supa.channel('leaderboard-changes')
-    .on('postgres_changes', {event:'*', schema:'public', table:'leaderboard'}, function(){
-      loadLBSupabase();
-    })
-    .on('postgres_changes', {event:'*', schema:'public', table:'grupos'}, function(){
-      loadLBSupabase();
-      if(S.cur === 13) loadProfData && loadProfData();
-    })
-    .subscribe();
-  console.log('[6D] Realtime ativo ✓');
+  // Realtime WebSocket desativado — usa polling para evitar DataCloneError
+  // O leaderboard atualiza a cada 30s via polling
+  setInterval(function(){
+    if(SUPA_READY) loadLBSupabase();
+  }, 30000);
+  console.log('[6D] Polling ativo ✓ (30s)');
 }
 
 // ── Indicador visual de sync ──
@@ -5538,6 +5533,27 @@ function tagColor(tag){
 }
 
 // ── Render tool cards into a container ──
+function handleToolPrompt(toolId, promptFn){
+  var ctx = buildVisualContext();
+  var tipo = gv('prompt-tipo') || 'img-ext';
+  var prompt = buildBasePrompt(tipo, ctx);
+  var extras = {
+    'midjourney': ' --ar 4:5 --style raw --v 6',
+    'dalle': ' Photorealistic, high detail, professional photography.',
+    'ideogram': ' Typography integrated naturally. Brand identity premium.',
+    'firefly': ' Adobe Firefly optimized. Commercial safe.',
+    'leonardo': ' Leonardo AI optimized, cinematic lighting.',
+    'canva': ' Clean composition, brand colors, marketing ready.'
+  };
+  if(extras[toolId]) prompt += extras[toolId];
+  navigator.clipboard.writeText(prompt).then(function(){
+    toast('Prompt copiado! Cole em ' + toolId + ' ✓');
+  }).catch(function(){
+    var out = document.getElementById('master-prompt-out');
+    if(out){ out.value = prompt; toast('Prompt gerado — copie acima ✓'); }
+  });
+}
+
 function renderToolCards(tools, containerId, promptFn){
   var el = document.getElementById(containerId);
   if(!el || el.dataset.init) return;
@@ -5547,15 +5563,15 @@ function renderToolCards(tools, containerId, promptFn){
       return '<span style="font-size:8px;font-weight:700;padding:2px 7px;border-radius:4px;' + tagColor(tg) + '">' + tg + '</span>';
     }).join('');
     var logoStyle = t.logo.startsWith('#') ? 'background:' + t.logo : 'background:' + t.logo;
-    var btn2 = t.url2 ? '<a href="' + t.url2 + '" target="_blank" style="font-size:10px;font-weight:700;padding:5px 10px;border-radius:6px;cursor:pointer;background:var(--surf3);border:1px solid var(--brd2);color:var(--tx2);text-decoration:none;display:inline-flex;align-items:center">' + t.url2label + '</a>' : '';
-    var promptBtn = promptFn ? '<button style="font-size:10px;font-weight:700;padding:5px 10px;border-radius:6px;cursor:pointer;background:var(--surf3);border:1px solid var(--brd2);color:var(--tx3);font-family:var(--font-b)" data-tool="' + t.id + '" data-promptfn="' + promptFn + '">📋 Prompt</button>' : '';
+    var btn2 = t.url2 ? '<button onclick="window.open(\'' + t.url2.replace(/'/g,"\\'\\'") + '\',\'_blank\')" style="font-size:10px;font-weight:700;padding:5px 10px;border-radius:6px;cursor:pointer;background:var(--surf3);border:1px solid var(--brd2);color:var(--tx2);font-family:var(--font-b)">' + t.url2label + '</button>' : '';
+    var promptBtn = promptFn ? '<button onclick="handleToolPrompt(\'' + t.id + '\',\'' + promptFn + '\')" style="font-size:10px;font-weight:700;padding:5px 10px;border-radius:6px;cursor:pointer;background:var(--surf3);border:1px solid var(--brd2);color:var(--tx3);font-family:var(--font-b)">📋 Prompt</button>' : '';
     return '<div class="tool-card" style="display:flex;flex-direction:column">'
       + '<div style="width:40px;height:40px;border-radius:10px;' + logoStyle + ';display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;margin-bottom:10px;flex-shrink:0">' + t.icon + '</div>'
       + '<div style="font-weight:800;font-size:13px;color:var(--tx);margin-bottom:3px">' + t.name + '</div>'
       + '<div style="font-size:10px;color:var(--tx3);line-height:1.5;margin-bottom:8px;flex:1">' + t.desc + '</div>'
       + '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px">' + tags + '</div>'
       + '<div style="display:flex;gap:5px;flex-wrap:wrap">'
-      + '<a href="' + t.url + '" target="_blank" style="font-size:10px;font-weight:700;padding:5px 10px;border-radius:6px;background:var(--pk);color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:4px;box-shadow:0 0 10px rgba(233,30,140,.2)">▶ Abrir</a>'
+      + '<button onclick="window.open(\'' + t.url.replace(/'/g,"\\'\\'") + '\',\'_blank\')" style="font-size:10px;font-weight:700;padding:5px 10px;border-radius:6px;background:var(--pk);color:#fff;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:4px;box-shadow:0 0 10px rgba(233,30,140,.2);font-family:var(--font-b)">▶ Abrir</button>'
       + btn2 + promptBtn
       + '</div></div>';
   }).join('');
