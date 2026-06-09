@@ -672,6 +672,25 @@ canvas{border-radius:var(--radius-sm)}
 .emoc-chip{font-size:9px;padding:3px 8px;border-radius:10px;cursor:pointer;border:1px solid var(--brd2);color:var(--tx3);background:var(--surf2);transition:var(--transition);user-select:none;white-space:nowrap}
 .emoc-chip:hover{border-color:var(--pk);color:var(--pk);background:var(--pklt)}
 .emoc-chip.active{background:var(--pklt);border-color:var(--pkbrd);color:var(--pk);font-weight:700}
+/* ===== FIELD TOOLTIPS ===== */
+.fld-wrap{position:relative}
+.fld-tip{
+  display:none;position:absolute;left:0;top:calc(100% + 6px);
+  width:300px;background:#fff;border:1px solid var(--brd2);
+  border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.12);
+  z-index:800;padding:12px 14px;
+  animation:tipIn .15s cubic-bezier(0.4,0,0.2,1);
+}
+@keyframes tipIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.fld-wrap:focus-within .fld-tip{display:block}
+.fld-tip-bench{font-size:10px;font-weight:700;color:var(--gn);background:rgba(5,150,105,.06);border:1px solid rgba(5,150,105,.15);border-radius:6px;padding:5px 9px;margin-bottom:7px;line-height:1.5}
+.fld-tip-bench::before{content:'📊 '}
+.fld-tip-alert{font-size:10px;font-weight:600;color:var(--or);background:rgba(217,119,6,.06);border:1px solid rgba(217,119,6,.15);border-radius:6px;padding:5px 9px;margin-bottom:7px;line-height:1.5}
+.fld-tip-alert::before{content:'⚠️ '}
+.fld-tip-ref{font-size:10px;color:var(--tx3);border-left:2px solid var(--brd2);padding-left:8px;line-height:1.55}
+.fld-tip-ref strong{color:var(--tx2)}
+.fld-tip-arrow{position:absolute;top:-5px;left:16px;width:10px;height:10px;background:#fff;border-left:1px solid var(--brd2);border-top:1px solid var(--brd2);transform:rotate(45deg)}
+
 </style>
 </head>
 <body>
@@ -873,9 +892,9 @@ canvas{border-radius:var(--radius-sm)}
       <div style="background:var(--pklt);border:1px solid var(--pkbrd);border-radius:7px;padding:10px;margin-top:4px">
         <div style="font-weight:800;font-size:10px;color:var(--pk);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">🎯 Meta VSO — Velocidade de Saída</div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px">
-          <div class="fl" style="margin:0"><label>% 3 meses</label><input type="number" id="vso-3m" placeholder="30" min="0" max="100" oninput="sv();calcVSO()"></div>
-          <div class="fl" style="margin:0"><label>% 6 meses</label><input type="number" id="vso-6m" placeholder="60" min="0" max="100" oninput="sv();calcVSO()"></div>
-          <div class="fl" style="margin:0"><label>% 12 meses</label><input type="number" id="vso-12m" placeholder="85" min="0" max="100" oninput="sv();calcVSO()"></div>
+          <div class="fld-wrap"><div class="fl" style="margin:0"><label>% 3 meses</label><input type="number" id="vso-3m" placeholder="30" min="0" max="100" oninput="sv();calcVSO()"></div><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">Benchmark: 15–30% em 3 meses é saudável para imóveis premium.</div><div class="fld-tip-alert">Abaixo de 10% em 3 meses pode indicar problema de preço ou posicionamento.</div><div class="fld-tip-ref"><strong>Secovi-SP (2024):</strong> Lançamentos premium em SP vendem em média 28% no 1º trimestre.</div></div></div>
+          <div class="fld-wrap"><div class="fl" style="margin:0"><label>% 6 meses</label><input type="number" id="vso-6m" placeholder="60" min="0" max="100" oninput="sv();calcVSO()"></div><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">Benchmark: 50–65% em 6 meses para produtos bem posicionados.</div><div class="fld-tip-alert">VSO abaixo de 40% em 6 meses exige revisão da estratégia de canais.</div><div class="fld-tip-ref"><strong>CBIC (2023):</strong> Empreendimentos com VSO acima de 60% em 6 meses têm CAC 23% menor.</div></div></div>
+          <div class="fld-wrap"><div class="fl" style="margin:0"><label>% 12 meses</label><input type="number" id="vso-12m" placeholder="85" min="0" max="100" oninput="sv();calcVSO()"></div><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">Meta ideal: 80–90% em 12 meses para viabilidade financeira do projeto.</div><div class="fld-tip-alert">VSO abaixo de 70% em 12 meses pode comprometer o fluxo de caixa da incorporadora.</div><div class="fld-tip-ref"><strong>Lauterborn (1990):</strong> O custo percebido pelo cliente vai além do preço — inclui tempo e risco.</div></div></div>
           <div class="fl" style="margin:0"><label>Un./mês meta</label><input type="number" id="vso-upm" placeholder="8" min="0" oninput="sv();calcVSO()"></div>
         </div>
         <div id="vso-result" style="margin-top:7px;font-size:11px;color:var(--tx2);display:none"></div>
@@ -956,8 +975,8 @@ canvas{border-radius:var(--radius-sm)}
         </div>
       </div>
       <div class="g2">
-        <div class="fl"><label>Nome Escolhido</label><input type="text" id="nome" placeholder="Ex: Lumina Alma" oninput="sv();updPrev()"></div>
-        <div class="fl"><label>Tagline</label><input type="text" id="tagline" placeholder="Ex: Where life meets purpose" oninput="sv();updPrev()"></div>
+        <div class="fld-wrap"><div class="fl"><label>Nome Escolhido</label><input type="text" id="nome" placeholder="Ex: Lumina Alma" oninput="sv();updPrev()"></div><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">Nomes de 1–2 sílabas são 40% mais memoráveis (Nielsen, 2019).</div><div class="fld-tip-alert">Evite nomes em inglês para público premium brasileiro acima de 50 anos — gera estranhamento.</div><div class="fld-tip-ref"><strong>Kapferer (2012) — New Strategic Brand Management:</strong> O nome é o primeiro e mais duradouro ativo da marca.</div></div></div>
+        <div class="fld-wrap"><div class="fl"><label>Tagline</label><input type="text" id="tagline" placeholder="Ex: Where life meets purpose" oninput="sv();updPrev()"></div><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">Taglines eficazes têm 3–7 palavras e evocam emoção ou transformação.</div><div class="fld-tip-alert">Taglines com adjetivos genéricos ("sofisticado", "exclusivo") têm baixa memorabilidade.</div><div class="fld-tip-ref"><strong>Aaker (1991) — Managing Brand Equity:</strong> A tagline ancora o posicionamento e reduz o custo cognitivo de escolha.</div></div></div>
       </div>
     </div>
     <div class="c" style="margin-bottom:10px">
@@ -975,7 +994,7 @@ canvas{border-radius:var(--radius-sm)}
       </div>
       <div class="fl"><label>Localização</label><input type="text" id="localizacao" placeholder="Ex: Vila Madalena, SP" oninput="sv()"></div>
       <div class="fl"><label>Amenidades e Diferenciais</label><textarea id="amenidades" rows="2" placeholder="Ex: Spa completo, rooftop garden, smart home, co-working, concierge 24h..." oninput="sv()"></textarea></div>
-      <div class="fl"><label>Proposta de Valor Central</label><textarea id="pv" placeholder="O que este produto transforma na vida do morador? Não venda apartamentos — venda a transformação." oninput="sv()"></textarea></div>
+      <div class="fld-wrap"><div class="fl"><label>Proposta de Valor Central</label><textarea id="pv" placeholder="O que este produto transforma na vida do morador? Não venda apartamentos — venda a transformação." oninput="sv()"></textarea></div><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">Propostas de valor eficazes têm no máximo 2 diferenciais centrais — mais do que isso dilui o foco.</div><div class="fld-tip-alert">Evite listar features (spa, academia). Articule transformações: "de X para Y".</div><div class="fld-tip-ref"><strong>Osterwalder & Pigneur (2010) — Business Model Generation:</strong> A proposta de valor deve resolver uma dor ou criar um ganho melhor que qualquer alternativa.</div></div></div>
       <div class="fl"><label>Arquétipo de Marca</label>
         <select id="arquetipo" onchange="sv()"><option value="">Selecione...</option><option>O Criador — Inovação e autenticidade</option><option>O Governante — Controle e status</option><option>O Sábio — Conhecimento e verdade</option><option>O Explorador — Liberdade e aventura</option><option>O Amante — Sensualidade e conexão</option><option>O Herói — Superação e conquista</option></select>
       </div>
@@ -1085,11 +1104,11 @@ canvas{border-radius:var(--radius-sm)}
 </div>
 <div class="g2">
   <div class="fl"><label>Nome / Perfil da Persona</label><input type="text" id="p-nome" placeholder="Ex: Renata Lima" oninput="sv()"></div>
-  <div class="fl"><label>Faixa Etária</label><input type="text" id="p-idade" placeholder="Ex: 38-46" oninput="sv()"></div>
+  <div class="fld-wrap"><div class="fl"><label>Faixa Etária</label><input type="text" id="p-idade" placeholder="Ex: 38-46" oninput="sv()"></div><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">Faixa mais compradora em imóveis premium: 35–50 anos (pico de renda e patrimônio).</div><div class="fld-tip-alert">Público abaixo de 30 anos tende a priorizar localização sobre metragem.</div><div class="fld-tip-ref"><strong>Cooper (1999) — The Inmates Are Running the Asylum:</strong> Personas devem refletir comportamento real, não perfil demográfico idealizado.</div></div></div>
 </div>
 <div class="g2">
   <div class="fl"><label>Profissão / Cargo</label><input type="text" id="p-prof" placeholder="Ex: Diretora de Inovação" oninput="sv()"></div>
-  <div class="fl"><label>Renda / Patrimônio (resumo)</label><input type="text" id="p-renda" placeholder="Ex: R$ 45K/mês" oninput="sv()"></div>
+  <div class="fld-wrap"><div class="fl"><label>Renda / Patrimônio (resumo)</label><input type="text" id="p-renda" placeholder="Ex: R$ 45K/mês" oninput="sv()"></div><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">Regra geral: comprador premium destina 20–30% da renda mensal ao financiamento.</div><div class="fld-tip-alert">Renda abaixo de 10x o valor da parcela mensal indica comprometimento excessivo.</div><div class="fld-tip-ref"><strong>Kotler & Keller (2016):</strong> Classe A compra por aspiração e identidade, não por necessidade habitacional.</div></div></div>
 </div>
 </div>
 
@@ -1443,10 +1462,10 @@ canvas{border-radius:var(--radius-sm)}
 <div class="scr" id="s7">
 <div class="sh2"><div class="stag">Módulo 7 • 80 pts</div><div class="st">Análise SWOT</div><div class="sd">Mapeie os 4 quadrantes. Os dados serão usados na SWOT Cruzada para gerar estratégias TOWS no módulo seguinte.<button class="help-btn" onclick="openHelp(7)">❓ Ajuda</button></div></div>
 <div class="swot-g" style="margin-bottom:14px">
-  <div class="sq sq-s"><div class="sq-hdr"><div class="sq-ico">💪</div><div><div class="sl">FORÇAS</div><div style="font-size:9px;color:var(--tx4)">Interno · Positivo</div></div></div><textarea id="sw-f" rows="5" placeholder="• Localização privilegiada&#10;• Incorporadora reconhecida&#10;• Projeto diferenciado&#10;• Equipe comercial experiente" oninput="sv()"></textarea></div>
-  <div class="sq sq-w"><div class="sq-hdr"><div class="sq-ico">⚠️</div><div><div class="sl">FRAQUEZAS</div><div style="font-size:9px;color:var(--tx4)">Interno · Negativo</div></div></div><textarea id="sw-fr" rows="5" placeholder="• Ticket mais alto que concorrência&#10;• Prazo de entrega longo&#10;• Brand awareness regional limitado" oninput="sv()"></textarea></div>
-  <div class="sq sq-o"><div class="sq-hdr"><div class="sq-ico">🚀</div><div><div class="sl">OPORTUNIDADES</div><div style="font-size:9px;color:var(--tx4)">Externo · Positivo</div></div></div><textarea id="sw-o" rows="5" placeholder="• Migração de capital para SP&#10;• Alta demanda por wellness&#10;• Crédito imobiliário em queda&#10;• Bairro em valorização" oninput="sv()"></textarea></div>
-  <div class="sq sq-t"><div class="sq-hdr"><div class="sq-ico">⚡</div><div><div class="sl">AMEAÇAS</div><div style="font-size:9px;color:var(--tx4)">Externo · Negativo</div></div></div><textarea id="sw-a" rows="5" placeholder="• Concorrência direta no bairro&#10;• Instabilidade econômica&#10;• Aumento no custo de construção&#10;• Mudança legislação" oninput="sv()"></textarea></div>
+  <div class="sq sq-s"><div class="sq-hdr"><div class="sq-ico">💪</div><div><div class="sl">FORÇAS</div><div style="font-size:9px;color:var(--tx4)">Interno · Positivo</div></div></div><div class="fld-wrap" style="position:relative"><textarea id="sw-f" rows="5" placeholder="• Localização privilegiada&#10;• Incorporadora reconhecida&#10;• Projeto diferenciado&#10;• Equipe comercial experiente" oninput="sv()"></textarea><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">Forças mais valorizadas em imóveis premium: localização (42%), projeto arquitetônico (28%), marca (18%).</div><div class="fld-tip-alert">Forças que o concorrente também tem não são diferenciais — são requisitos mínimos.</div><div class="fld-tip-ref"><strong>Porter (1980) — Competitive Strategy:</strong> Vantagem competitiva sustentável vem de forças difíceis de imitar.</div></div></div></div>
+  <div class="sq sq-w"><div class="sq-hdr"><div class="sq-ico">⚠️</div><div><div class="sl">FRAQUEZAS</div><div style="font-size:9px;color:var(--tx4)">Interno · Negativo</div></div></div><div class="fld-wrap" style="position:relative"><textarea id="sw-fr" rows="5" placeholder="• Ticket mais alto que concorrência&#10;• Prazo de entrega longo&#10;• Brand awareness regional limitado" oninput="sv()"></textarea><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">Fraquezas mais comuns: prazo de entrega longo, marca pouco conhecida, preço acima da média de mercado.</div><div class="fld-tip-alert">Ignorar fraquezas na estratégia é o erro mais comum — elas viram objeções de vendas.</div><div class="fld-tip-ref"><strong>Weihrich (1982) — TOWS Matrix:</strong> A análise só é útil se as fraquezas forem reconhecidas com honestidade.</div></div></div></div>
+  <div class="sq sq-o"><div class="sq-hdr"><div class="sq-ico">🚀</div><div><div class="sl">OPORTUNIDADES</div><div style="font-size:9px;color:var(--tx4)">Externo · Positivo</div></div></div><div class="fld-wrap" style="position:relative"><textarea id="sw-o" rows="5" placeholder="• Migração de capital para SP&#10;• Alta demanda por wellness&#10;• Crédito imobiliário em queda&#10;• Bairro em valorização" oninput="sv()"></textarea><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">Oportunidades de maior impacto: valorização do bairro, demanda reprimida, queda de juros, novos compradores migrantes.</div><div class="fld-tip-alert">Oportunidades que dependem de terceiros têm menor controlabilidade — priori ze as acionáveis.</div><div class="fld-tip-ref"><strong>Andrews (1971) — The Concept of Corporate Strategy:</strong> Oportunidades só geram valor se a empresa tem capacidade de capturá-las.</div></div></div></div>
+  <div class="sq sq-t"><div class="sq-hdr"><div class="sq-ico">⚡</div><div><div class="sl">AMEAÇAS</div><div style="font-size:9px;color:var(--tx4)">Externo · Negativo</div></div></div><div class="fld-wrap" style="position:relative"><textarea id="sw-a" rows="5" placeholder="• Concorrência direta no bairro&#10;• Instabilidade econômica&#10;• Aumento no custo de construção&#10;• Mudança legislação" oninput="sv()"></textarea><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">Ameaças mais frequentes: concorrência direta no bairro, instabilidade econômica, aumento do custo de construção.</div><div class="fld-tip-alert">Ameaças ignoradas viram crises. Uma análise honesta aqui vale mais do que um plano otimista.</div><div class="fld-tip-ref"><strong>Mintzberg (1994) — Rise and Fall of Strategic Planning:</strong> O valor do planejamento está em antecipar, não em prever com certeza.</div></div></div></div>
 </div>
 
 <div class="ref-block"><div class="ref-block-title">📚 Referências Teóricas</div>
@@ -1495,8 +1514,8 @@ canvas{border-radius:var(--radius-sm)}
 <div class="c c-pk" style="margin-bottom:14px">
   <div class="ct">North Star Metric (NSM)</div>
   <div class="g2">
-    <div class="fl"><label>Métrica Principal</label><input type="text" id="nsm-m" placeholder="Ex: Leads qualificados por semana" oninput="sv()"></div>
-    <div class="fl"><label>Meta em 90 dias</label><input type="text" id="nsm-meta" placeholder="Ex: 120 leads/semana com taxa de visita > 25%" oninput="sv()"></div>
+    <div class="fld-wrap"><div class="fl"><label>Métrica Principal</label><input type="text" id="nsm-m" placeholder="Ex: Leads qualificados por semana" oninput="sv()"><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">North Star Metrics mais usadas: VSO mensal, Leads qualificados/semana, NPS pós-venda.</div><div class="fld-tip-alert">Uma NSM deve ser um único número que, se melhorar, melhora tudo. Evite métricas compostas.</div><div class="fld-tip-ref"><strong>Croll & Yoskovitz (2013) — Lean Analytics:</strong> A NSM alinha toda a equipe em torno do que realmente importa.</div></div></div></div>
+    <div class="fld-wrap"><div class="fl"><label>Meta em 90 dias</label><input type="text" id="nsm-meta" placeholder="Ex: 120 leads/semana com taxa de visita > 25%" oninput="sv()"></div><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">Metas SMART: Específica, Mensurável, Alcançável, Relevante e Temporal.</div><div class="fld-tip-alert">Metas sem prazo são desejos. Defina sempre o período de medição.</div><div class="fld-tip-ref"><strong>Doran (1981):</strong> O framework SMART ainda é o mais eficaz para definição de metas operacionais.</div></div></div>
   </div>
   <div class="fl"><label>Justificativa da NSM</label><textarea id="nsm-just" placeholder="Por que esta é a métrica que mais importa? Como ela conecta esforço de marketing com resultado de vendas?" oninput="sv()"></textarea></div>
   <div style="display:flex;justify-content:flex-end">
@@ -1576,7 +1595,7 @@ canvas{border-radius:var(--radius-sm)}
     <div class="c c-or" style="margin-bottom:12px">
       <div class="ct">Parâmetros do Projeto</div>
       <div class="g2">
-        <div class="fl"><label>VGV Total (R$)</label><input type="number" id="vgv" placeholder="Ex: 98000000" oninput="sv();calcBudget()"></div>
+        <div class="fld-wrap"><div class="fl"><label>VGV Total (R$)</label><input type="number" id="vgv" placeholder="Ex: 98000000" oninput="sv();calcBudget()"></div><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">Budget de marketing recomendado: 3–5% do VGV para segmento premium.</div><div class="fld-tip-alert">Abaixo de 2% do VGV o alcance fica comprometido; acima de 8% corrói margem.</div><div class="fld-tip-ref"><strong>Farris et al. (2010) — Marketing Metrics:</strong> ROI de marketing imobiliário médio: 180–320% do budget investido.</div></div></div>
         <div class="fl"><label>Nº Unidades</label><input type="number" id="n-unid" placeholder="Ex: 96" oninput="sv();calcBudget()"></div>
       </div>
       <div class="g2">
@@ -1587,8 +1606,8 @@ canvas{border-radius:var(--radius-sm)}
         <div class="fl"><label>Visitas Esperadas</label><input type="number" id="n-visitas" placeholder="Ex: 300" oninput="sv();calcBudget()"></div>
         <div class="fl"><label>Unidades Vendidas (meta)</label><input type="number" id="n-vendidas" placeholder="Ex: 80" oninput="sv();calcBudget()"></div>
       </div>
-      <div class="fl"><label>Receita Atribuída ao Mkt (R$)</label><input type="number" id="receita-mkt" placeholder="Ex: 50000000" oninput="sv();calcBudget()"></div>
-      <div class="fl"><label>Nº indicações por comprador (média)</label><input type="number" id="ltv-indicacoes" placeholder="Ex: 1.5" step="0.1" value="1.2" oninput="sv();calcBudget()"></div>
+      <div class="fld-wrap"><div class="fl"><label>Receita Atribuída ao Mkt (R$)</label><input type="number" id="receita-mkt" placeholder="Ex: 50000000" oninput="sv();calcBudget()"></div><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">ROI de marketing imobiliário bem gerido: 200–400% sobre o budget investido.</div><div class="fld-tip-alert">ROI abaixo de 100% indica que o custo de aquisição está consumindo margem.</div><div class="fld-tip-ref"><strong>Farris et al. (2010) — Marketing Metrics:</strong> ROAS saudável para imóveis premium: 15–30x.</div></div></div>
+      <div class="fld-wrap"><div class="fl"><label>Nº indicações por comprador (média)</label><input type="number" id="ltv-indicacoes" placeholder="Ex: 1.5" step="0.1" value="1.2" oninput="sv();calcBudget()"></div><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">Média de indicações por comprador satisfeito no mercado imobiliário premium: 1,2–2,0.</div><div class="fld-tip-alert">LTV/CAC abaixo de 3x indica que o custo de aquisição é alto demais.</div><div class="fld-tip-ref"><strong>Blattberg & Deighton (1996) — HBR:</strong> O valor do cliente vai além da compra — inclui o valor da rede de indicações.</div></div></div>
       <div class="fl"><label>Taxa de conversão das indicações (%)</label><input type="number" id="ltv-conv-ind" placeholder="Ex: 25" value="25" oninput="sv();calcBudget()"></div>
     </div>
     <div class="c">
@@ -2146,7 +2165,7 @@ canvas{border-radius:var(--radius-sm)}
   <canvas id="comp-map-cv" style="width:100%;height:280px;border-radius:8px;background:var(--surf2);border:1px solid var(--brd)"></canvas>
   <div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap">
     <div class="fl" style="margin:0;flex:1"><label>Nosso posicionamento (eixo Y: 1–10 conceito)</label><input type="range" id="pos-nos-y" min="1" max="10" value="8" oninput="drawCompMap()"><span id="pos-nos-y-v" style="font-size:10px;color:var(--pk)">8</span></div>
-    <div class="fl" style="margin:0;flex:1"><label>Nosso preço/m² (eixo X)</label><input type="number" id="pos-nos-x" placeholder="Ex: 18000" oninput="sv();drawCompMap();calcPriceSuggestion()"></div>
+    <div class="fld-wrap"><div class="fl" style="margin:0;flex:1"><label>Nosso preço/m² (eixo X)</label><input type="number" id="pos-nos-x" placeholder="Ex: 18000" oninput="sv();drawCompMap();calcPriceSuggestion()"></div><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">Incremento de andar típico: 0,5–1% por pavimento. Cobertura: 20–40% acima do último andar tipo.</div><div class="fld-tip-alert">Preço/m² acima de 15% da média dos concorrentes exige diferencial perceptível e comunicável.</div><div class="fld-tip-ref"><strong>Monroe (2003) — Pricing: Making Profitable Decisions:</strong> Value-based pricing exige que o cliente perceba e articule o valor diferencial.</div></div></div>
   </div>
   <div id="price-suggestion-box" style="display:none;margin-top:10px;padding:10px 14px;background:var(--pklt);border:1px solid var(--pkbrd);border-radius:8px;font-size:11px;color:var(--tx2);line-height:1.6"></div>
 </div>
@@ -2732,7 +2751,7 @@ canvas{border-radius:var(--radius-sm)}
     </div>
     <div class="c">
       <div class="ct">Plano de Contingência Geral</div>
-      <div class="fl"><label>Reserva financeira de contingência (%)</label><input type="number" id="risk-reserva" placeholder="Ex: 15" oninput="sv()"></div>
+      <div class="fld-wrap"><div class="fl"><label>Reserva financeira de contingência (%)</label><input type="number" id="risk-reserva" placeholder="Ex: 15" oninput="sv()"></div><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">Reserva de contingência recomendada: 10–20% do budget total de marketing.</div><div class="fld-tip-alert">Menos de 8% de reserva deixa o projeto vulnerável a variações de mercado.</div><div class="fld-tip-ref"><strong>PMI (2021) — PMBOK Guide:</strong> Reservas de contingência devem cobrir riscos identificados na matriz.</div></div></div>
       <div class="fl"><label>Gatilho para ativar plano B</label><textarea id="risk-gatilho" rows="2" placeholder="Ex: Menos de 20% vendido em 90 dias após lançamento..." oninput="sv()"></textarea></div>
       <div class="fl"><label>Plano B — ação principal</label><textarea id="risk-planob" rows="2" placeholder="Ex: Reduzir preço em 8%, ampliar comissionamento para 2%..." oninput="sv()"></textarea></div>
       <button class="btn bai" onclick="genRisco()" id="btn-risco" style="margin-top:8px">✦ Gerar Análise de Risco com IA</button>
