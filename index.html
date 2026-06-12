@@ -691,6 +691,41 @@ canvas{border-radius:var(--radius-sm)}
 .fld-tip-ref strong{color:var(--tx2)}
 .fld-tip-arrow{position:absolute;top:-5px;left:16px;width:10px;height:10px;background:#fff;border-left:1px solid var(--brd2);border-top:1px solid var(--brd2);transform:rotate(45deg)}
 
+
+/* ===== IA: markdown renderizado ===== */
+.ai-txt .md-h{font-weight:800;color:var(--tx);margin:14px 0 6px;line-height:1.3}
+.ai-txt .md-h:first-child{margin-top:2px}
+.ai-txt .md-h1,.ai-txt .md-h2{font-size:13px;text-transform:uppercase;letter-spacing:1.2px;color:var(--pk);padding-bottom:5px;border-bottom:1px solid var(--pkbrd,rgba(233,30,140,.25))}
+.ai-txt .md-h3{font-size:12.5px;color:var(--tx)}
+.ai-txt .md-h4{font-size:11.5px;color:var(--tx2)}
+.ai-txt .md-p{margin:6px 0;line-height:1.65}
+.ai-txt .md-ul,.ai-txt .md-ol{margin:6px 0 10px;padding-left:18px}
+.ai-txt .md-ul li,.ai-txt .md-ol li{margin:4px 0;line-height:1.6}
+.ai-txt .md-ul li::marker{color:var(--pk)}
+.ai-txt .md-ol li::marker{color:var(--pk);font-weight:700}
+/* ===== Pitch Deck: slides visuais ===== */
+.pslide{display:flex;flex-direction:column;gap:7px;text-align:left}
+.pslide-kick{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:1.6px;color:var(--pk);padding-left:8px;border-left:3px solid var(--pk)}
+.pslide-title{font-family:var(--font-d,inherit);font-size:13px;font-weight:800;color:var(--tx);line-height:1.25}
+.pslide-kpis{display:flex;flex-wrap:wrap;gap:6px}
+.pslide-kpi{flex:1;min-width:54px;background:linear-gradient(135deg,rgba(124,58,237,.14),rgba(233,30,140,.08));border:1px solid var(--pkbrd,rgba(233,30,140,.3));border-radius:8px;padding:6px 8px}
+.pslide-kpi .pk-v{font-size:13px;font-weight:800;color:var(--pk);line-height:1.1}
+.pslide-kpi .pk-l{font-size:7.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--tx3);margin-top:2px}
+.pslide-bullets{display:flex;flex-direction:column;gap:5px}
+.pslide-b{display:flex;gap:6px;font-size:10px;color:var(--tx2);line-height:1.5}
+.pslide-b .pb-dot{flex:none;width:5px;height:5px;border-radius:50%;background:var(--pk);margin-top:5px}
+.pslide-b strong{color:var(--tx)}
+.pslide-close{font-size:10px;font-style:italic;color:var(--tx3);border-top:1px dashed var(--brd,rgba(255,255,255,.12));padding-top:6px;margin-top:2px}
+/* Slides do pitch no Modo Apresenta\u00e7\u00e3o (tela cheia) */
+#pres-overlay .pslide{gap:18px}
+#pres-overlay .pslide-kick{font-size:13px;letter-spacing:2.5px;border-left-width:4px;padding-left:14px}
+#pres-overlay .pslide-title{display:none}
+#pres-overlay .pslide-kpi{padding:16px 20px;border-radius:14px}
+#pres-overlay .pslide-kpi .pk-v{font-size:34px}
+#pres-overlay .pslide-kpi .pk-l{font-size:11px}
+#pres-overlay .pslide-b{font-size:18px}
+#pres-overlay .pslide-b .pb-dot{width:8px;height:8px;margin-top:9px}
+#pres-overlay .pslide-close{font-size:16px;padding-top:14px}
 </style>
 </head>
 <body>
@@ -1223,13 +1258,13 @@ canvas{border-radius:var(--radius-sm)}
 <div class="c">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
     <div class="ct" style="margin-bottom:0">Mapa Emocional de Plutchik</div>
-    <button class="btn bai bsm" onclick="genPsych()" id="btn-psych">✦ Analisar com IA</button>
+    <button class="btn bai bsm" onclick="genPsych()" id="btn-psych-plut">✦ Analisar com IA</button>
   </div>
   <div style="display:flex;justify-content:center">
     <canvas id="plutchik-cv" width="320" height="320" style="max-width:320px;width:100%;border-radius:8px;background:var(--surf2)"></canvas>
   </div>
   <div id="plutchik-leg" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:10px"></div>
-  <div class="ai-out" id="out-psych"></div>
+  <div class="ai-out" data-mirror="out-psych"></div>
 </div>
 </div>
 
@@ -4034,7 +4069,7 @@ async function genCopy(pieceId,pieceName){
     var response=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1600,messages:[{role:'user',content:prompt}]})
     });
     var data=await response.json();
     if(data.error)throw new Error(data.error.message);
@@ -4089,10 +4124,37 @@ function buildAIContext(){
   ].filter(l=>l.split(': ')[1]).join('\n');
 }
 function showAI(outId,content,loading){
-  var el=document.getElementById(outId);
-  if(!el)return;
-  el.classList.add('on');
-  el.innerHTML='<div class="ai-hdr"><span class="ai-bdg">✦ IA</span>'+(loading?'<span class="spin"></span>':'')+'</div><div class="ai-txt">'+content+'</div>';
+  var els=[];
+  var p=document.getElementById(outId); if(p)els.push(p);
+  document.querySelectorAll('[data-mirror="'+outId+'"]').forEach(function(m){els.push(m)});
+  if(!els.length)return;
+  els.forEach(function(el){
+    el.classList.add('on');
+    el.innerHTML='<div class="ai-hdr"><span class="ai-bdg">✦ IA</span>'+(loading?'<span class="spin"></span>':'')+'</div><div class="ai-txt">'+content+'</div>';
+  });
+}
+// ===== Renderizador de Markdown -> HTML (corrige ## e ** aparecendo crus) =====
+function mdToHtml(t){
+  if(!t)return'';
+  t=String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  function inline(s){
+    return s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/(^|[^*])\*([^*\n]+)\*/g,'$1<em>$2</em>');
+  }
+  var lines=t.split('\n'),html='',inUl=false,inOl=false;
+  function closeLists(){if(inUl){html+='</ul>';inUl=false}if(inOl){html+='</ol>';inOl=false}}
+  for(var i=0;i<lines.length;i++){
+    var l=lines[i].trim();
+    if(!l){closeLists();continue}
+    var h=l.match(/^(#{1,4})\s+(.*)$/);
+    if(h){closeLists();html+='<div class="md-h md-h'+h[1].length+'">'+inline(h[2])+'</div>';continue}
+    var b=l.match(/^[-•*]\s+(.*)$/);
+    if(b){if(!inUl){closeLists();html+='<ul class="md-ul">';inUl=true}html+='<li>'+inline(b[1])+'</li>';continue}
+    var n=l.match(/^\d+[\.\)]\s+(.*)$/);
+    if(n){if(!inOl){closeLists();html+='<ol class="md-ol">';inOl=true}html+='<li>'+inline(n[1])+'</li>';continue}
+    closeLists();html+='<p class="md-p">'+inline(l)+'</p>';
+  }
+  closeLists();
+  return html;
 }
 async function callAI(prompt,outId,btnId,successMsg){
   var btn=document.getElementById(btnId);
@@ -4104,13 +4166,12 @@ async function callAI(prompt,outId,btnId,successMsg){
     var response=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1600,messages:[{role:'user',content:prompt}]})
     });
     var data=await response.json();
     if(data.error)throw new Error(data.error.message);
     var text=data.content&&data.content[0]?data.content[0].text:'';
-    text=text.replace(/\n\n/g,'<br><br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/^#{1,4}\s+(.+)$/gm,'<h4>$1</h4>');
-    showAI(outId,text,false);
+    showAI(outId,mdToHtml(text),false);
     S.aiCount++;
     toast(successMsg||'Análise concluída!');
   }catch(e){
@@ -4422,7 +4483,7 @@ function genCRMPiece(){
   fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
     headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,messages:[{role:'user',content:prompt}]})
+    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1500,messages:[{role:'user',content:prompt}]})
   }).then(function(r){return r.json();}).then(function(d){
     var txt = (d.content&&d.content[0]) ? d.content[0].text : 'Erro na geração';
     _crmLastPiece = txt;
@@ -4483,6 +4544,27 @@ var PITCH_SLIDES = [
   {tag:'Tese Final',    prompt:'Por que investir neste produto agora? Tese de investimento em 5 pontos-chave. Max 80 palavras.'}
 ];
 
+function pitchSlideHtml(d,tag,compact){
+  var h='<div class="pslide">';
+  h+='<div class="pslide-kick">'+(d.kicker||tag||'')+'</div>';
+  if(d.title)h+='<div class="pslide-title">'+d.title+'</div>';
+  if(d.kpis&&d.kpis.length){
+    h+='<div class="pslide-kpis">';
+    d.kpis.slice(0,3).forEach(function(k){h+='<div class="pslide-kpi"><div class="pk-v">'+(k.value||'')+'</div><div class="pk-l">'+(k.label||'')+'</div></div>'});
+    h+='</div>';
+  }
+  if(d.bullets&&d.bullets.length){
+    h+='<div class="pslide-bullets">';
+    d.bullets.slice(0,compact?4:6).forEach(function(b){
+      var txt=(typeof b==='string')?b:((b.label?'<strong>'+b.label+':</strong> ':'')+(b.text||''));
+      h+='<div class="pslide-b"><span class="pb-dot"></span><div>'+txt+'</div></div>';
+    });
+    h+='</div>';
+  }
+  if(d.closing)h+='<div class="pslide-close">“'+d.closing+'”</div>';
+  h+='</div>';
+  return h;
+}
 function genPitchSlide(idx){
   var el = document.getElementById('ps-'+idx);
   if(!el) return;
@@ -4493,14 +4575,32 @@ function genPitchSlide(idx){
     return;
   }
   var ctx = buildAIContext ? buildAIContext() : '';
-  var prompt = PITCH_SLIDES[idx].prompt + '\n\nContexto do empreendimento: ' + ctx + '\n\nResponda em português, conciso, pronto para slide.';
+  var prompt = 'Voc\u00ea \u00e9 um diretor de arte e estrategista de pitch decks para investidores imobili\u00e1rios premium. '
+    + 'Slide: '+PITCH_SLIDES[idx].tag+'. Briefing: '+PITCH_SLIDES[idx].prompt
+    + '\n\nContexto do empreendimento: '+ctx
+    + '\n\nResponda SOMENTE com JSON v\u00e1lido (sem markdown, sem texto fora do JSON) neste formato exato:'
+    + '\n{"kicker":"r\u00f3tulo curto do slide","title":"t\u00edtulo impactante (m\u00e1x 8 palavras)","kpis":[{"value":"R$ 98M","label":"VGV"}],"bullets":[{"label":"r\u00f3tulo","text":"frase curta"}],"closing":"frase de fechamento opcional"}'
+    + '\nRegras: 0 a 3 kpis (apenas n\u00fameros reais do contexto), 2 a 4 bullets concisos, tudo em portugu\u00eas, tom premium.';
   fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
     headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:prompt}]})
+    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:600,messages:[{role:'user',content:prompt}]})
   }).then(function(r){return r.json();}).then(function(d){
-    var txt = (d.content&&d.content[0]) ? d.content[0].text : 'Erro na geração';
-    el.innerHTML = '<div style="font-size:10px;color:var(--tx2);line-height:1.55">'+txt.replace(/\n/g,'<br>')+'</div>';
+    var txt = (d.content&&d.content[0]) ? d.content[0].text : '';
+    var data = null;
+    try{
+      var clean = txt.replace(/```json|```/g,'').trim();
+      var a = clean.indexOf('{'), b = clean.lastIndexOf('}');
+      if(a>-1&&b>a) data = JSON.parse(clean.slice(a,b+1));
+    }catch(e){}
+    if(data){
+      S.pitch = S.pitch || {};
+      S.pitch[idx] = data;
+      if(typeof sv==='function')sv();
+      el.innerHTML = pitchSlideHtml(data, PITCH_SLIDES[idx].tag, true);
+    }else{
+      el.innerHTML = '<div style="font-size:10px;color:var(--tx2);line-height:1.55">'+mdToHtml(txt||'Erro na gera\u00e7\u00e3o')+'</div>';
+    }
   }).catch(function(e){
     el.innerHTML = '<span style="color:var(--re);font-size:10px">Erro: '+e.message+'</span>';
   });
@@ -4551,6 +4651,15 @@ function buildPresSlides(){
     {tag:'M\u00f3dulo 21 \u2014 ROI', title:'ROI para o Comprador', body:'Pre\u00e7o: <strong>R$ '+Number(gv('roi-preco')||0).toLocaleString('pt-BR')+'</strong><br>Valoriza\u00e7\u00e3o: <strong style="color:var(--gn)">'+(gv('roi-valorizacao')||'12')+'% a.a.</strong><br>Prazo: '+(gv('roi-prazo')||'5')+' anos', name:'ROI'},
     {tag:'Encerramento', title:'Obrigado!', body:(S.groupName||'Grupo')+'<br><br>'+((S.participants||[]).join(' \u00b7 ')||''), name:'Encerramento'}
   ];
+  // Insere os 10 slides do Pitch Deck gerados pela IA (antes do Encerramento)
+  if(S.pitch){
+    var fim = presSlides.pop();
+    for(var i=0;i<PITCH_SLIDES.length;i++){
+      var d = S.pitch[i];
+      if(d) presSlides.push({tag:'Pitch \u2014 '+PITCH_SLIDES[i].tag, title:d.title||PITCH_SLIDES[i].tag, body:pitchSlideHtml(d,PITCH_SLIDES[i].tag,false), name:PITCH_SLIDES[i].tag});
+    }
+    presSlides.push(fim);
+  }
 }
 
 function startPresentation(){
@@ -5248,7 +5357,7 @@ function initMediaHubEvents(){
     fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:250,messages:[{role:'user',content:msg}]})
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:250,messages:[{role:'user',content:msg}]})
     }).then(function(r){return r.json();}).then(function(d){
       out.textContent = (d.content&&d.content[0]) ? d.content[0].text : buildBasePrompt(tipo,ctx);
     }).catch(function(){ out.textContent = buildBasePrompt(tipo, ctx); });
@@ -5324,7 +5433,7 @@ function initMediaHubEvents(){
     fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:msg}]})
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:200,messages:[{role:'user',content:msg}]})
     }).then(function(r){return r.json();}).then(function(d){
       if(out) out.textContent = (d.content&&d.content[0]) ? d.content[0].text : local;
     }).catch(function(){ if(out) out.textContent = local; });
@@ -6605,7 +6714,7 @@ async function sendSim(){
     var r = await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,system:sysPrompt,messages:[{role:'user',content:q}]})
+      body: JSON.stringify({model:'claude-sonnet-4-6',max_tokens:400,system:sysPrompt,messages:[{role:'user',content:q}]})
     });
     var d = await r.json();
     var txt = (d.content && d.content[0]) ? d.content[0].text : 'Erro na resposta.';
