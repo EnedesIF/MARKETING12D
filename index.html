@@ -726,6 +726,39 @@ canvas{border-radius:var(--radius-sm)}
 #pres-overlay .pslide-b{font-size:18px}
 #pres-overlay .pslide-b .pb-dot{width:8px;height:8px;margin-top:9px}
 #pres-overlay .pslide-close{font-size:16px;padding-top:14px}
+
+/* ===== Dashboard de análises IA ===== */
+.sa{display:flex;flex-direction:column;gap:12px;text-align:left}
+.sa-title{font-family:var(--font-d,inherit);font-size:15px;font-weight:800;color:var(--tx)}
+.sa-chips{display:flex;flex-wrap:wrap;gap:7px}
+.sa-chip{display:inline-block;padding:5px 13px;border-radius:8px;font-size:11px;font-weight:800;color:#14121f;letter-spacing:.2px}
+.sa-resumo{font-size:12px;color:var(--tx2);line-height:1.75}
+.sa-sec{display:flex;flex-direction:column;gap:8px}
+.sa-sec-t{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--pk);display:flex;align-items:center;gap:6px}
+.sa-sec-t::before{content:'';width:14px;height:2px;background:var(--pk);border-radius:2px}
+.sa-tags{display:flex;flex-wrap:wrap;gap:6px}
+.sa-tag{padding:4px 11px;border-radius:7px;font-size:10.5px;font-weight:700;color:var(--pu);background:rgba(167,139,250,.12);border:1px solid var(--pubrd,rgba(167,139,250,.3))}
+.sa-bars{display:flex;flex-direction:column;gap:9px}
+.sa-bar-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.sa-bar-l{font-size:11px;font-weight:800;color:var(--tx)}
+.sa-bar-v{font-size:10px;font-weight:800}
+.sa-bar-track{height:7px;border-radius:4px;background:var(--surf3,rgba(255,255,255,.06));overflow:hidden}
+.sa-bar-fill{height:100%;border-radius:4px;transition:width .6s ease}
+.sa-bar-tx{font-size:10.5px;color:var(--tx3);margin-top:3px;line-height:1.5}
+.sa-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.sa-card{background:var(--surf2,rgba(255,255,255,.03));border:1px solid var(--brd,rgba(255,255,255,.1));border-radius:9px;padding:10px}
+.sa-card-big{font-size:17px;font-weight:800;color:var(--pk);margin-bottom:3px}
+.sa-card-t{font-size:11px;font-weight:800;color:var(--tx);margin-bottom:3px}
+.sa-card-tx{font-size:10.5px;color:var(--tx3);line-height:1.55}
+.sa-steps{display:flex;flex-direction:column;gap:7px}
+.sa-step{display:flex;gap:9px;font-size:11.5px;color:var(--tx2);line-height:1.55;align-items:flex-start}
+.sa-step strong{color:var(--tx)}
+.sa-step-n{flex:none;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,var(--pu,#7C3AED),var(--pk,#E91E8C));color:#fff;font-size:9.5px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.sa-list{display:flex;flex-direction:column;gap:6px}
+.sa-li{display:flex;gap:7px;font-size:11.5px;color:var(--tx2);line-height:1.55}
+.sa-li strong{color:var(--tx)}
+.sa-li .pb-dot{flex:none;width:5px;height:5px;border-radius:50%;background:var(--pk);margin-top:6px}
+.sa-quote{font-size:12px;font-style:italic;color:var(--tx2);border-left:3px solid var(--pk);padding:6px 0 6px 12px;background:rgba(233,30,140,.04);border-radius:0 8px 8px 0}
 </style>
 </head>
 <body>
@@ -1060,19 +1093,6 @@ canvas{border-radius:var(--radius-sm)}
 <div class="c c-pk" style="margin-bottom:14px">
   <div class="ct">Classificação Socioeconômica</div>
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px">
-    <div class="fl"><label>Perfil Psicográfico</label>
-      <select id="p-classe" onchange="sv();updClasse()">
-        <option value="">Selecione...</option>
-        <option value="inov">Inovador — Status, novidade, sucesso</option>
-        <option value="pens">Pensador — Conhecimento, ordem, ética</option>
-        <option value="real">Realizador — Conquista, prestígio, eficácia</option>
-        <option value="exp">Experimentador — Liberdade, aventura, expressão</option>
-        <option value="crente">Crente — Tradição, família, valores morais</option>
-        <option value="esfor">Esforçado — Aprovação social, identidade</option>
-        <option value="faz">Fazedor — Construção, prática, autonomia</option>
-        <option value="sob">Sobrevivente — Segurança, cautela, custo</option>
-      </select>
-    </div>
     <div class="fl"><label>Faixa de Renda</label>
       <select id="p-renda-fx" onchange="sv()">
         <option value="">Selecione faixa...</option>
@@ -1132,10 +1152,7 @@ canvas{border-radius:var(--radius-sm)}
       </select>
     </div>
   </div>
-  <div id="criterio-brasil" style="display:none;background:rgba(167,139,250,.05);border:1px solid var(--pubrd);border-radius:8px;padding:10px;margin-top:10px">
-    <div style="font-weight:800;font-size:10px;color:var(--pu);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">✦ Perfil Detectado — Insights de Marketing</div>
-    <div id="criterio-data" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px"></div>
-  </div>
+  
 </div>
 <div class="g2">
   <div class="fl"><label>Nome / Perfil da Persona</label><input type="text" id="p-nome" placeholder="Ex: Renata Lima" oninput="sv()"></div>
@@ -1152,16 +1169,16 @@ canvas{border-radius:var(--radius-sm)}
   <div class="ct">Perfil Psicográfico — Framework VALS</div>
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
     <div class="fl"><label>Tipo VALS</label>
-      <select id="p-vals" onchange="sv()">
+      <select id="p-vals" onchange="sv();updClasse()">
         <option value="">Selecione...</option>
-        <option>Inovadores — Mudança, liderança</option>
-        <option>Pensadores — Ordem, conhecimento</option>
-        <option>Realizadores — Status, sucesso</option>
-        <option>Experimentadores — Aventura, liberdade</option>
-        <option>Crentes — Tradição, valores morais</option>
-        <option>Esforçados — Aprovação social</option>
-        <option>Fazedores — Construção, prática</option>
-        <option>Sobreviventes — Segurança, cautela</option>
+        <option value="inov">Inovadores — Mudança, liderança</option>
+        <option value="pens">Pensadores — Ordem, conhecimento</option>
+        <option value="real">Realizadores — Status, sucesso</option>
+        <option value="exp">Experimentadores — Aventura, liberdade</option>
+        <option value="crente">Crentes — Tradição, valores morais</option>
+        <option value="esfor">Esforçados — Aprovação social</option>
+        <option value="faz">Fazedores — Construção, prática</option>
+        <option value="sob">Sobreviventes — Segurança, cautela</option>
       </select>
     </div>
     <div class="fl"><label>Estilo de Vida</label>
@@ -1179,6 +1196,10 @@ canvas{border-radius:var(--radius-sm)}
     <div class="fl"><label>Hobbies Principais</label>
       <input type="text" id="p-hobbies" placeholder="Ex: Gastronomia, golfe, meditação..." oninput="sv()">
     </div>
+  </div>
+  <div id="criterio-brasil" style="display:none;background:rgba(167,139,250,.05);border:1px solid var(--pubrd);border-radius:8px;padding:10px;margin-top:10px">
+    <div style="font-weight:800;font-size:10px;color:var(--pu);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">✦ Perfil Detectado — Insights de Marketing</div>
+    <div id="criterio-data" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px"></div>
   </div>
   <div class="fl"><label>Valores Pessoais Centrais</label><textarea id="p-valores" placeholder="Ex: Autenticidade, liberdade, conquista, família, legado..." oninput="sv()"></textarea></div>
   <div class="fl"><label>Mídias Consumidas</label><textarea id="p-midias" placeholder="Ex: LinkedIn, Instagram, podcasts de negócios, NYT, Vogue Brasil..." rows="2" oninput="sv()"></textarea></div>
@@ -3311,7 +3332,7 @@ function perTab(btn,id){
   if(el)el.classList.add('on');
 }
 function updClasse(){
-  var v=gv('p-classe');
+  var v=gv('p-vals');
   var DATA={
     inov:{motivacao:'Status e diferenciação',compra:'Lançamentos exclusivos, edição limitada',canal:'Instagram premium, eventos VIP',gatilho:'Escassez + exclusividade'},
     pens:{motivacao:'Conhecimento e ordem',compra:'Pesquisa detalhada antes de decidir',canal:'Blog, podcasts, conteúdo técnico',gatilho:'Dados, autoridade, ESG'},
@@ -4156,6 +4177,105 @@ function mdToHtml(t){
   closeLists();
   return html;
 }
+// ===== Motor de Análises Visuais Estruturadas (estilo dashboard) =====
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+var SA_COLORS=['#34D399','#84CC16','#F59E0B','#FBBF24','#38BDF8','#A78BFA','#F87171','#E91E8C'];
+function renderStruct(d){
+  var h='<div class="sa">';
+  if(d.titulo)h+='<div class="sa-title">'+esc(d.titulo)+'</div>';
+  if(d.chips&&d.chips.length){
+    h+='<div class="sa-chips">';
+    d.chips.forEach(function(c,i){
+      var lb=(typeof c==='string')?c:c.label;var cor=(c&&c.cor)||SA_COLORS[i%SA_COLORS.length];
+      h+='<span class="sa-chip" style="background:'+esc(cor)+'">'+esc(lb)+'</span>';
+    });
+    h+='</div>';
+  }
+  if(d.resumo)h+='<div class="sa-resumo">'+esc(d.resumo)+'</div>';
+  (d.secoes||[]).forEach(function(s){
+    h+='<div class="sa-sec"><div class="sa-sec-t">'+esc(s.titulo||'')+'</div>';
+    var its=s.itens||[];
+    if(s.tipo==='tags'){
+      h+='<div class="sa-tags">';
+      its.forEach(function(t){h+='<span class="sa-tag">'+esc(typeof t==='string'?t:(t.label||t.texto))+'</span>'});
+      h+='</div>';
+    }else if(s.tipo==='barras'){
+      h+='<div class="sa-bars">';
+      its.forEach(function(b,i){
+        var v=Math.max(0,Math.min(5,Number(b.valor)||0));
+        var cor=b.cor||SA_COLORS[i%SA_COLORS.length];
+        h+='<div class="sa-bar"><div class="sa-bar-top"><span class="sa-bar-l">'+esc(b.label)+'</span><span class="sa-bar-v" style="color:'+esc(cor)+'">'+v+'/5</span></div>'
+          +'<div class="sa-bar-track"><div class="sa-bar-fill" style="width:'+(v/5*100)+'%;background:'+esc(cor)+'"></div></div>'
+          +(b.texto?'<div class="sa-bar-tx">'+esc(b.texto)+'</div>':'')+'</div>';
+      });
+      h+='</div>';
+    }else if(s.tipo==='cards'){
+      h+='<div class="sa-cards">';
+      its.forEach(function(c){
+        h+='<div class="sa-card">'+(c.destaque?'<div class="sa-card-big">'+esc(c.destaque)+'</div>':'')
+          +'<div class="sa-card-t">'+esc(c.titulo||c.label||'')+'</div>'
+          +(c.texto?'<div class="sa-card-tx">'+esc(c.texto)+'</div>':'')+'</div>';
+      });
+      h+='</div>';
+    }else if(s.tipo==='passos'){
+      h+='<div class="sa-steps">';
+      its.forEach(function(p,i){
+        h+='<div class="sa-step"><div class="sa-step-n">'+(i+1)+'</div><div>'+(p.label?'<strong>'+esc(p.label)+':</strong> ':'')+esc(p.texto||(typeof p==='string'?p:''))+'</div></div>';
+      });
+      h+='</div>';
+    }else{
+      h+='<div class="sa-list">';
+      its.forEach(function(b){
+        h+='<div class="sa-li"><span class="pb-dot"></span><div>'+(b&&b.label?'<strong>'+esc(b.label)+':</strong> ':'')+esc(b&&b.texto!=null?b.texto:(typeof b==='string'?b:''))+'</div></div>';
+      });
+      h+='</div>';
+    }
+    h+='</div>';
+  });
+  if(d.frase)h+='<div class="sa-quote">“'+esc(d.frase)+'”</div>';
+  h+='</div>';
+  return h;
+}
+async function callAIStruct(corePrompt,outId,btnId,successMsg,onData){
+  var btn=document.getElementById(btnId);
+  var key=apiKey();
+  if(!key){toast('Configure a chave de API na tela inicial');return}
+  if(btn){btn.disabled=true;btn.innerHTML='<span class="spin"></span> Analisando...'}
+  showAI(outId,'<span class="spin"></span> Gerando análise...',true);
+  var spec='\n\nResponda SOMENTE com JSON válido (sem markdown, sem texto fora do JSON) neste formato:'
+    +'\n{"titulo":"título da análise","chips":[{"label":"palavra-chave","cor":"#hex opcional"}],"resumo":"parágrafo de 2-4 frases","secoes":[{"titulo":"nome da seção","tipo":"tags|lista|cards|barras|passos","itens":[]}],"frase":"citação de fechamento opcional"}'
+    +'\nFormato dos itens por tipo: "tags"→["palavra"] · "lista"→[{"label":"","texto":""}] · "cards"→[{"titulo":"","destaque":"número/valor curto","texto":""}] · "barras"→[{"label":"","valor":1a5,"texto":""}] · "passos"→[{"label":"","texto":""}]'
+    +'\nUse 3 a 6 seções variando os tipos para criar um dashboard rico. Textos concisos. Tudo em português.';
+  try{
+    var response=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:2000,messages:[{role:'user',content:corePrompt+spec}]})
+    });
+    var data=await response.json();
+    if(data.error)throw new Error(data.error.message);
+    var text=data.content&&data.content[0]?data.content[0].text:'';
+    var obj=null;
+    try{
+      var clean=text.replace(/```json|```/g,'').trim();
+      var a=clean.indexOf('{'),b=clean.lastIndexOf('}');
+      if(a>-1&&b>a)obj=JSON.parse(clean.slice(a,b+1));
+    }catch(e){}
+    if(obj){
+      showAI(outId,renderStruct(obj),false);
+      if(onData)try{onData(obj)}catch(e){}
+    }else{
+      showAI(outId,mdToHtml(text),false);
+    }
+    S.aiCount++;
+    toast(successMsg||'Análise concluída!');
+  }catch(e){
+    showAI(outId,'Erro: '+e.message,false);
+    toast('Erro: '+e.message,4000);
+  }finally{
+    if(btn){btn.disabled=false;btn.innerHTML='✦ '+(successMsg||'IA')}
+  }
+}
 async function callAI(prompt,outId,btnId,successMsg){
   var btn=document.getElementById(btnId);
   var key=apiKey();
@@ -4186,7 +4306,7 @@ function genNaming(){
   var ctx=buildAIContext();
   var essencia=gv('essencia');
   var nomes=gv('nomes-ideia');
-  callAI(
+  callAIStruct(
     'Você é especialista em naming imobiliário premium. Com base nos dados abaixo:\n'+ctx+'\nEssência do produto: '+essencia+'\nNomes considerados: '+nomes+'\n\nGere:\n1. 5 sugestões de nomes com justificativa\n2. 3 taglines por nome principal\n3. Posicionamento estratégico recomendado\n4. Arquétipo de marca alinhado\nResponda em português, tom estratégico e premium.',
     'out-naming','btn-naming','Sugestões de naming geradas!'
   );
@@ -4194,13 +4314,48 @@ function genNaming(){
 function genPsych(){
   var ctx=buildAIContext();
   var answers=[gv('pq1'),gv('pq2'),gv('pq3'),gv('pq4')].filter(Boolean).join(' | ');
-  callAI(
-    'Você é psicólogo de marketing imobiliário. Com base na persona:\n'+ctx+'\nRespostas estratégicas: '+answers+'\n\nGere análise emocional de Plutchik para esta persona compradora:\n1. As 3 emoções primárias predominantes com intensidade (1–5)\n2. Como cada emoção se manifesta na jornada de compra\n3. Gatilhos emocionais para campanha\n4. Objeções emocionais e como tratar\nResponda em português, detalhado e estratégico.',
-    'out-psych','btn-psych','Análise emocional gerada!'
+  callAIStruct(
+    'Você é psicólogo de marketing imobiliário premium. Com base na persona:\n'+ctx+'\nRespostas estratégicas: '+answers
+    +'\n\nGere a radiografia emocional de Plutchik desta persona compradora. Estruture assim:'
+    +'\n- "chips": as 3-4 emoções dominantes (usar exatamente estes nomes quando aplicável: Alegria, Confiança, Medo, Surpresa, Tristeza, Desgosto, Raiva, Antecipação) com cores: Alegria #FBBF24, Confiança #34D399, Medo #38BDF8, Surpresa #A78BFA, Tristeza #94A3B8, Desgosto #F87171, Raiva #EF4444, Antecipação #F59E0B'
+    +'\n- "resumo": análise emocional da persona no contexto imobiliário (3-4 frases)'
+    +'\n- seção tipo "barras" intitulada "Intensidade das Emoções" com as emoções dominantes (label=nome exato da emoção, valor=1 a 5, texto=como se manifesta na jornada de compra)'
+    +'\n- seção tipo "tags" intitulada "Tom de Comunicação Recomendado" com 4-5 palavras'
+    +'\n- seção tipo "passos" intitulada "Gatilhos Emocionais de Compra" com 4-5 gatilhos acionáveis'
+    +'\n- seção tipo "cards" intitulada "Objeções Emocionais e Como Tratar" com 3 objeções (titulo=objeção, texto=como tratar)'
+    +'\n- "frase": o que a persona diria em voz alta sobre essa compra',
+    'out-psych','btn-psych','Análise emocional gerada!',
+    function(d){
+      var hl={};
+      var bars=(d.secoes||[]).filter(function(s){return s.tipo==='barras'})[0];
+      if(bars)(bars.itens||[]).forEach(function(b){hl[normEmo(b.label)]=Math.max(1,Math.min(5,Number(b.valor)||3))});
+      (d.chips||[]).forEach(function(c){var n=normEmo(typeof c==='string'?c:c.label);if(n&&!hl[n])hl[n]=4});
+      drawPluchtchik(hl);
+      var leg=document.getElementById('plutchik-leg');
+      if(leg&&d.chips){
+        leg.innerHTML='';
+        d.chips.forEach(function(c,i){
+          var lb=typeof c==='string'?c:c.label;var cor=(c&&c.cor)||SA_COLORS[i%SA_COLORS.length];
+          leg.innerHTML+='<span class="sa-chip" style="background:'+esc(cor)+'">'+esc(lb)+'</span>';
+        });
+      }
+    }
   );
-  drawPluchtchik();
 }
-function drawPluchtchik(){
+function normEmo(s){
+  if(!s)return'';
+  s=String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  if(s.indexOf('aleg')===0)return'Alegria';
+  if(s.indexOf('conf')===0)return'Confiança';
+  if(s.indexOf('med')===0)return'Medo';
+  if(s.indexOf('surp')===0)return'Surpresa';
+  if(s.indexOf('trist')===0)return'Tristeza';
+  if(s.indexOf('desg')===0||s.indexOf('repul')===0)return'Desgosto';
+  if(s.indexOf('raiv')===0)return'Raiva';
+  if(s.indexOf('antec')===0)return'Antecipação';
+  return'';
+}
+function drawPluchtchik(hl){
   var cv=document.getElementById('plutchik-cv');if(!cv)return;
   var dpr=window.devicePixelRatio||1;
   var size=Math.min(cv.offsetWidth||320,320);
@@ -4224,7 +4379,11 @@ function drawPluchtchik(){
       ctx.arc(cx,cy,cx*r,startAngle,endAngle);
       ctx.closePath();
       var alpha=[0.9,0.6,0.35][ri];
-      ctx.fillStyle=em.color+(Math.round(alpha*255).toString(16).padStart(2,'0'));
+      if(hl){
+        var inten=hl[em.name]||0;
+        alpha = inten ? alpha*(0.55+0.09*inten) : alpha*0.16;
+      }
+      ctx.fillStyle=em.color+(Math.round(Math.min(1,alpha)*255).toString(16).padStart(2,'0'));
       ctx.fill();
       ctx.strokeStyle='var(--bg)';ctx.lineWidth=1.5;ctx.stroke();
     });
@@ -4240,21 +4399,21 @@ function drawPluchtchik(){
 }
 function genDiagCanais(){
   var rows=DIAG_CH.map((ch,i)=>ch.n+': maturidade '+gv('cd-mat'+i)+', sit: '+gv('cd-sit'+i)).join('\n');
-  callAI(
+  callAIStruct(
     'Você é especialista em marketing omnichannel imobiliário premium. Dados do diagnóstico de canais:\n'+rows+'\nTipo de empreendimento: '+S.tipo+'\n'+buildAIContext()+'\n\nAnalise e recomende:\n1. Mix ideal de canais para este segmento (com % de budget por canal)\n2. Canais prioritários vs secundários\n3. Gaps críticos a resolver\n4. Benchmark de referência do mercado premium\n5. Estratégia de sinergia entre canais\nResposta detalhada em português.',
     'out-diag','btn-diag','Análise de canais gerada!'
   );
 }
 function genCs(){
   var rows=CS_DIMS.map(d=>'['+d.dim+'] Empresa: '+gv(d.ip)+' / Cliente: '+gv(d.ic)).join('\n');
-  callAI(
+  callAIStruct(
     '4Cs vs 4Ps do empreendimento:\n'+rows+'\n'+buildAIContext()+'\n\nIdentifique:\n1. Principais gaps entre visão da empresa e percepção do cliente\n2. Recomendações específicas para alinhar cada dimensão\n3. Prioridade de ajuste por impacto em vendas\n4. Mensagens-chave para cada dimensão\nResposta estratégica e objetiva.',
     'out-cs','btn-cs','Análise de GAP gerada!'
   );
 }
 function genTOWS(){
   var sw='F: '+gv('sw-f')+'\nFr: '+gv('sw-fr')+'\nO: '+gv('sw-o')+'\nA: '+gv('sw-a');
-  callAI(
+  callAIStruct(
     'SWOT do empreendimento:\n'+sw+'\n'+buildAIContext()+'\n\nGere estratégias TOWS completas e específicas para este empreendimento:\n**SO (Ofensivas):** Como usar forças para capturar oportunidades\n**WO (Melhorias):** Como superar fraquezas com oportunidades\n**ST (Defensivas):** Como usar forças para neutralizar ameaças\n**WT (Sobrevivência):** Como minimizar fraquezas e ameaças\n\nPara cada estratégia: 2-3 ações concretas de marketing imobiliário.',
     'out-tows','btn-tows','Estratégias TOWS geradas!'
   );
