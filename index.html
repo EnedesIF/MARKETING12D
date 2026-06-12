@@ -872,6 +872,58 @@ canvas{border-radius:var(--radius-sm)}
 .sa-tbl td{padding:7px 10px;border-bottom:1px solid var(--brd);color:var(--tx2);line-height:1.45}
 .sa-tbl tr:last-child td{border-bottom:none}
 .sa-tbl tr:nth-child(even) td{background:rgba(0,0,0,.015)}
+
+/* ===== PLANO DE MARKETING — DOCUMENTO PDF ===== */
+#plano-print{display:none}
+@media print{
+  body > *{display:none !important}
+  body > #plano-print{display:block !important}
+  @page{size:A4;margin:13mm}
+  #plano-print{font-family:var(--font-b);color:#15131a;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pp-break{page-break-after:always}
+  .pp-keep{page-break-inside:avoid}
+}
+#plano-print .pp-capa{min-height:255mm;display:flex;flex-direction:column;justify-content:space-between;background:#0c0d0f;color:#F4F1EA;padding:22mm 18mm;border-radius:2px;position:relative;overflow:hidden}
+#plano-print .pp-capa-img{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.55}
+#plano-print .pp-capa-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,13,15,.55),rgba(12,13,15,.92))}
+#plano-print .pp-capa > div{position:relative;z-index:1}
+#plano-print .pp-kick{font-size:11px;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:#E91E8C;display:flex;align-items:center;gap:12px}
+#plano-print .pp-kick::before{content:'';height:1px;width:34px;background:#E91E8C}
+#plano-print .pp-capa-nome{font-family:var(--font-d);font-size:54px;line-height:1.05;margin:16px 0 10px}
+#plano-print .pp-capa-tag{font-size:15px;color:rgba(244,241,234,.8);font-style:italic}
+#plano-print .pp-autores{border-top:1px solid rgba(244,241,234,.25);padding-top:14px}
+#plano-print .pp-autores-l{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(244,241,234,.55);margin-bottom:6px}
+#plano-print .pp-autores-n{font-size:13px;line-height:1.7}
+#plano-print .pp-sec{margin:0 0 22px}
+#plano-print .pp-sec-h{display:flex;align-items:baseline;gap:10px;border-bottom:2px solid #E91E8C;padding-bottom:7px;margin-bottom:14px}
+#plano-print .pp-sec-n{font-family:var(--font-d);font-size:15px;color:#E91E8C}
+#plano-print .pp-sec-t{font-family:var(--font-d);font-size:21px;color:#15131a}
+#plano-print .pp-fld{margin-bottom:10px}
+#plano-print .pp-fld-l{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#E91E8C;margin-bottom:3px}
+#plano-print .pp-fld-v{font-size:12px;line-height:1.7;color:#2a2733;white-space:pre-wrap}
+#plano-print .pp-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#plano-print .pp-grid4{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#plano-print .pp-quad{border:1px solid #e2dfe8;border-left:3px solid #E91E8C;border-radius:6px;padding:10px}
+#plano-print .pp-quad-t{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#E91E8C;margin-bottom:5px}
+#plano-print .pp-quad-v{font-size:10.5px;line-height:1.6;color:#2a2733;white-space:pre-wrap}
+#plano-print .pp-ai{border:1px solid #e9d3e2;background:#fdf7fb;border-radius:8px;padding:12px;margin-top:10px}
+#plano-print .pp-ai-l{font-size:9px;font-weight:800;letter-spacing:1.5px;color:#7C3AED;text-transform:uppercase;margin-bottom:8px}
+#plano-print table{width:100%;border-collapse:collapse;font-size:10px}
+#plano-print th{background:#f4eef6;text-align:left;padding:6px 8px;border:1px solid #e2dfe8;font-weight:800}
+#plano-print td{padding:6px 8px;border:1px solid #e2dfe8;vertical-align:top;line-height:1.5}
+#plano-print .pp-imgbox{border:1.5px dashed #c9c2d4;border-radius:8px;min-height:60mm;display:flex;align-items:center;justify-content:center;color:#9a93a8;font-size:11px;letter-spacing:1px;text-transform:uppercase}
+#plano-print .pp-img{width:100%;border-radius:8px;display:block;page-break-inside:avoid}
+#plano-print .pp-img-cap{font-size:9px;color:#7a7488;margin:4px 0 14px}
+#plano-print .pp-pitchwrap{background:#0c0d0f;border-radius:10px;padding:18px;margin-bottom:14px;page-break-inside:avoid}
+#plano-print .pp-pitchwrap .pslide-kick{color:#E91E8C;border-color:#E91E8C}
+#plano-print .pp-pitchwrap .pslide-title{color:#F4F1EA;display:block}
+#plano-print .pp-pitchwrap .pslide-b{color:rgba(244,241,234,.85)}
+#plano-print .pp-pitchwrap .pslide-b strong{color:#fff}
+#plano-print .pp-pitchwrap .pslide-kpi{background:transparent;border:1px solid rgba(244,241,234,.35);border-radius:0}
+#plano-print .pp-pitchwrap .pslide-kpi .pk-v{color:#E91E8C}
+#plano-print .pp-pitchwrap .pslide-kpi .pk-l{color:rgba(244,241,234,.7)}
+#plano-print .pp-pitchwrap .pslide-close{color:rgba(244,241,234,.7)}
+#plano-print .pp-foot{margin-top:6px;font-size:9px;color:#9a93a8;letter-spacing:1px;text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -1856,6 +1908,7 @@ canvas{border-radius:var(--radius-sm)}
   <button class="btn bg bsm" onclick="renderDashboard()">↻ Atualizar Gráficos</button>
   <button class="btn bai bsm" onclick="genSintese()" id="btn-sint">✦ Gerar Síntese Executiva</button>
   <button class="btn bp bsm" onclick="exportDashPNG()">⬇ Exportar PNG</button>
+  <button class="btn bp bsm" onclick="genPlanoPDF()" style="background:linear-gradient(135deg,var(--pu),var(--pk));border:none">📕 Gerar PDF do Plano Completo</button>
 </div>
 
 <div class="g2" style="margin-bottom:14px">
@@ -1894,6 +1947,7 @@ canvas{border-radius:var(--radius-sm)}
         <option value="img-area">Área de lazer / Rooftop garden</option>
         <option value="img-vista">Vista panorâmica do terraço</option>
         <option value="img-vida">Lifestyle da persona</option>
+        <option value="img-planta">Planta baixa do apartamento (conceito)</option>
         <option value="video">Vídeo de lançamento — teaser</option>
         <option value="outdoor">Outdoor / OOH — imagem</option>
         <option value="social">Post Instagram premium</option>
@@ -5067,6 +5121,111 @@ function genAllPitch(){
 }
 
 // =====================================================
+// PLANO DE MARKETING — DOCUMENTO PDF COMPLETO
+// =====================================================
+function genPlanoPDF(){
+  var pp = document.getElementById('plano-print');
+  if(!pp){ toast('Container de impress\u00e3o n\u00e3o encontrado'); return; }
+  function e2(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function fld(label, id){ var v = gv(id); return v ? '<div class="pp-fld pp-keep"><div class="pp-fld-l">'+label+'</div><div class="pp-fld-v">'+e2(v)+'</div></div>' : ''; }
+  function aiClone(id, label){
+    var el = document.getElementById(id);
+    if(!el || !el.classList.contains('on')) return '';
+    var inner = el.querySelector('.ai-txt');
+    if(!inner || !inner.innerHTML.trim()) return '';
+    return '<div class="pp-ai pp-keep"><div class="pp-ai-l">\u2726 '+label+'</div>'+inner.innerHTML+'</div>';
+  }
+  var nSec = 0;
+  function sec(titulo, conteudo){
+    if(!conteudo || !conteudo.trim()) return '';
+    nSec++;
+    return '<div class="pp-sec"><div class="pp-sec-h"><span class="pp-sec-n">'+(nSec<10?'0':'')+nSec+'</span><span class="pp-sec-t">'+titulo+'</span></div>'+conteudo+'</div>';
+  }
+  var nome = gv('nome')||'Empreendimento';
+  var hoje = new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+  var capaImg = (gv('pres-img-url')||'').trim() || gv('pres-img-sel') || ((window._presImgsDB&&_presImgsDB[0])?_presImgsDB[0].url:'') || ((window.generatedImages&&generatedImages[0])?generatedImages[0].url:'');
+
+  var html = '<div class="pp-capa pp-break">'
+    + (capaImg?'<div class="pp-capa-img" style="background-image:url(&quot;'+capaImg+'&quot;)"></div><div class="pp-capa-scrim"></div>':'')
+    + '<div><div class="pp-kick">Plano de Marketing \u00b7 Framework 6D\u00ae</div></div>'
+    + '<div><div class="pp-capa-nome">'+e2(nome)+'</div>'
+    + (gv('tagline')?'<div class="pp-capa-tag">'+e2(gv('tagline'))+'</div>':'')+'</div>'
+    + '<div class="pp-autores"><div class="pp-autores-l">Autores do projeto</div>'
+    + '<div class="pp-autores-n">'+e2(((S.participants||[]).join(' \u00b7 '))||(S.groupName||'\u2014'))+'</div>'
+    + '<div class="pp-autores-l" style="margin-top:10px">'+e2(S.groupName||'')+' \u00b7 '+hoje+'</div></div>'
+    + '</div>';
+
+  html += sec('S\u00edntese Executiva', aiClone('out-sint','S\u00edntese gerada por IA') || '<div class="pp-fld-v" style="color:#9a93a8">Gere a S\u00edntese Executiva no Dashboard Final para inclu\u00ed-la aqui.</div>');
+  html += sec('Briefing do Produto',
+    '<div class="pp-grid2">'+fld('Empreendimento','nome')+fld('Incorporadora','empresa')+fld('VGV (R$)','vgv')+fld('Unidades','unidades')+fld('Tagline','tagline')+fld('Amenidades','amenidades')+'</div>'+fld('Proposta de Valor','pv'));
+  html += sec('Estrat\u00e9gia \u2014 Matriz de Ansoff', fld('Quadrante','a-sel')+fld('Justificativa','a-just')+fld('Objetivo Estrat\u00e9gico','a-obj'));
+  html += sec('Persona Estrat\u00e9gica',
+    '<div class="pp-grid2">'+fld('Nome','p-nome')+fld('Profiss\u00e3o','p-prof')+fld('Idade','p-idade')+fld('Renda','p-renda')+fld('Perfil VALS','p-vals')+'</div>'
+    +fld('O que ela busca','pq1')+fld('Dor principal','pq2')+fld('Gatilho de decis\u00e3o','pq3')
+    +aiClone('out-psych','An\u00e1lise Emocional de Plutchik'));
+  html += sec('4Ps vs 4Cs',
+    '<table class="pp-keep"><tr><th>Dimens\u00e3o</th><th>Vis\u00e3o da Empresa (4P)</th><th>Percep\u00e7\u00e3o do Cliente (4C)</th></tr>'
+    +'<tr><td><strong>Produto / Cliente</strong></td><td>'+e2(gv('p-produto'))+'</td><td>'+e2(gv('p-cliente'))+'</td></tr>'
+    +'<tr><td><strong>Pre\u00e7o / Custo</strong></td><td>'+e2(gv('p-preco'))+'</td><td>'+e2(gv('p-custo'))+'</td></tr>'
+    +'<tr><td><strong>Pra\u00e7a / Conveni\u00eancia</strong></td><td>'+e2(gv('p-praca'))+'</td><td>'+e2(gv('p-conv'))+'</td></tr>'
+    +'<tr><td><strong>Promo\u00e7\u00e3o / Comunica\u00e7\u00e3o</strong></td><td>'+e2(gv('p-promo'))+'</td><td>'+e2(gv('p-comm'))+'</td></tr></table>'
+    +aiClone('out-cs','An\u00e1lise de GAP 4Cs'));
+  html += sec('SWOT + TOWS',
+    '<div class="pp-grid4">'
+    +'<div class="pp-quad"><div class="pp-quad-t">For\u00e7as</div><div class="pp-quad-v">'+e2(gv('sw-f'))+'</div></div>'
+    +'<div class="pp-quad"><div class="pp-quad-t">Fraquezas</div><div class="pp-quad-v">'+e2(gv('sw-fr'))+'</div></div>'
+    +'<div class="pp-quad"><div class="pp-quad-t">Oportunidades</div><div class="pp-quad-v">'+e2(gv('sw-o'))+'</div></div>'
+    +'<div class="pp-quad"><div class="pp-quad-t">Amea\u00e7as</div><div class="pp-quad-v">'+e2(gv('sw-a'))+'</div></div>'
+    +'<div class="pp-quad"><div class="pp-quad-t">SO \u2014 Ofensivas</div><div class="pp-quad-v">'+e2(gv('tows-so-t'))+'</div></div>'
+    +'<div class="pp-quad"><div class="pp-quad-t">WO \u2014 Melhorias</div><div class="pp-quad-v">'+e2(gv('tows-wo-t'))+'</div></div>'
+    +'<div class="pp-quad"><div class="pp-quad-t">ST \u2014 Defensivas</div><div class="pp-quad-v">'+e2(gv('tows-st-t'))+'</div></div>'
+    +'<div class="pp-quad"><div class="pp-quad-t">WT \u2014 Sobreviv\u00eancia</div><div class="pp-quad-v">'+e2(gv('tows-wt-t'))+'</div></div>'
+    +'</div>'+aiClone('out-tows','Estrat\u00e9gias TOWS'));
+  html += sec('North Star Metric', fld('NSM','nsm-m')+fld('Meta','nsm-meta')+fld('Justificativa','nsm-just')+aiClone('out-nsm','Valida\u00e7\u00e3o da NSM'));
+  html += sec('Funil de Vendas',
+    '<div class="pp-grid2">'+fld('Leads','funil-leads')+fld('Qualificados','funil-qual')+fld('Visitas','funil-visitas')+fld('Contratos','funil-contratos')+'</div>'+aiClone('out-funil','An\u00e1lise do Funil'));
+  html += sec('Posicionamento Competitivo', fld('Vantagem competitiva','comp-vant')+aiClone('out-comp','An\u00e1lise Competitiva'));
+  html += sec('Calend\u00e1rio de Lan\u00e7amento', aiClone('out-launch','Plano de Lan\u00e7amento'));
+  html += sec('Ecossistema de Vendas', aiClone('out-eco','Estrat\u00e9gia de Parceiros e Canais'));
+  html += sec('An\u00e1lise de Risco',
+    '<table class="pp-keep"><tr><th>Cen\u00e1rio</th><th>3 meses</th><th>6 meses</th><th>12 meses</th></tr>'
+    +'<tr><td>Otimista</td><td>'+e2(gv('risk-ot-3'))+'%</td><td>'+e2(gv('risk-ot-6'))+'%</td><td>'+e2(gv('risk-ot-12'))+'%</td></tr>'
+    +'<tr><td>Realista</td><td>'+e2(gv('risk-re-3'))+'%</td><td>'+e2(gv('risk-re-6'))+'%</td><td>'+e2(gv('risk-re-12'))+'%</td></tr>'
+    +'<tr><td>Pessimista</td><td>'+e2(gv('risk-pe-3'))+'%</td><td>'+e2(gv('risk-pe-6'))+'%</td><td>'+e2(gv('risk-pe-12'))+'%</td></tr></table>'
+    +fld('Reserva de conting\u00eancia (%)','risk-reserva')+aiClone('out-risk','An\u00e1lise de Risco')+aiClone('out-risco','Avalia\u00e7\u00e3o de Cen\u00e1rios'));
+  var acoes = '';
+  for(var i=1; i<=(window.actionCount||0); i++){
+    if(!gv('act-what'+i)) continue;
+    acoes += '<tr><td><strong>'+e2(gv('act-what'+i))+'</strong></td><td>'+e2(gv('act-why'+i))+'</td><td>'+e2(gv('act-where'+i))+'</td><td>'+e2(gv('act-when'+i))+'</td><td>'+e2(gv('act-who'+i))+'</td><td>'+e2(gv('act-how-much'+i))+'</td><td>'+e2(gv('act-how'+i))+'</td></tr>';
+  }
+  if(acoes) html += sec('Plano de A\u00e7\u00f5es \u2014 5W2H',
+    '<table><tr><th>O qu\u00ea</th><th>Por qu\u00ea</th><th>Onde</th><th>Quando</th><th>Quem</th><th>Quanto</th><th>Como</th></tr>'+acoes+'</table>');
+  html += sec('ROI para o Comprador', aiClone('out-roi','Argumento de ROI'));
+  if(S.pitch && Object.keys(S.pitch).length){
+    var pit = '';
+    for(var p=0; p<PITCH_SLIDES.length; p++){
+      if(!S.pitch[p]) continue;
+      pit += '<div class="pp-pitchwrap">'+pitchSlideHtml(S.pitch[p], (p+1)+' \u2014 '+PITCH_SLIDES[p].tag, false)+'</div>';
+    }
+    html += '<div class="pp-break"></div>' + sec('Pitch Deck \u2014 10 Slides', pit);
+  }
+  var imgs = [];
+  (window._presImgsDB||[]).forEach(function(im){ if(im.url) imgs.push(im); });
+  (window.generatedImages||[]).forEach(function(im){ if(im.url && !imgs.some(function(x){return x.url===im.url})) imgs.push({url:im.url, prompt:im.prompt}); });
+  var gal = '';
+  imgs.slice(0,6).forEach(function(im){
+    gal += '<img class="pp-img" src="'+im.url.replace(/"/g,'&quot;')+'"><div class="pp-img-cap">'+e2((im.prompt||'').substring(0,90))+'</div>';
+  });
+  for(var b=imgs.length; b<3; b++) gal += '<div class="pp-imgbox pp-keep" style="margin-bottom:14px">Espa\u00e7o reservado para imagem do projeto</div>';
+  html += sec('Galeria do Projeto', gal);
+  html += '<div class="pp-foot">'+e2(nome)+' \u00b7 Plano de Marketing \u00b7 Framework 6D\u00ae \u00b7 '+hoje+'</div>';
+
+  pp.innerHTML = html;
+  toast('Documento montado \u2014 na janela de impress\u00e3o, escolha "Salvar como PDF"', 5000);
+  setTimeout(function(){ window.print(); }, 600);
+}
+
+// =====================================================
 // PRESENTATION MODE — MODULE 23
 // =====================================================
 var presSlides = [];
@@ -5841,10 +6000,18 @@ function buildBasePrompt(tipo, ctx){
     'img-area': 'Premium rooftop garden and leisure area with infinity pool at golden hour',
     'img-vista': 'Panoramic city view from a luxury penthouse terrace, dramatic sunset',
     'img-vida': 'Luxury lifestyle photography, elegant professional woman enjoying morning coffee on private terrace',
+    'img-planta': '2D architectural floor plan, top-down orthographic view, clean professional drawing style, white background, thin dark walls, light wood flooring fill, furniture layout',
     'video': 'Cinematic real estate launch video, slow dolly push-in',
     'outdoor': 'Minimalist luxury real estate billboard, dark background with golden typography',
     'social': 'Premium editorial photography for Instagram, luxury residential lifestyle'
   };
+  if(tipo==='img-planta'){
+    return typeMap['img-planta']
+      + '. Apartment of ' + ctx.area + ' m2, ' + ctx.qtos + ' bedrooms, '
+      + 'open-plan living and dining, gourmet balcony, master suite with walk-in closet. '
+      + 'Style: premium Brazilian residential architecture, realtor marketing floor plan, minimal text. '
+      + 'Conceptual illustration, not to scale. --ar 4:3';
+  }
   return (typeMap[tipo] || 'Premium luxury real estate visual')
     + ' for "' + ctx.nome + '", ' + ctx.tipo + ' concept, ' + ctx.loc + '. '
     + 'Architecture: contemporary luxury, natural stone and glass, wellness-inspired spaces. '
@@ -7725,5 +7892,6 @@ document.addEventListener('keydown', function(e){
 });
 </script>
 
+<div id="plano-print"></div>
 </body>
 </html>
