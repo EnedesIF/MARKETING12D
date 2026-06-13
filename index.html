@@ -37,6 +37,7 @@ function initSupabase(){
 // Init Supabase as soon as DOM is ready (independent of init() chain)
 document.addEventListener('DOMContentLoaded', function(){
   setTimeout(initSupabase, 300); // small delay ensures SDK loaded
+  setTimeout(aplicaGlossario, 400);
   setTimeout(function(){ if(typeof initPresModules==='function') initPresModules(); if(typeof loadPitchLocal==='function') loadPitchLocal(); if(typeof loadAIOutsLocal==='function') loadAIOutsLocal(); }, 600);
 });
 
@@ -140,6 +141,7 @@ async function loadFromSupabase(){
     if(d.dados_campos){
       setTimeout(function(){
         Object.entries(d.dados_campos).forEach(function(kv){
+          if(kv[0]==='_prof_feedback') return;
           if(kv[0]==='_pitch'){
             try{ S.pitch = JSON.parse(kv[1]); savePitchLocal(); loadPitchLocal(); }catch(e){}
             return;
@@ -938,9 +940,45 @@ canvas{border-radius:var(--radius-sm)}
 .cd-tip-t{display:block;font-size:10px;font-weight:800;color:#FF7AC1;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}
 .cd-tip-row{display:block;font-size:10.5px;line-height:1.55;margin-bottom:5px;color:#e7e1f0}
 .cd-tip-row strong{color:#fff}
+
+/* ===== Caixa do Professor ===== */
+.prof-box{background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(233,30,140,.04));border:1px solid var(--pubrd,rgba(167,139,250,.3));border-left:3px solid var(--pu);border-radius:8px;padding:11px 14px;margin:0 0 16px}
+.prof-box-l{font-size:9.5px;font-weight:800;color:var(--pu);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.prof-box-row{font-size:11.5px;color:var(--tx2);line-height:1.65;margin-bottom:3px}
+.prof-box-row strong{color:var(--tx)}
+/* ===== Banner de inconsistência ===== */
+.consist-banner{background:linear-gradient(135deg,#FFF9E6,#FFEFC2);border:1px solid #F0C857;border-left:4px solid #D4A011;color:#4a3a08;border-radius:8px;padding:11px 14px;margin:0 0 16px}
+.consist-banner .cb-l{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#A87800;margin-bottom:6px}
+.consist-banner .cb-it{font-size:11.5px;line-height:1.6;margin-top:4px}
+.consist-banner b{color:#5a3a0a}
+/* ===== Glossário ===== */
+.gloss{border-bottom:1px dotted var(--pu);cursor:help;position:relative;font-weight:600}
+.gloss:hover::after{content:attr(data-tip);position:absolute;left:0;top:140%;z-index:60;width:250px;background:#1d1828;color:#f1edf7;border:1px solid rgba(167,139,250,.45);border-radius:8px;padding:9px 12px;font-size:10.5px;line-height:1.55;font-weight:400;letter-spacing:0;text-transform:none;box-shadow:0 8px 22px rgba(0,0,0,.3);white-space:normal}
+/* ===== Status bar ===== */
+.save-status{position:fixed;right:14px;bottom:14px;z-index:200;background:rgba(15,12,25,.85);color:#f1edf7;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;padding:5px 11px;border-radius:14px;border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(6px);font-weight:700;pointer-events:none}
+/* ===== Modal de Versões ===== */
+.vsm{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.vsm-card{background:var(--bg,#fff);color:var(--tx);width:100%;max-width:560px;max-height:80vh;overflow-y:auto;border-radius:12px;padding:20px;border:1px solid var(--brd)}
+.vsm-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.vsm-t{font-family:var(--font-d);font-size:20px}
+.vsm-x{background:transparent;border:none;font-size:18px;cursor:pointer;color:var(--tx3)}
+.vsm-act{display:flex;gap:8px;margin-bottom:14px}
+.vsm-act input{flex:1;padding:8px 12px;border:1px solid var(--brd);border-radius:6px;font-size:12px;background:var(--surf2);color:var(--tx)}
+.vsm-list{display:flex;flex-direction:column;gap:8px}
+.vsm-it{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 12px;background:var(--surf2);border:1px solid var(--brd);border-radius:8px}
+.vsm-it-n{font-size:12px;font-weight:800;color:var(--tx)}
+.vsm-it-m{font-size:10px;color:var(--tx3);margin-top:2px}
+.vsm-it-b{display:flex;gap:6px;flex:none}
+.vsm-empty{font-size:11px;color:var(--tx3);text-align:center;padding:20px}
+/* ===== Comparativo ===== */
+.cmp-tbl{width:100%;border-collapse:collapse;font-size:11px}
+.cmp-tbl th{background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(233,30,140,.08));color:var(--tx);font-weight:800;text-align:left;padding:8px 11px;border:1px solid var(--brd)}
+.cmp-tbl td{padding:8px 11px;border:1px solid var(--brd);color:var(--tx2);vertical-align:top;line-height:1.5}
+.cmp-tbl .cmp-l{background:var(--surf2);font-weight:800;color:var(--tx);font-size:10px;letter-spacing:1px;text-transform:uppercase}
 </style>
 </head>
 <body>
+<div id="save-status" class="save-status">v2.0 · <span id="save-status-txt">pronto</span></div>
 <div id="toast"></div>
 
 <!-- SETUP MODAL -->
@@ -1117,7 +1155,7 @@ canvas{border-radius:var(--radius-sm)}
 
 <!-- ===== S1 ANSOFF ===== -->
 <div class="scr" id="s1">
-<div class="sh2"><div class="stag">Módulo 1 • 100 pts</div><div class="st">Matriz de Ansoff</div><div class="sd">Defina o quadrante estratégico. Esta escolha orienta toda a estratégia de marketing do empreendimento.<button class="help-btn" onclick="openHelp(1)">❓ Ajuda</button></div></div>
+<div class="sh2"><div class="stag">Módulo 1 • 100 pts</div><div class="st">Matriz de Ansoff</div><div class="sd">Defina o quadrante estratégico. Esta escolha orienta toda a estratégia de marketing do empreendimento.<button class="help-btn" onclick="openHelp(1)">❓ Ajuda</button></div></div><div class="prof-box"><div class="prof-box-l">✍ Caixa do Professor</div><div class="prof-box-row"><strong>O que esse módulo entrega:</strong> Define a direção estratégica que vai orquestrar tudo depois.</div><div class="prof-box-row"><strong>Erro mais comum:</strong> Escolher Diversificação sem capacidade real (time, capital, marca) é o erro mais comum.</div></div>
 <div class="g2" style="margin-bottom:14px">
   <div>
     <div style="font-size:9px;font-weight:700;color:var(--tx4);text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:5px">▲ NOVOS MERCADOS</div>
@@ -1163,7 +1201,7 @@ canvas{border-radius:var(--radius-sm)}
 
 <!-- ===== S2 CONCEITO + NAMING ===== -->
 <div class="scr" id="s2">
-<div class="sh2"><div class="stag">Módulo 2 • 100 pts</div><div class="st">Conceito + Naming Workshop</div><div class="sd">Construa o DNA do produto. A IA gera sugestões de naming e posicionamento com base no que o grupo preencher.<button class="help-btn" onclick="openHelp(2)">❓ Ajuda</button></div></div>
+<div class="sh2"><div class="stag">Módulo 2 • 100 pts</div><div class="st">Conceito + Naming Workshop</div><div class="sd">Construa o DNA do produto. A IA gera sugestões de naming e posicionamento com base no que o grupo preencher.<button class="help-btn" onclick="openHelp(2)">❓ Ajuda</button></div></div><div class="prof-box"><div class="prof-box-l">✍ Caixa do Professor</div><div class="prof-box-row"><strong>O que esse módulo entrega:</strong> O DNA do produto: nome, posicionamento e proposta de valor.</div><div class="prof-box-row"><strong>Erro mais comum:</strong> Nome bonito que ninguém consegue pronunciar ou registrar como marca.</div></div>
 <div class="hi" style="margin-bottom:14px;text-align:center">
   <div style="font-size:10px;font-weight:700;color:var(--pk);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px" id="prev-tipo">Selecione a Definição Estruturante</div>
   <div style="font-family:var(--font-d);font-size:22px;background:linear-gradient(135deg,var(--pk),var(--or));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:2px" id="prev-nome">Nome do Empreendimento</div>
@@ -1258,7 +1296,7 @@ canvas{border-radius:var(--radius-sm)}
 
 <!-- ===== S3 PERSONA ===== -->
 <div class="scr" id="s3">
-<div class="sh2"><div class="stag">Módulo 3 • 120 pts</div><div class="st">Persona Estratégica</div><div class="sd">Perfil socioeconômico + 12 perguntas estratégicas + Mapa de Empatia. Alimenta toda a estratégia de comunicação.<button class="help-btn" onclick="openHelp(3)">❓ Ajuda</button></div></div>
+<div class="sh2"><div class="stag">Módulo 3 • 120 pts</div><div class="st">Persona Estratégica</div><div class="sd">Perfil socioeconômico + 12 perguntas estratégicas + Mapa de Empatia. Alimenta toda a estratégia de comunicação.<button class="help-btn" onclick="openHelp(3)">❓ Ajuda</button></div></div><div class="prof-box"><div class="prof-box-l">✍ Caixa do Professor</div><div class="prof-box-row"><strong>O que esse módulo entrega:</strong> Sai do 'casal jovem que valoriza qualidade' e chega numa pessoa concreta.</div><div class="prof-box-row"><strong>Erro mais comum:</strong> Descrever a persona como a incorporadora a vê, não como ela realmente é.</div></div>
 
 <div class="tabs">
   <button class="tab on" onclick="perTab(this,'per-socio')">📊 Socioeconômico</button>
@@ -1479,7 +1517,7 @@ canvas{border-radius:var(--radius-sm)}
 
 <!-- ===== S4 JORNADA ===== -->
 <div class="scr" id="s4">
-<div class="sh2"><div class="stag">Módulo 4 • 80 pts</div><div class="st">Jornada do Consumidor Imobiliário</div><div class="sd">Mapeie touchpoints em cada fase da jornada de compra. Identifique emoções, fricções e oportunidades de ativação.<button class="help-btn" onclick="openHelp(4)">❓ Ajuda</button></div></div>
+<div class="sh2"><div class="stag">Módulo 4 • 80 pts</div><div class="st">Jornada do Consumidor Imobiliário</div><div class="sd">Mapeie touchpoints em cada fase da jornada de compra. Identifique emoções, fricções e oportunidades de ativação.<button class="help-btn" onclick="openHelp(4)">❓ Ajuda</button></div></div><div class="prof-box"><div class="prof-box-l">✍ Caixa do Professor</div><div class="prof-box-row"><strong>O que esse módulo entrega:</strong> Jornada com emoções e fricções por etapa — alimenta o CRM depois.</div><div class="prof-box-row"><strong>Erro mais comum:</strong> Tratar todas as etapas com o mesmo tom; descoberta e pós-venda são as mais negligenciadas.</div></div>
 <div class="c" style="margin-bottom:14px">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
     <div><div class="ct" style="margin-bottom:0">Teia de Relacionamento</div><div style="font-size:11px;color:var(--tx3)">Mapa visual dos touchpoints marcados</div></div>
@@ -1514,7 +1552,7 @@ canvas{border-radius:var(--radius-sm)}
 <!-- MAPA EMOCIONAL VISUAL DA JORNADA -->
 <div class="c" style="margin-top:14px">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-    <div><div class="ct" style="margin-bottom:2px">Mapa Emocional da Jornada</div><div style="font-size:11px;color:var(--tx3)">Curva emocional da persona em cada fase — preencha os dados da jornada acima para atualizar</div></div>
+    <div><div class="ct" style="margin-bottom:2px">Mapa Emocional da Jornada</div><div style="font-size:11px;color:var(--tx3)">Calculada automaticamente a partir das emoções marcadas em cada fase. Use os campos numéricos abaixo apenas para ajuste fino.</div></div>
     <button class="btn bg bsm" onclick="drawEmocional()">↻ Atualizar</button>
   </div>
   <canvas id="emocional-cv" style="width:100%;height:200px;border-radius:8px;background:var(--surf2);border:1px solid var(--brd)"></canvas>
@@ -1587,7 +1625,7 @@ canvas{border-radius:var(--radius-sm)}
 
 <!-- ===== S5 DIAGNÓSTICO DE CANAIS ===== -->
 <div class="scr" id="s5">
-<div class="sh2"><div class="stag">Módulo 5 • 100 pts</div><div class="st">Diagnóstico de Canais</div><div class="sd">Avalie maturidade, investimento e estratégia de cada canal. O sistema calcula o Score de Presença e o Mix Ideal.<button class="help-btn" onclick="openHelp(5)">❓ Ajuda</button></div></div>
+<div class="sh2"><div class="stag">Módulo 5 • 100 pts</div><div class="st">Diagnóstico de Canais</div><div class="sd">Avalie maturidade, investimento e estratégia de cada canal. O sistema calcula o Score de Presença e o Mix Ideal.<button class="help-btn" onclick="openHelp(5)">❓ Ajuda</button></div></div><div class="prof-box"><div class="prof-box-l">✍ Caixa do Professor</div><div class="prof-box-row"><strong>O que esse módulo entrega:</strong> Diagnóstico honesto da maturidade de cada canal antes do orçamento.</div><div class="prof-box-row"><strong>Erro mais comum:</strong> Avaliar maturidade pelo que se gostaria de ter, não pelo que de fato opera.</div></div>
 
 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
   <div class="kpi-c c-pk"><div class="kpi-l">Score Digital</div><div class="kpi-v" id="sc-digital" style="color:var(--pk)">—</div><div style="font-size:9px;color:var(--tx4)">média canais dig.</div></div>
@@ -1643,7 +1681,7 @@ canvas{border-radius:var(--radius-sm)}
 
 <!-- ===== S6 4Cs × 4Ps ===== -->
 <div class="scr" id="s6">
-<div class="sh2"><div class="stag">Módulo 6 • 80 pts</div><div class="st">4Cs × 4Ps</div><div class="sd">Confronte a visão da empresa com a percepção do cliente em cada dimensão de marketing. A IA identifica gaps e recomenda ajustes estratégicos.<button class="help-btn" onclick="openHelp(6)">❓ Ajuda</button></div></div>
+<div class="sh2"><div class="stag">Módulo 6 • 80 pts</div><div class="st">4Cs × 4Ps</div><div class="sd">Confronte a visão da empresa com a percepção do cliente em cada dimensão de marketing. A IA identifica gaps e recomenda ajustes estratégicos.<button class="help-btn" onclick="openHelp(6)">❓ Ajuda</button></div></div><div class="prof-box"><div class="prof-box-l">✍ Caixa do Professor</div><div class="prof-box-row"><strong>O que esse módulo entrega:</strong> Onde mora o gap entre o que a empresa entrega e o que o cliente percebe.</div><div class="prof-box-row"><strong>Erro mais comum:</strong> Repetir as features do briefing nos 4Ps em vez de traduzir em valor para o cliente.</div></div>
 
 <!-- GUIDE CARDS -->
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
@@ -1695,7 +1733,7 @@ canvas{border-radius:var(--radius-sm)}
 
 <!-- ===== S7 SWOT ===== -->
 <div class="scr" id="s7">
-<div class="sh2"><div class="stag">Módulo 7 • 80 pts</div><div class="st">Análise SWOT</div><div class="sd">Mapeie os 4 quadrantes. Os dados serão usados na SWOT Cruzada para gerar estratégias TOWS no módulo seguinte.<button class="help-btn" onclick="openHelp(7)">❓ Ajuda</button></div></div>
+<div class="sh2"><div class="stag">Módulo 7 • 80 pts</div><div class="st">Análise SWOT</div><div class="sd">Mapeie os 4 quadrantes. Os dados serão usados na SWOT Cruzada para gerar estratégias TOWS no módulo seguinte.<button class="help-btn" onclick="openHelp(7)">❓ Ajuda</button></div></div><div class="prof-box"><div class="prof-box-l">✍ Caixa do Professor</div><div class="prof-box-row"><strong>O que esse módulo entrega:</strong> Base factual da análise — quanto mais específica, melhor o TOWS depois.</div><div class="prof-box-row"><strong>Erro mais comum:</strong> Forças e fraquezas genéricas ("boa localização", "equipe experiente") não geram estratégia.</div></div>
 <div class="swot-g" style="margin-bottom:14px">
   <div class="sq sq-s"><div class="sq-hdr"><div class="sq-ico">💪</div><div><div class="sl">FORÇAS</div><div style="font-size:9px;color:var(--tx4)">Interno · Positivo</div></div></div><div class="fld-wrap" style="position:relative"><textarea id="sw-f" rows="5" placeholder="• Localização privilegiada&#10;• Incorporadora reconhecida&#10;• Projeto diferenciado&#10;• Equipe comercial experiente" oninput="sv()"></textarea><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">Forças mais valorizadas em imóveis premium: localização (42%), projeto arquitetônico (28%), marca (18%).</div><div class="fld-tip-alert">Forças que o concorrente também tem não são diferenciais — são requisitos mínimos.</div><div class="fld-tip-ref"><strong>Porter (1980) — Competitive Strategy:</strong> Vantagem competitiva sustentável vem de forças difíceis de imitar.</div></div></div></div>
   <div class="sq sq-w"><div class="sq-hdr"><div class="sq-ico">⚠️</div><div><div class="sl">FRAQUEZAS</div><div style="font-size:9px;color:var(--tx4)">Interno · Negativo</div></div></div><div class="fld-wrap" style="position:relative"><textarea id="sw-fr" rows="5" placeholder="• Ticket mais alto que concorrência&#10;• Prazo de entrega longo&#10;• Brand awareness regional limitado" oninput="sv()"></textarea><div class="fld-tip"><div class="fld-tip-arrow"></div><div class="fld-tip-bench">Fraquezas mais comuns: prazo de entrega longo, marca pouco conhecida, preço acima da média de mercado.</div><div class="fld-tip-alert">Ignorar fraquezas na estratégia é o erro mais comum — elas viram objeções de vendas.</div><div class="fld-tip-ref"><strong>Weihrich (1982) — TOWS Matrix:</strong> A análise só é útil se as fraquezas forem reconhecidas com honestidade.</div></div></div></div>
@@ -1712,7 +1750,7 @@ canvas{border-radius:var(--radius-sm)}
 
 <!-- ===== S8 SWOT CRUZADA ===== -->
 <div class="scr" id="s8">
-<div class="sh2"><div class="stag">Módulo 8 • 100 pts</div><div class="st">SWOT Cruzada + TOWS</div><div class="sd">Combine os quadrantes para gerar estratégias. A IA cria estratégias com base nas combinações e nos dados do produto.<button class="help-btn" onclick="openHelp(8)">❓ Ajuda</button></div></div>
+<div class="sh2"><div class="stag">Módulo 8 • 100 pts</div><div class="st">SWOT Cruzada + TOWS</div><div class="sd">Combine os quadrantes para gerar estratégias. A IA cria estratégias com base nas combinações e nos dados do produto.<button class="help-btn" onclick="openHelp(8)">❓ Ajuda</button></div></div><div class="prof-box"><div class="prof-box-l">✍ Caixa do Professor</div><div class="prof-box-row"><strong>O que esse módulo entrega:</strong> Cruzamentos que viram movimentos estratégicos concretos.</div><div class="prof-box-row"><strong>Erro mais comum:</strong> Estratégias TOWS soltas, sem citar quais SWOT estão sendo cruzadas.</div></div>
 <div class="sx-g" style="margin-bottom:12px">
   <div class="sx-col" style="border-color:rgba(52,211,153,.2)">
     <div class="sx-h" style="background:rgba(52,211,153,.08)"><div class="sx-tp" style="color:var(--gn)">SO — Ofensivas</div><div class="sx-sub">Força × Oportunidade</div></div>
@@ -1745,7 +1783,7 @@ canvas{border-radius:var(--radius-sm)}
 
 <!-- ===== S9 NSM + PLANO DE AÇÕES ===== -->
 <div class="scr" id="s9">
-<div class="sh2"><div class="stag">Módulo 9 • 120 pts</div><div class="st">NSM + Plano de Ações 5W2H</div><div class="sd">Defina sua North Star Metric e construa o plano de ações táticas com responsáveis, prazos e custos.<button class="help-btn" onclick="openHelp(9)">❓ Ajuda</button></div></div>
+<div class="sh2"><div class="stag">Módulo 9 • 120 pts</div><div class="st">NSM + Plano de Ações 5W2H</div><div class="sd">Defina sua North Star Metric e construa o plano de ações táticas com responsáveis, prazos e custos.<button class="help-btn" onclick="openHelp(9)">❓ Ajuda</button></div></div><div class="prof-box"><div class="prof-box-l">✍ Caixa do Professor</div><div class="prof-box-row"><strong>O que esse módulo entrega:</strong> Define O QUE medir (NSM) e COMO executar (5W2H) — ponte entre estratégia e tática.</div><div class="prof-box-row"><strong>Erro mais comum:</strong> NSM virar 'aumentar vendas' em vez de uma métrica única e específica.</div></div>
 <div class="c c-pk" style="margin-bottom:14px">
   <div class="ct">North Star Metric (NSM)</div>
   <div class="g2">
@@ -1796,7 +1834,7 @@ canvas{border-radius:var(--radius-sm)}
 
 <!-- ===== S10 ORÇAMENTO + KPIs ===== -->
 <div class="scr" id="s10">
-<div class="sh2"><div class="stag">Módulo 10 • 100 pts</div><div class="st">Orçamento VGV + KPIs Imobiliários</div><div class="sd">Aloque o budget por canal e visualize em tempo real os KPIs: CAC, CPL, ROI, VSO, CPV e Break-Even.<button class="help-btn" onclick="openHelp(10)">❓ Ajuda</button></div></div>
+<div class="sh2"><div class="stag">Módulo 10 • 100 pts</div><div class="st">Orçamento VGV + KPIs Imobiliários</div><div class="sd">Aloque o budget por canal e visualize em tempo real os KPIs: CAC, CPL, ROI, VSO, CPV e Break-Even.<button class="help-btn" onclick="openHelp(10)">❓ Ajuda</button></div></div><div class="prof-box"><div class="prof-box-l">✍ Caixa do Professor</div><div class="prof-box-row"><strong>O que esse módulo entrega:</strong> Onde o plano vira investimento — todo número é uma decisão.</div><div class="prof-box-row"><strong>Erro mais comum:</strong> Distribuir verba por intuição em vez de pelo Score de Presença do Módulo 5.</div></div>
 
 <!-- KPI CARDS -->
 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px" id="kpi-cards">
@@ -1923,6 +1961,9 @@ canvas{border-radius:var(--radius-sm)}
   <button class="btn bai bsm" onclick="genSintese()" id="btn-sint">✦ Gerar Síntese Executiva</button>
   <button class="btn bp bsm" onclick="exportDashPNG()">⬇ Exportar PNG</button>
   <button class="btn bp bsm" onclick="genPlanoPDF()" style="background:linear-gradient(135deg,var(--pu),var(--pk));border:none">📕 Gerar PDF do Plano Completo</button>
+  <button class="btn bg bsm" onclick="abrirVersoes()">💾 Versões do plano</button>
+  <button class="btn bg bsm" onclick="exportPitchPPT()">📽 Pitch para PowerPoint</button>
+  <button class="btn bg bsm" onclick="exportOnePager()">📄 One-pager do empreendimento</button>
 </div>
 
 <div class="g2" style="margin-bottom:14px">
@@ -2114,6 +2155,8 @@ canvas{border-radius:var(--radius-sm)}
 <!-- ═══ TABS DO PROFESSOR ═══ -->
 <div class="tabs" id="prof-tabs" style="margin-bottom:18px">
   <button class="tab on" data-ptab="pt-monitor">📊 Monitor de Grupos</button>
+  <button class="tab" data-ptab="pt-comparativo">⚖ Comparativo</button>
+  <button class="tab" data-ptab="pt-feedback">✍ Feedback</button>
   <button class="tab" data-ptab="pt-keys">🔑 Chaves de API</button>
   <button class="tab" data-ptab="pt-midia">🎨 Central de IA</button>
 </div>
@@ -2124,6 +2167,29 @@ canvas{border-radius:var(--radius-sm)}
   <div class="g2">
     <div class="c"><div class="ct">Leaderboard em Tempo Real</div><div id="prof-lb"></div></div>
     <div class="c"><div class="ct">Progresso por Módulo</div><div id="prof-heat"></div></div>
+  </div>
+</div>
+
+<!-- ── TAB COMPARATIVO ── -->
+<div id="pt-comparativo" class="tp">
+  <div class="c"><div class="ct">Comparativo entre Grupos</div>
+    <div style="font-size:11px;color:var(--tx3);margin-bottom:10px">Compare as escolhas estratégicas de cada grupo lado a lado. Útil para conduzir a discussão na apresentação final.</div>
+    <button class="btn bp bsm" onclick="renderComparativo()">↻ Atualizar comparativo</button>
+    <div id="prof-comparativo" style="margin-top:14px;overflow-x:auto"></div>
+  </div>
+</div>
+
+<!-- ── TAB FEEDBACK DO PROFESSOR ── -->
+<div id="pt-feedback" class="tp">
+  <div class="c"><div class="ct">Anotações por grupo (apenas você vê)</div>
+    <div style="font-size:11px;color:var(--tx3);margin-bottom:10px">Selecione o grupo, navegue entre módulos e registre seus comentários. Tudo fica salvo no banco e em sigilo do aluno.</div>
+    <div style="display:flex;gap:8px;align-items:end;margin-bottom:12px;flex-wrap:wrap">
+      <div class="fl" style="flex:1;min-width:160px"><label>Grupo</label><select id="fb-grupo" onchange="loadFeedback()"></select></div>
+      <div class="fl" style="flex:1;min-width:160px"><label>Módulo</label><select id="fb-mod" onchange="loadFeedback()"></select></div>
+    </div>
+    <textarea id="fb-texto" rows="6" placeholder="Comentários, pontos a discutir, sugestões de melhoria..." style="font-size:12px;line-height:1.6"></textarea>
+    <div style="display:flex;justify-content:flex-end;margin-top:8px"><button class="btn bp bsm" onclick="salvarFeedback()">💾 Salvar comentário</button></div>
+    <div id="fb-status" style="font-size:10px;color:var(--tx3);text-align:right;margin-top:4px"></div>
   </div>
 </div>
 
@@ -2389,7 +2455,7 @@ canvas{border-radius:var(--radius-sm)}
 
 <!-- ===== S14 POSICIONAMENTO COMPETITIVO ===== -->
 <div class="scr" id="s14">
-<div class="sh2"><div class="stag">Módulo 14 • Estratégia Avançada</div><div class="st">Posicionamento Competitivo</div><div class="sd">Compare seu produto com até 3 concorrentes diretos. Identifique diferenciais reais e gaps de posicionamento no mercado.<button class="help-btn" onclick="openHelp(14)">❓ Ajuda</button></div></div>
+<div class="sh2"><div class="stag">Módulo 14 • Estratégia Avançada</div><div class="st">Posicionamento Competitivo</div><div class="sd">Compare seu produto com até 3 concorrentes diretos. Identifique diferenciais reais e gaps de posicionamento no mercado.<button class="help-btn" onclick="openHelp(14)">❓ Ajuda</button></div></div><div class="prof-box"><div class="prof-box-l">✍ Caixa do Professor</div><div class="prof-box-row"><strong>O que esse módulo entrega:</strong> Posicionamento real x percebido — base do diferencial competitivo.</div><div class="prof-box-row"><strong>Erro mais comum:</strong> Escolher concorrentes do mesmo segmento de preço, ignorando substitutos (aluguel, ações, fundos).</div></div>
 
 <div class="c c-pk" style="margin-bottom:14px">
   <div class="ct">Mapa de Posicionamento — Preço × Conceito</div>
@@ -2447,7 +2513,7 @@ canvas{border-radius:var(--radius-sm)}
 
 <!-- ===== S15 FUNIL DE VENDAS ===== -->
 <div class="scr" id="s15">
-<div class="sh2"><div class="stag">Módulo 15 • Funil Imobiliário</div><div class="st">Funil de Vendas Imobiliário</div><div class="sd">Mapeie o funil completo: Leads → Qualificados → Visitas → Propostas → Contratos. Identifique onde o produto perde e onde ganha.<button class="help-btn" onclick="openHelp(15)">❓ Ajuda</button></div></div>
+<div class="sh2"><div class="stag">Módulo 15 • Funil Imobiliário</div><div class="st">Funil de Vendas Imobiliário</div><div class="sd">Mapeie o funil completo: Leads → Qualificados → Visitas → Propostas → Contratos. Identifique onde o produto perde e onde ganha.<button class="help-btn" onclick="openHelp(15)">❓ Ajuda</button></div></div><div class="prof-box"><div class="prof-box-l">✍ Caixa do Professor</div><div class="prof-box-row"><strong>O que esse módulo entrega:</strong> Cada etapa do funil é uma hipótese a ser testada.</div><div class="prof-box-row"><strong>Erro mais comum:</strong> Funil otimista demais (10% lead→contrato no premium é raríssimo).</div></div>
 
 <div class="g2" style="margin-bottom:14px">
   <div>
@@ -2503,7 +2569,7 @@ canvas{border-radius:var(--radius-sm)}
 
 <!-- ===== S16 CALENDÁRIO DE LANÇAMENTO ===== -->
 <div class="scr" id="s16">
-<div class="sh2"><div class="stag">Módulo 16 • Launch Strategy</div><div class="st">Calendário de Lançamento</div><div class="sd">Estruture as 4 fases do lançamento imobiliário: Pré-lançamento → Lista VIP → Evento → Estabilização. Com gatilhos de ativação por fase.<button class="help-btn" onclick="openHelp(16)">❓ Ajuda</button></div></div>
+<div class="sh2"><div class="stag">Módulo 16 • Launch Strategy</div><div class="st">Calendário de Lançamento</div><div class="sd">Estruture as 4 fases do lançamento imobiliário: Pré-lançamento → Lista VIP → Evento → Estabilização. Com gatilhos de ativação por fase.<button class="help-btn" onclick="openHelp(16)">❓ Ajuda</button></div></div><div class="prof-box"><div class="prof-box-l">✍ Caixa do Professor</div><div class="prof-box-row"><strong>O que esse módulo entrega:</strong> Sequência das 4 fases muda o resultado final da velocidade de venda.</div><div class="prof-box-row"><strong>Erro mais comum:</strong> Lançar sem lista VIP estruturada — perde-se a maior alavanca do premium.</div></div>
 
 <div style="margin-bottom:14px">
   <div class="g2" style="margin-bottom:10px">
@@ -2607,7 +2673,7 @@ canvas{border-radius:var(--radius-sm)}
 
 <!-- ===== S17 SIMULADOR DE PRECIFICAÇÃO ===== -->
 <div class="scr" id="s17">
-<div class="sh2"><div class="stag">Módulo 17 • Pricing Strategy</div><div class="st">Simulador de Precificação</div><div class="sd">Monte a tabela de preços por andar e tipologia. Simule cenários de elasticidade e calcule o impacto no VGV e VSO.<button class="help-btn" onclick="openHelp(17)">❓ Ajuda</button></div></div>
+<div class="sh2"><div class="stag">Módulo 17 • Pricing Strategy</div><div class="st">Simulador de Precificação</div><div class="sd">Monte a tabela de preços por andar e tipologia. Simule cenários de elasticidade e calcule o impacto no VGV e VSO.<button class="help-btn" onclick="openHelp(17)">❓ Ajuda</button></div></div><div class="prof-box"><div class="prof-box-l">✍ Caixa do Professor</div><div class="prof-box-row"><strong>O que esse módulo entrega:</strong> Pricing é a alavanca mais subutilizada — 1% de preço move muito o VGV.</div><div class="prof-box-row"><strong>Erro mais comum:</strong> Linearizar preço por andar; vista e exposição solar valorizam exponencialmente.</div></div>
 
 <div class="g2" style="margin-bottom:14px">
   <div>
@@ -2665,7 +2731,7 @@ canvas{border-radius:var(--radius-sm)}
 
 <!-- ===== S18 ECOSSISTEMA DE VENDAS ===== -->
 <div class="scr" id="s18">
-<div class="sh2"><div class="stag">Módulo 18 • Ecossistema</div><div class="st">Ecossistema de Vendas & Influência</div><div class="sd">Mapeie brokers, imobiliárias parceiras, influenciadores e assessores. Este ecossistema move 40–60% das vendas premium.<button class="help-btn" onclick="openHelp(18)">❓ Ajuda</button></div></div>
+<div class="sh2"><div class="stag">Módulo 18 • Ecossistema</div><div class="st">Ecossistema de Vendas & Influência</div><div class="sd">Mapeie brokers, imobiliárias parceiras, influenciadores e assessores. Este ecossistema move 40–60% das vendas premium.<button class="help-btn" onclick="openHelp(18)">❓ Ajuda</button></div></div><div class="prof-box"><div class="prof-box-l">✍ Caixa do Professor</div><div class="prof-box-row"><strong>O que esse módulo entrega:</strong> 40–60% das vendas premium passam por terceiros — não tem como ignorar.</div><div class="prof-box-row"><strong>Erro mais comum:</strong> Tratar imobiliárias como concorrentes e não como canal.</div></div>
 
 <div class="c c-tl" style="margin-bottom:14px">
   <div class="ct">Mapa do Ecossistema</div>
@@ -2738,7 +2804,7 @@ canvas{border-radius:var(--radius-sm)}
 
 <!-- ===== S19 PÓS-VENDA & CRM ===== -->
 <div class="scr" id="s19">
-<div class="sh2"><div class="stag">Módulo 19 • Customer Success</div><div class="st">Régua de Pós-Venda & CRM</div><div class="sd">O que acontece com o comprador depois do contrato? A experiência pós-venda é o que transforma compradores em promotores e gera as vendas da próxima fase.<button class="help-btn" onclick="openHelp(19)">❓ Ajuda</button></div></div>
+<div class="sh2"><div class="stag">Módulo 19 • Customer Success</div><div class="st">Régua de Pós-Venda & CRM</div><div class="sd">O que acontece com o comprador depois do contrato? A experiência pós-venda é o que transforma compradores em promotores e gera as vendas da próxima fase.<button class="help-btn" onclick="openHelp(19)">❓ Ajuda</button></div></div><div class="prof-box"><div class="prof-box-l">✍ Caixa do Professor</div><div class="prof-box-row"><strong>O que esse módulo entrega:</strong> Pós-venda gera 30% das vendas da próxima fase via indicação.</div><div class="prof-box-row"><strong>Erro mais comum:</strong> Régua de comunicação morre na entrega das chaves.</div></div>
 
 <div class="g2" style="margin-bottom:14px">
   <div>
@@ -2949,7 +3015,7 @@ canvas{border-radius:var(--radius-sm)}
 
 <!-- ===== S20 ANÁLISE DE RISCO ===== -->
 <div class="scr" id="s20">
-<div class="sh2"><div class="stag">Módulo 20 • Gestão de Risco</div><div class="st">Análise de Risco do Projeto</div><div class="sd">Identifique, avalie e mitigue os principais riscos do lançamento. Uma boa gestão de riscos diferencia empreendedores estratégicos de improvisadores.<button class="help-btn" onclick="openHelp(20)">❓ Ajuda</button></div></div>
+<div class="sh2"><div class="stag">Módulo 20 • Gestão de Risco</div><div class="st">Análise de Risco do Projeto</div><div class="sd">Identifique, avalie e mitigue os principais riscos do lançamento. Uma boa gestão de riscos diferencia empreendedores estratégicos de improvisadores.<button class="help-btn" onclick="openHelp(20)">❓ Ajuda</button></div></div><div class="prof-box"><div class="prof-box-l">✍ Caixa do Professor</div><div class="prof-box-row"><strong>O que esse módulo entrega:</strong> Risco mapeado é risco gerenciável — investidor exige.</div><div class="prof-box-row"><strong>Erro mais comum:</strong> Cenários pessimistas otimistas demais; reserva de contingência abaixo de 5% do VGV.</div></div>
 
 <div class="g2" style="margin-bottom:14px">
   <div>
@@ -3005,7 +3071,7 @@ canvas{border-radius:var(--radius-sm)}
 
 <!-- ===== S21 ROI PARA O COMPRADOR ===== -->
 <div class="scr" id="s21">
-<div class="sh2"><div class="stag">Módulo 21 • Argumento de Venda</div><div class="st">Calculadora de ROI para o Comprador</div><div class="sd">O cliente não compra imóvel — compra um investimento. Prove com números: valorização, comparativo com CDI/ações, custo de oportunidade do aluguel.<button class="help-btn" onclick="openHelp(21)">❓ Ajuda</button></div></div>
+<div class="sh2"><div class="stag">Módulo 21 • Argumento de Venda</div><div class="st">Calculadora de ROI para o Comprador</div><div class="sd">O cliente não compra imóvel — compra um investimento. Prove com números: valorização, comparativo com CDI/ações, custo de oportunidade do aluguel.<button class="help-btn" onclick="openHelp(21)">❓ Ajuda</button></div></div><div class="prof-box"><div class="prof-box-l">✍ Caixa do Professor</div><div class="prof-box-row"><strong>O que esse módulo entrega:</strong> Cliente premium decide racional + emocional; aqui você arma o racional.</div><div class="prof-box-row"><strong>Erro mais comum:</strong> Comparar só com CDI ignorando o custo do aluguel evitado.</div></div>
 
 <div class="g2" style="margin-bottom:14px">
   <div>
@@ -3065,7 +3131,7 @@ canvas{border-radius:var(--radius-sm)}
 
 <!-- ===== S22 PITCH DECK ===== -->
 <div class="scr" id="s22">
-<div class="sh2"><div class="stag">Módulo 22 • Investor Pitch</div><div class="st">Pitch Deck para Investidores</div><div class="sd">A IA gera o conteúdo completo de 10 slides com base em todo o planejamento. Pronto para apresentar a investidores e stakeholders.<button class="help-btn" onclick="openHelp(22)">❓ Ajuda</button></div></div>
+<div class="sh2"><div class="stag">Módulo 22 • Investor Pitch</div><div class="st">Pitch Deck para Investidores</div><div class="sd">A IA gera o conteúdo completo de 10 slides com base em todo o planejamento. Pronto para apresentar a investidores e stakeholders.<button class="help-btn" onclick="openHelp(22)">❓ Ajuda</button></div></div><div class="prof-box"><div class="prof-box-l">✍ Caixa do Professor</div><div class="prof-box-row"><strong>O que esse módulo entrega:</strong> A IA gera, vocês curam — o pitch é seu, não dela.</div><div class="prof-box-row"><strong>Erro mais comum:</strong> Aceitar o que a IA escreve sem revisar; o pitch tem que soar como o grupo.</div></div>
 
 <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px" id="pitch-grid">
   <div class="pitch-slide" onclick="genPitchSlide(0)">
@@ -3277,11 +3343,18 @@ var BUD_ROWS = ['Instagram/Facebook Ads','Google Ads (Search+Display)','YouTube 
 // HELPERS
 // =====================================================
 function gv(id){var el=document.getElementById(id);return el?el.value:''}
+var _saveStTimer = null;
+function flashSaved(){
+  var t = document.getElementById('save-status-txt');
+  if(t){ t.textContent = 'salvo agora ✓'; clearTimeout(_saveStTimer); _saveStTimer = setTimeout(function(){ t.textContent = 'pronto'; }, 2400); }
+}
 function sv(id,val){
   if(id&&val!==undefined){var el=document.getElementById(id);if(el)el.value=val;return}
-  // save state → update score
   calcScore();
   saveLB();
+  flashSaved();
+  if(window._consTimer)clearTimeout(window._consTimer);
+  window._consTimer=setTimeout(renderBannersConsist,800);
 }
 function toast(msg,t){
   var el=document.getElementById('toast');
@@ -3308,6 +3381,8 @@ function go(n){
   if(ni)ni.classList.add('on');
   S.cur=n;
   document.getElementById('main-area').scrollTop=0;
+  setTimeout(aplicaGlossario, 100);
+  setTimeout(renderBannersConsist, 150);
   if(n===5)initCanaisDiag();
   if(n===4){initCJM();setTimeout(drawEmocional,300);}
   if(n===6){initCSTable();}
@@ -3573,6 +3648,35 @@ var TOUCHPOINTS_BY_PHASE = {
 };
 var S_TOUCHPOINTS = {}; // {phaseIdx: Set of selected tp names}
 
+
+// ===== Mapa Emoção → Intensidade (alimenta o Mapa Emocional da Jornada) =====
+// Escala: 100 = pico positivo · 50 = neutro · 0 = pico negativo
+var EMOCAO_INTENSIDADE = {
+  // Positivas fortes
+  'admiração':90, 'euforia':95, 'alívio':80, 'orgulho':88, 'realização':92,
+  'satisfação':82, 'entusiasmo':85, 'pertencimento':85, 'protagonismo':87,
+  'lealdade':80, 'gratidão':85, 'vínculo':82, 'confiança':75, 'esperança':72,
+  // Positivas médias
+  'curiosidade':70, 'surpresa':68, 'interesse':70, 'engajamento':72, 'expectativa':65,
+  'urgência':62,
+  // Neutras / ambíguas
+  'comparação':55, 'ambivalência':50, 'dúvida':45, 'indiferença':40,
+  // Negativas
+  'ceticismo':35, 'ansiedade':30, 'impaciência':32, 'tensão':28, 'medo de errar':22,
+  'medo':22, 'decepção':18, 'arrependimento':12, 'frustração':15, 'raiva':10
+};
+function emocaoParaIntensidade(txt){
+  if(!txt) return null;
+  var k = String(txt).toLowerCase().trim();
+  if(EMOCAO_INTENSIDADE[k] != null) return EMOCAO_INTENSIDADE[k];
+  // tenta achar a chave dentro do texto livre
+  var match = null;
+  Object.keys(EMOCAO_INTENSIDADE).forEach(function(key){
+    if(k.indexOf(key) > -1 && (!match || key.length > match.length)) match = key;
+  });
+  return match ? EMOCAO_INTENSIDADE[match] : null;
+}
+
 var CJM_EMOTIONS = [["Curiosidade", "Surpresa", "Interesse", "Indiferen\u00e7a", "Ceticismo", "Admira\u00e7\u00e3o"], ["Interesse", "Esperan\u00e7a", "D\u00favida", "Compara\u00e7\u00e3o", "Ansiedade", "Engajamento"], ["Tens\u00e3o", "Medo de errar", "Entusiasmo", "Ambival\u00eancia", "Confian\u00e7a", "Urg\u00eancia"], ["Euforia", "Al\u00edvio", "Orgulho", "Arrependimento", "Confian\u00e7a", "Realiza\u00e7\u00e3o"], ["Satisfa\u00e7\u00e3o", "Ansiedade", "Expectativa", "Decep\u00e7\u00e3o", "Gratid\u00e3o", "Impaci\u00eancia"], ["Orgulho", "Entusiasmo", "Satisfa\u00e7\u00e3o", "Pertencimento", "Protagonismo", "Indiferen\u00e7a"], ["Lealdade", "Pertencimento", "Satisfa\u00e7\u00e3o", "Confian\u00e7a", "Admira\u00e7\u00e3o", "V\u00ednculo"]];
 
 function toggleEmoc(phaseIdx, el){
@@ -3584,6 +3688,7 @@ function toggleEmoc(phaseIdx, el){
     el.classList.add('active');
     var inp = document.getElementById('cjm-em'+phaseIdx);
     if(inp){ inp.value = el.textContent; sv(); }
+    if(typeof drawEmocional==='function') drawEmocional();
   } else {
     var inp = document.getElementById('cjm-em'+phaseIdx);
     if(inp){ inp.value = ''; sv(); }
@@ -3610,7 +3715,7 @@ function initCJM(){
         '<div class="cjm-fl"><label>Touchpoints (clique para ativar)</label><div style="display:flex;flex-wrap:wrap;gap:0;min-height:60px;padding:4px 0">'+tpChips+'</div></div>'+
         '<div class="cjm-fl"><label>Peso na Decisão</label><input type="range" id="cjm-w'+i+'" min="0" max="100" value="50" oninput="S_PHASE_WEIGHT['+i+']=parseInt(this.value);drawTeia();sv()" style="margin:2px 0"><div style="font-size:9px;color:'+ph.cor+';font-weight:700;text-align:center" id="cjm-w-v'+i+'">50%</div></div>'+
         '<div class="cjm-fl"><label>Touchpoints Extras</label><textarea id="cjm-tp'+i+'" rows="2" placeholder="Outros canais..." oninput="sv()"></textarea></div>'+
-        '<div class="cjm-fl"><label>Emoção (selecione ou escreva)</label><div class="emoc-chips" id="emoc-chips-'+i+'">'+(CJM_EMOTIONS[i]||[]).map(function(e){return '<span class="emoc-chip" onclick="toggleEmoc('+i+',this)">'+e+'</span>';}).join('')+'</div><input id="cjm-em'+i+'" type="text" placeholder="Ou descreva outra emoção..." oninput="sv()" style="margin-top:4px"></div>'+
+        '<div class="cjm-fl"><label>Emoção (selecione ou escreva)</label><div class="emoc-chips" id="emoc-chips-'+i+'">'+(CJM_EMOTIONS[i]||[]).map(function(e){return '<span class="emoc-chip" onclick="toggleEmoc('+i+',this)">'+e+'</span>';}).join('')+'</div><input id="cjm-em'+i+'" type="text" placeholder="Ou descreva outra emoção..." oninput="sv();drawEmocional()" style="margin-top:4px"></div>'+
         '<div class="cjm-fl"><label>Fricção</label><input id="cjm-fr'+i+'" type="text" placeholder="O que trava?" oninput="sv()"></div>'+
         '<div class="cjm-fl"><label>Oportunidade</label><input id="cjm-op'+i+'" type="text" placeholder="Como ativar?" oninput="sv()"></div>'+
         '<div class="cjm-fl"><label>KPI</label><input id="cjm-kp'+i+'" type="text" placeholder="Métrica..." oninput="sv()"></div>'+
@@ -4365,6 +4470,184 @@ function showAI(outId,content,loading){
     el.innerHTML='<div class="ai-hdr"><span class="ai-bdg">✦ IA</span>'+(loading?'<span class="spin"></span>':'')+'</div><div class="ai-txt">'+content+'</div>';
   });
 }
+
+
+
+// ===== Auto-upload de imagens geradas para o Supabase Storage =====
+async function persistImagemStorage(srcUrl, prompt, modelo){
+  if(!SUPA_READY || !supa) return;
+  try{
+    var r = await fetch(srcUrl);
+    if(!r.ok) return;
+    var blob = await r.blob();
+    if(blob.size > 8*1024*1024) return;
+    var ext = (blob.type.indexOf('png')>-1?'png':blob.type.indexOf('webp')>-1?'webp':'jpg');
+    var pasta = (S.groupName||'geral').toLowerCase().replace(/[^a-z0-9]+/g,'-');
+    var nome = 'auto-'+Date.now()+'.'+ext;
+    var up = await supa.storage.from('renders').upload(pasta+'/'+nome, blob, {contentType: blob.type, upsert:false});
+    if(up.error) throw up.error;
+    var pub = supa.storage.from('renders').getPublicUrl(pasta+'/'+nome);
+    var permUrl = pub && pub.data && pub.data.publicUrl;
+    if(!permUrl) return;
+    // Atualiza o registro com a URL permanente
+    try{
+      await supa.from('imagens').update({url: permUrl}).eq('url', srcUrl);
+    }catch(e){}
+    // Atualiza a lista em memória e o seletor
+    if(window.generatedImages){
+      var i = generatedImages.findIndex(function(x){return x.url===srcUrl});
+      if(i>-1){ generatedImages[i].url = permUrl; }
+    }
+    if(typeof refreshPresImages==='function') refreshPresImages();
+    console.log('[6D] imagem salva no Storage:', permUrl);
+  }catch(e){
+    console.warn('[6D] auto-upload pulado:', e.message);
+  }
+}
+
+// ===== Comparativo e Feedback do Professor =====
+async function renderComparativo(){
+  var box = document.getElementById('prof-comparativo');
+  if(!box) return;
+  box.innerHTML = '<span class="spin"></span> Carregando dados dos grupos...';
+  if(!SUPA_READY || !supa){ box.innerHTML = 'Banco offline'; return; }
+  try{
+    var r = await supa.from('grupos').select('nome,score,dados_campos').order('score',{ascending:false});
+    if(!r.data || !r.data.length){ box.innerHTML = '<div style="font-size:11px;color:var(--tx3)">Nenhum grupo cadastrado ainda.</div>'; return; }
+    var linhas = [
+      {l:'Score', f:function(g){return g.score||0}},
+      {l:'Empreendimento', f:function(g){return (g.dados_campos||{})['nome']||'—'}},
+      {l:'Ansoff', f:function(g){return (g.dados_campos||{})['a-sel']||'—'}},
+      {l:'Tagline', f:function(g){return ((g.dados_campos||{})['tagline']||'—').substring(0,60)}},
+      {l:'Persona VALS', f:function(g){return (g.dados_campos||{})['p-vals']||'—'}},
+      {l:'NSM', f:function(g){return (g.dados_campos||{})['nsm-m']||'—'}},
+      {l:'VGV', f:function(g){return (g.dados_campos||{})['vgv']||'—'}},
+      {l:'Unidades', f:function(g){return (g.dados_campos||{})['unidades']||'—'}},
+      {l:'Força principal', f:function(g){return (((g.dados_campos||{})['sw-f']||'')+'').split('\n')[0].substring(0,60)||'—'}},
+      {l:'Oportunidade principal', f:function(g){return (((g.dados_campos||{})['sw-o']||'')+'').split('\n')[0].substring(0,60)||'—'}},
+    ];
+    var html = '<table class="cmp-tbl"><tr><th></th>' + r.data.map(function(g){return '<th>'+(g.nome||'—')+'</th>'}).join('') + '</tr>';
+    linhas.forEach(function(L){
+      html += '<tr><td class="cmp-l">'+L.l+'</td>' + r.data.map(function(g){return '<td>'+L.f(g)+'</td>'}).join('') + '</tr>';
+    });
+    html += '</table>';
+    box.innerHTML = html;
+  }catch(e){ box.innerHTML = 'Erro: '+e.message; }
+}
+
+var FB_MODS = [{v:'0',n:'Geral / Plano completo'}];
+for(var _i=1;_i<=23;_i++) FB_MODS.push({v:String(_i),n:'Módulo '+_i});
+async function initFeedbackTab(){
+  var selG = document.getElementById('fb-grupo'), selM = document.getElementById('fb-mod');
+  if(!selG || !selM) return;
+  if(selM.options.length===0) FB_MODS.forEach(function(m){var o=document.createElement('option');o.value=m.v;o.textContent=m.n;selM.appendChild(o)});
+  if(SUPA_READY && supa && selG.options.length===0){
+    try{
+      var r = await supa.from('grupos').select('id,nome').order('nome');
+      selG.innerHTML = '<option value="">Selecione um grupo...</option>';
+      (r.data||[]).forEach(function(g){var o=document.createElement('option');o.value=g.id;o.textContent=g.nome||'(sem nome)';selG.appendChild(o)});
+    }catch(e){}
+  }
+}
+async function loadFeedback(){
+  var gid = gv('fb-grupo'), mod = gv('fb-mod');
+  var ta = document.getElementById('fb-texto'), st = document.getElementById('fb-status');
+  if(!gid){ ta.value=''; if(st)st.textContent=''; return; }
+  if(!SUPA_READY||!supa) return;
+  try{
+    var r = await supa.from('grupos').select('dados_campos').eq('id',gid).maybeSingle();
+    var fb = ((r.data&&r.data.dados_campos)||{})['_prof_feedback'] || {};
+    try{ if(typeof fb==='string') fb = JSON.parse(fb); }catch(e){ fb = {}; }
+    ta.value = fb[mod] || '';
+    if(st) st.textContent = ta.value ? 'Comentário carregado' : 'Sem comentário para este módulo';
+  }catch(e){ if(st)st.textContent='Erro: '+e.message; }
+}
+async function salvarFeedback(){
+  var gid = gv('fb-grupo'), mod = gv('fb-mod');
+  var ta = document.getElementById('fb-texto'), st = document.getElementById('fb-status');
+  if(!gid){ toast('Selecione um grupo'); return; }
+  if(!SUPA_READY||!supa) return;
+  try{
+    var r = await supa.from('grupos').select('dados_campos').eq('id',gid).maybeSingle();
+    var dc = (r.data&&r.data.dados_campos)||{};
+    var fb = dc['_prof_feedback']||{};
+    if(typeof fb==='string'){ try{ fb=JSON.parse(fb); }catch(e){ fb={}; } }
+    fb[mod] = ta.value;
+    dc['_prof_feedback'] = JSON.stringify(fb);
+    await supa.from('grupos').update({dados_campos:dc}).eq('id',gid);
+    if(st) st.textContent = 'Salvo ✓ · '+new Date().toLocaleTimeString('pt-BR');
+    toast('Comentário salvo ✓');
+  }catch(e){ toast('Erro: '+e.message); }
+}
+
+// hook nos tabs do Painel para inicializar quando abertos
+document.addEventListener('click', function(e){
+  var t = e.target.closest && e.target.closest('[data-ptab]');
+  if(!t) return;
+  var tab = t.getAttribute('data-ptab');
+  if(tab==='pt-comparativo') setTimeout(renderComparativo, 100);
+  if(tab==='pt-feedback') setTimeout(initFeedbackTab, 100);
+});
+
+// ===== Validação cruzada entre módulos =====
+function checarConsistencia(){
+  var issues = [];
+  // Ansoff x Persona
+  var ans = gv('a-sel'), persona = gv('p-nome');
+  if(ans && /diversifica/i.test(ans) && (!gv('p-vals') || !gv('p-prof'))){
+    issues.push({mods:[1,3], txt:'Você escolheu <b>'+ans+'</b> na Ansoff (a estratégia de mais alto risco) mas a persona ainda está incompleta. Diversificação exige persona muito clara para validar a hipótese.'});
+  }
+  // NSM x Funil
+  var nsm = gv('nsm-m');
+  if(nsm && /vendas|venda|receita/i.test(nsm) && !/contrato|propost|conver/i.test(nsm)){
+    issues.push({mods:[9,15], txt:'Sua NSM está como "<b>'+nsm+'</b>". Boas NSM no imobiliário são métricas únicas e específicas (ex: contratos/mês, VSO 3 meses) — não conceitos amplos como "vendas".'});
+  }
+  // Funil otimismo
+  var l = parseFloat(gv('funil-leads'))||0, c = parseFloat(gv('funil-contratos'))||0;
+  if(l && c && (c/l > 0.05)){
+    issues.push({mods:[15], txt:'Funil com <b>'+(c/l*100).toFixed(1)+'% de conversão lead→contrato</b>. No premium, valores acima de 3% são raros — revise a hipótese ou justifique no plano.'});
+  }
+  // Orçamento x Diagnóstico de Canais
+  var budTot = 0;
+  for(var i=0;i<12;i++){ budTot += parseFloat(gv('bud-cat'+(i+1)))||0; }
+  var diagPreench = 0;
+  for(var i=0;i<12;i++){ if(parseInt(gv('cd-mat'+i)||'0',10)>0) diagPreench++; }
+  if(budTot>0 && diagPreench<3){
+    issues.push({mods:[5,10], txt:'Você já alocou orçamento mas o <b>Diagnóstico de Canais</b> tem menos de 3 canais avaliados. Aloque verba com base em maturidade, não em intuição.'});
+  }
+  // Risco x Reserva
+  var res = parseFloat(gv('risk-reserva'))||0;
+  if(res>0 && res<5){
+    issues.push({mods:[20], txt:'Reserva de contingência de <b>'+res+'%</b>. Padrão de mercado premium fica entre 5–10%; abaixo disso expõe o projeto.'});
+  }
+  // SWOT vazia mas TOWS preenchido
+  if((gv('tows-so-t')||gv('tows-wo-t')) && (!gv('sw-f')||!gv('sw-o'))){
+    issues.push({mods:[7,8], txt:'O TOWS está preenchido mas a SWOT-base está incompleta. As estratégias TOWS perdem sustentação se as forças/oportunidades não forem explícitas.'});
+  }
+  // 4Cs só com 4Ps
+  var ps4 = ['p-produto','p-preco','p-praca','p-promo'].filter(function(k){return (gv(k)||'').length>3}).length;
+  var cs4 = ['p-cliente','p-custo','p-conv','p-comm'].filter(function(k){return (gv(k)||'').length>3}).length;
+  if(ps4>=3 && cs4<2){
+    issues.push({mods:[6], txt:'Você preencheu os 4Ps mas pouco dos 4Cs. O exercício só funciona quando os dois lados estão cheios — senão não há gap para discutir.'});
+  }
+  return issues;
+}
+function renderBannersConsist(){
+  document.querySelectorAll('.consist-banner').forEach(function(b){b.remove()});
+  if(!S.cur) return;
+  var issues = checarConsistencia().filter(function(it){ return it.mods.indexOf(S.cur) > -1; });
+  if(!issues.length) return;
+  var sc = document.getElementById('s'+S.cur);
+  if(!sc) return;
+  var sh = sc.querySelector('.sh2');
+  if(!sh) return;
+  var banner = document.createElement('div');
+  banner.className = 'consist-banner';
+  banner.innerHTML = '<div class="cb-l">⚠ Inconsistência detectada</div>' +
+    issues.map(function(it){return '<div class="cb-it">• '+it.txt+'</div>'}).join('');
+  sh.insertAdjacentElement('afterend', banner);
+}
+
 // ===== Renderizador de Markdown -> HTML (corrige ## e ** aparecendo crus) =====
 function mdToHtml(t){
   if(!t)return'';
@@ -4892,6 +5175,27 @@ function loadDemo(){
 // =====================================================
 // INIT
 // =====================================================
+
+var GLOSS_TERMOS = {"VGV": "Valor Geral de Vendas — soma do preço de todas as unidades do empreendimento.", "VSO": "Velocidade de Vendas — % de unidades vendidas em um período (3, 6, 12 meses).", "CAC": "Custo de Aquisição de Cliente — quanto custou converter cada contrato.", "CPL": "Custo Por Lead — quanto cada lead captado custou em mídia paga.", "CPV": "Custo Por Visita — quanto custa trazer uma pessoa qualificada para o decorado.", "LTV": "Lifetime Value — receita total que o cliente gera ao longo do relacionamento.", "ROI": "Retorno sobre Investimento — quanto cada real investido devolveu.", "NSM": "North Star Metric — métrica única que mede o sucesso do produto.", "TIR": "Taxa Interna de Retorno — rentabilidade anual do projeto.", "VPL": "Valor Presente Líquido — valor atual do fluxo futuro descontado.", "TOWS": "Matriz inversa da SWOT que cruza forças/fraquezas com oportunidades/ameaças.", "VALS": "Framework psicográfico que segmenta consumidores por valores e estilo de vida.", "Plutchik": "Roda de oito emoções primarias usada para mapear estados emocionais."};
+function aplicaGlossario(){
+  var vistos = {};
+  var alvos = document.querySelectorAll('.sd, label, .ct, .help-btn + *, .pres-body, .ai-bdg + *, .sa-resumo');
+  alvos.forEach(function(el){
+    if(el.dataset.glossed) return;
+    el.dataset.glossed = '1';
+    var html = el.innerHTML;
+    Object.keys(GLOSS_TERMOS).forEach(function(t){
+      if(vistos[t]) return;
+      var re = new RegExp('\\b('+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')\\b(?![^<]*>)','');
+      if(re.test(html)){
+        html = html.replace(re, '<span class="gloss" data-tip="'+GLOSS_TERMOS[t].replace(/"/g,'&quot;')+'">$1</span>');
+        vistos[t] = true;
+      }
+    });
+    el.innerHTML = html;
+  });
+}
+
 function init(){
   try{var k=localStorage.getItem('ak');if(k){var el=document.getElementById('api-key');if(el)el.value=k}}catch(e){}
   calcScore();
@@ -5110,6 +5414,7 @@ function applyRestoredFields(){
   // recalcula vis\u00f5es dependentes
   try{ if(typeof updCSAlignment==='function') updCSAlignment(); }catch(e){}
   try{ if(typeof drawRiskChart==='function') drawRiskChart(); }catch(e){}
+  try{ if(typeof drawEmocional==='function') drawEmocional(); }catch(e){}
   try{ if(typeof calcCanalScore==='function') calcCanalScore(); }catch(e){}
   try{ if(typeof calcBudget==='function') calcBudget(); }catch(e){}
   try{ if(typeof calcScore==='function') calcScore(); }catch(e){}
@@ -5913,6 +6218,7 @@ async function genImageReal(){
     displayGeneratedImage(grid, imgUrl, prompt, model);
     generatedImages.push({url:imgUrl, prompt:prompt, model:model, ts:Date.now()});
     if(typeof refreshPresImages==='function')refreshPresImages();
+    persistImagemStorage(imgUrl, prompt, model);
     saveImagemSupabase(imgUrl, prompt, model, gv('prompt-tipo')||'geral');
     toast('Imagem gerada e salva no banco ✓');
 
@@ -7057,10 +7363,140 @@ function loadSaved(){
 }
 
 // Keyboard shortcut Ctrl+S
+
+function vsKey(){ return '6d_versoes_' + ((window.S&&S.groupName)||'geral').toLowerCase().replace(/[^a-z0-9]+/g,'-'); }
+function carregarVersoes(){ try{ return JSON.parse(localStorage.getItem(vsKey())||'[]'); }catch(e){ return []; } }
+function gravarVersoes(arr){ try{ localStorage.setItem(vsKey(), JSON.stringify(arr)); }catch(e){} }
+function abrirVersoes(){
+  document.getElementById('versoes-modal').style.display='flex';
+  listarVersoes();
+}
+function fecharVersoes(){ document.getElementById('versoes-modal').style.display='none'; }
+function salvarVersao(){
+  var nome = (document.getElementById('vsm-nome').value||'').trim() || ('V'+(carregarVersoes().length+1));
+  var snap = {nome:nome, data:new Date().toISOString(), campos:coletaTodosCampos(), pitch:S.pitch||{}, aiOuts:S.aiOuts||{}};
+  var arr = carregarVersoes();
+  arr.unshift(snap);
+  if(arr.length>10) arr = arr.slice(0,10);
+  gravarVersoes(arr);
+  document.getElementById('vsm-nome').value='';
+  listarVersoes();
+  toast('Vers\u00e3o "'+nome+'" salva \u2713');
+}
+function listarVersoes(){
+  var list = document.getElementById('vsm-list');
+  var arr = carregarVersoes();
+  if(!arr.length){ list.innerHTML='<div class="vsm-empty">Nenhuma vers\u00e3o salva ainda. Use o campo acima para criar a primeira.</div>'; return; }
+  list.innerHTML = arr.map(function(v,i){
+    var dt = new Date(v.data).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+    var preench = Object.keys(v.campos||{}).filter(function(k){return (v.campos[k]||'').trim()&&!k.startsWith('_')}).length;
+    return '<div class="vsm-it"><div><div class="vsm-it-n">'+v.nome+'</div><div class="vsm-it-m">'+dt+' \u00b7 '+preench+' campos preenchidos</div></div>'+
+      '<div class="vsm-it-b">'+
+        '<button class="btn bg bsm" onclick="restaurarVersao('+i+')">Restaurar</button>'+
+        '<button class="btn bg bsm" onclick="excluirVersao('+i+')" style="color:var(--re)">Excluir</button>'+
+      '</div></div>';
+  }).join('');
+}
+function excluirVersao(i){
+  if(!confirm('Excluir esta vers\u00e3o?')) return;
+  var arr = carregarVersoes(); arr.splice(i,1); gravarVersoes(arr); listarVersoes();
+}
+function restaurarVersao(i){
+  if(!confirm('Restaurar essa vers\u00e3o substitui o trabalho atual. Continuar?\n\nDica: salve a vers\u00e3o atual antes, se quiser preservar.')) return;
+  var v = carregarVersoes()[i]; if(!v) return;
+  if(v.pitch){ S.pitch = v.pitch; savePitchLocal && savePitchLocal(); }
+  if(v.aiOuts){ S.aiOuts = v.aiOuts; try{ localStorage.setItem(aiOutsKey(), JSON.stringify(v.aiOuts)); }catch(e){} }
+  window._restoredCampos = v.campos || {};
+  applyRestoredFields && applyRestoredFields();
+  loadPitchLocal && loadPitchLocal();
+  restoreAIOuts && restoreAIOuts();
+  fecharVersoes();
+  toast('Vers\u00e3o "'+v.nome+'" restaurada \u2713');
+}
+
+// ===== Pitch para PowerPoint (HTML importável) =====
+function exportPitchPPT(){
+  if(!S.pitch || !Object.keys(S.pitch).length){ toast('Gere o Pitch Deck primeiro (M\u00f3dulo 22)'); return; }
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+  var slides = '';
+  var nome = gv('nome')||'Empreendimento';
+  slides += '<div style="page-break-after:always;padding:60px;background:#0c0d0f;color:#F4F1EA;min-height:540px">'
+    + '<div style="font-size:14px;letter-spacing:5px;color:#E91E8C;text-transform:uppercase">Pitch Deck</div>'
+    + '<div style="font-family:Georgia,serif;font-size:64px;margin-top:30px">'+esc(nome)+'</div>'
+    + '<div style="font-size:18px;color:rgba(244,241,234,.7);margin-top:10px;font-style:italic">'+esc(gv('tagline')||'')+'</div></div>';
+  for(var i=0;i<PITCH_SLIDES.length;i++){
+    var d = S.pitch[i]; if(!d) continue;
+    var b = '<div style="page-break-after:always;padding:50px;font-family:Calibri,Arial,sans-serif;min-height:540px">'
+      + '<div style="font-size:11px;letter-spacing:4px;color:#E91E8C;text-transform:uppercase">'+(i+1<10?'0':'')+(i+1)+' \u2014 '+esc(PITCH_SLIDES[i].tag)+'</div>'
+      + '<div style="font-family:Georgia,serif;font-size:38px;color:#15131a;margin:14px 0 24px;border-bottom:2px solid #E91E8C;padding-bottom:10px">'+esc(d.title||PITCH_SLIDES[i].tag)+'</div>';
+    if(d.kpis && d.kpis.length){
+      b += '<table style="width:100%;margin-bottom:24px"><tr>';
+      d.kpis.forEach(function(k){
+        b += '<td style="border:1px solid #15131a;padding:18px;text-align:center"><div style="font-family:Georgia,serif;font-size:32px;color:#E91E8C">'+esc(k.value||'')+'</div><div style="font-size:10px;letter-spacing:2px;color:#555;text-transform:uppercase;margin-top:6px">'+esc(k.label||'')+'</div></td>';
+      });
+      b += '</tr></table>';
+    }
+    if(d.bullets && d.bullets.length){
+      b += '<ul style="font-size:15px;line-height:1.8;color:#2a2733">';
+      d.bullets.forEach(function(it){ b += '<li>'+(it.label?'<b>'+esc(it.label)+':</b> ':'')+esc(it.text||'')+'</li>'; });
+      b += '</ul>';
+    }
+    if(d.closing) b += '<div style="margin-top:30px;font-style:italic;color:#555;border-top:1px dashed #aaa;padding-top:14px">\u201C'+esc(d.closing)+'\u201D</div>';
+    b += '</div>';
+    slides += b;
+  }
+  var doc = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>Pitch '+esc(nome)+'</title></head><body>'+slides+'</body></html>';
+  var blob = new Blob([doc],{type:'application/vnd.ms-powerpoint'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'pitch-'+(nome.toLowerCase().replace(/[^a-z0-9]+/g,'-'))+'.ppt';
+  a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href)},3000);
+  toast('Pitch baixado \u2014 abra no PowerPoint para editar', 5000);
+}
+
+// ===== One-pager A4 paisagem =====
+function exportOnePager(){
+  var pp = document.getElementById('plano-print');
+  if(!pp) return;
+  function e2(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+  var capaImg = (gv('pres-img-url')||'').trim() || gv('pres-img-sel') || ((window._presImgsDB&&_presImgsDB[0])?_presImgsDB[0].url:'') || ((window.generatedImages&&generatedImages[0])?generatedImages[0].url:'');
+  var html = '<style>@page{size:A4 landscape;margin:8mm}.op{width:100%;height:190mm;display:grid;grid-template-columns:1.2fr 1fr;gap:0;background:#fff;color:#15131a;font-family:Calibri,Arial,sans-serif}.op-l{padding:14mm 12mm;background:#0c0d0f;color:#F4F1EA;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}.op-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.45}.op-sc{position:absolute;inset:0;background:linear-gradient(135deg,rgba(12,13,15,.6),rgba(12,13,15,.92))}.op-l>div{position:relative;z-index:1}.op-kick{font-size:9px;letter-spacing:4px;color:#E91E8C;text-transform:uppercase}.op-nome{font-family:Georgia,serif;font-size:48px;line-height:1.05;margin:18px 0}.op-tg{font-style:italic;color:rgba(244,241,234,.8);font-size:14px}.op-r{padding:14mm 12mm}.op-r-h{font-family:Georgia,serif;font-size:18px;color:#E91E8C;margin-bottom:8px;border-bottom:1px solid #E91E8C;padding-bottom:4px}.op-grid{display:grid;grid-template-columns:1fr 1fr;gap:8mm;margin-bottom:8mm}.op-fld-l{font-size:8px;letter-spacing:1.5px;color:#777;text-transform:uppercase;font-weight:700;margin-bottom:2px}.op-fld-v{font-size:11px;line-height:1.5;color:#2a2733}.op-kpis{display:flex;gap:6mm;margin-top:6mm}.op-kpi{flex:1;border:1px solid #15131a;padding:6mm;text-align:center}.op-kpi-v{font-family:Georgia,serif;font-size:22px;color:#E91E8C}.op-kpi-l{font-size:7px;letter-spacing:1.5px;color:#777;text-transform:uppercase;margin-top:2px}.op-ft{font-size:8px;color:rgba(244,241,234,.5);letter-spacing:2px;text-transform:uppercase}</style>'
+    + '<div class="op">'
+    + '<div class="op-l">'
+    + (capaImg?'<div class="op-bg" style="background-image:url(&quot;'+capaImg+'&quot;)"></div><div class="op-sc"></div>':'')
+    + '<div><div class="op-kick">One-pager \u00b7 Framework 6D\u00ae</div></div>'
+    + '<div><div class="op-nome">'+e2(gv('nome')||'Empreendimento')+'</div><div class="op-tg">'+e2(gv('tagline')||'')+'</div></div>'
+    + '<div class="op-ft">'+e2(S.groupName||'')+' \u00b7 '+new Date().toLocaleDateString('pt-BR')+'</div>'
+    + '</div>'
+    + '<div class="op-r">'
+    + '<div class="op-r-h">Proposta de Valor</div><div class="op-fld-v" style="margin-bottom:6mm">'+e2(gv('pv')||gv('a-obj')||'')+'</div>'
+    + '<div class="op-r-h">Persona</div><div class="op-grid"><div><div class="op-fld-l">Quem</div><div class="op-fld-v">'+e2(gv('p-nome')||'')+(gv('p-prof')?' \u00b7 '+e2(gv('p-prof')):'')+'</div></div><div><div class="op-fld-l">Perfil</div><div class="op-fld-v">'+e2(gv('p-vals')||'')+'</div></div></div>'
+    + '<div class="op-r-h">N\u00fameros do projeto</div><div class="op-kpis">'
+    + '<div class="op-kpi"><div class="op-kpi-v">'+e2(gv('vgv')||'\u2014')+'</div><div class="op-kpi-l">VGV</div></div>'
+    + '<div class="op-kpi"><div class="op-kpi-v">'+e2(gv('unidades')||'\u2014')+'</div><div class="op-kpi-l">Unidades</div></div>'
+    + '<div class="op-kpi"><div class="op-kpi-v">'+e2(gv('nsm-meta')||'\u2014')+'</div><div class="op-kpi-l">NSM Meta</div></div>'
+    + '</div></div></div>';
+  pp.innerHTML = html;
+  setTimeout(function(){ window.print(); }, 400);
+}
+
 document.addEventListener('keydown', function(e){
+  // Se estiver digitando em input/textarea, só Ctrl+S funciona
+  var emCampo = /^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName||'').toUpperCase());
   if((e.ctrlKey || e.metaKey) && e.key === 's'){
     e.preventDefault();
     saveAll();
+    return;
+  }
+  if(emCampo) return;
+  // Atalhos de navegação só fora de campos de texto
+  if(e.altKey && e.key === 'ArrowRight'){ e.preventDefault(); var n=(S.cur||1)+1; if(n<=23) go(n); }
+  else if(e.altKey && e.key === 'ArrowLeft'){ e.preventDefault(); var n=(S.cur||1)-1; if(n>=1) go(n); }
+  else if((e.ctrlKey||e.metaKey) && e.key.toLowerCase() === 'g'){
+    e.preventDefault();
+    var btnAI = document.querySelector('.scr.on .btn.bai');
+    if(btnAI && !btnAI.disabled) btnAI.click();
   }
 });
 
@@ -7274,10 +7710,16 @@ function drawEmocional(){
     ctx.fillText(pct+'%', padL-5, y+3);
   });
 
-  // Build score array from CJM inputs (emotion fields)
-  var scores = JORNADA_PHASES.map((_,i)=>{
-    var val = parseInt(gv('cjm-em-'+i)) || EMOCAO_SCORES[i];
-    return Math.min(100, Math.max(0, val));
+  // Build score array from CJM emotion fields (chips + free text)
+  var scores = JORNADA_PHASES.map(function(_, i){
+    // 1) override manual no painel embaixo
+    var manual = parseInt(gv('cjm-em-'+i));
+    if(!isNaN(manual)) return Math.min(100, Math.max(0, manual));
+    // 2) deriva da emoção marcada/escrita na fase (campo cjm-em<i>, sem hífen)
+    var derived = emocaoParaIntensidade(gv('cjm-em'+i));
+    if(derived != null) return derived;
+    // 3) fallback: default histórico da curva
+    return EMOCAO_SCORES[i];
   });
 
   // Area fill
@@ -7325,7 +7767,7 @@ function drawEmocional(){
       '<div style="text-align:center;padding:4px"><div style="font-size:14px">'+ph.icon+'</div>'
       +'<div style="font-size:9px;color:'+ph.cor+';font-weight:700">'+ph.name+'</div>'
       +'<div style="font-size:9px;color:var(--tx3)">Intensidade</div>'
-      +'<input type="number" id="cjm-em-'+i+'" min="0" max="100" value="'+EMOCAO_SCORES[i]+'" style="width:48px;font-size:10px;text-align:center;background:var(--surf3);border:1px solid var(--brd);border-radius:4px;padding:2px;color:var(--tx)" oninput="drawEmocional()" title="Intensidade emocional 0-100">'
+      +'<input type="number" id="cjm-em-'+i+'" min="0" max="100" placeholder="auto" style="width:48px;font-size:10px;text-align:center;background:var(--surf3);border:1px solid var(--brd);border-radius:4px;padding:2px;color:var(--tx)" oninput="drawEmocional();sv()" title="Deixe vazio para usar a emoção da fase; preencha 0-100 para sobrescrever">'
       +'</div>'
     ).join('');
   }
@@ -8002,5 +8444,16 @@ document.addEventListener('keydown', function(e){
 </script>
 
 <div id="plano-print"></div>
+
+<div id="versoes-modal" class="vsm" style="display:none">
+  <div class="vsm-card">
+    <div class="vsm-h"><div class="vsm-t">💾 Versões do plano</div><button class="vsm-x" onclick="fecharVersoes()">✕</button></div>
+    <div class="vsm-act">
+      <input type="text" id="vsm-nome" placeholder="Nome desta versão (ex: V1 — antes da revisão do prof)">
+      <button class="btn bp bsm" onclick="salvarVersao()">➕ Salvar versão atual</button>
+    </div>
+    <div id="vsm-list" class="vsm-list"></div>
+  </div>
+</div>
 </body>
 </html>
