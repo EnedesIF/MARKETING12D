@@ -173,7 +173,6 @@ async function loadFromSupabase(){
               Object.keys(tpData).forEach(function(ph){
                 S_TOUCHPOINTS[ph] = new Set(tpData[ph]);
               });
-              // Será aplicado visualmente após initCJM
               window._restoredTP = tpData;
             }catch(e){}
             return;
@@ -3432,14 +3431,14 @@ function go(n){
   document.getElementById('main-area').scrollTop=0;
   setTimeout(aplicaGlossario, 100);
   setTimeout(renderBannersConsist, 150);
-  if(n===5)initCanaisDiag();
-  if(n===4){initCJM();setTimeout(drawEmocional,300);}
-  if(n===6){initCSTable();}
-  if(window._restoredCampos) setTimeout(applyRestoredFields, 250);
-  if(n===10){initBudget();setTimeout(function(){renderBudgetCanalChart();renderBudgetMensalChart();},400);}
+  if(n===5){ initCanaisDiag(); setTimeout(applyRestoredFields, 200); }
+  if(n===4){ initCJM(); setTimeout(function(){ applyRestoredFields(); drawEmocional(); }, 400); }
+  if(n===6){ initCSTable(); setTimeout(applyRestoredFields, 200); }
+  if(window._restoredCampos) setTimeout(applyRestoredFields, 200);
+  if(n===10){ initBudget();setTimeout(function(){renderBudgetCanalChart();renderBudgetMensalChart();},400);}
   // New modules 14-23 handled by patched go() below
-  if(n===9)initActions();
-  if(n===10)initBudget();
+  if(n===9){ initActions(); setTimeout(applyRestoredFields, 200); }
+  if(n===10){ initBudget(); setTimeout(applyRestoredFields, 350); }
   if(n===11){setTimeout(renderDashboard,200)}
   if(n===12){ initMediaHub(); initMediaHubEvents(); }
   if(n===13)loadProfData();
@@ -5575,6 +5574,34 @@ function applyRestoredFields(){
   try{ if(typeof calcCanalScore==='function') calcCanalScore(); }catch(e){}
   try{ if(typeof calcBudget==='function') calcBudget(); }catch(e){}
   try{ if(typeof calcScore==='function') calcScore(); }catch(e){}
+  try{ if(typeof calcBudgetMensal==='function') calcBudgetMensal(); }catch(e){}
+  // Restaura chips de touchpoint visualmente
+  try{
+    var tpSrc = window._restoredTP || (window._restoredCampos && window._restoredCampos['_tp'] ? JSON.parse(window._restoredCampos['_tp']) : null);
+    if(tpSrc){
+      Object.keys(tpSrc).forEach(function(ph){
+        var tps = tpSrc[ph];
+        document.querySelectorAll('.tp-chip[data-ph="'+ph+'"]').forEach(function(chip){
+          if(tps && tps.indexOf(chip.getAttribute('data-tp')) > -1){
+            var cor = (JORNADA_PHASES[parseInt(ph)]||{}).cor||'var(--pk)';
+            chip.style.background=cor+'33'; chip.style.borderColor=cor;
+            chip.style.color=cor; chip.style.fontWeight='700';
+            if(!S_TOUCHPOINTS[ph]) S_TOUCHPOINTS[ph]=new Set();
+            S_TOUCHPOINTS[ph].add(chip.getAttribute('data-tp'));
+          }
+        });
+      });
+    }
+    // Restaura pesos de fase
+    var pwSrc = window._restoredCampos && window._restoredCampos['_pw'] ? JSON.parse(window._restoredCampos['_pw']) : null;
+    if(pwSrc){
+      Object.keys(pwSrc).forEach(function(ph){
+        S_PHASE_WEIGHT[ph]=pwSrc[ph];
+        var el=document.getElementById('cjm-w'+ph); if(el) el.value=pwSrc[ph];
+        var lb=document.getElementById('cjm-w-v'+ph); if(lb) lb.textContent=pwSrc[ph]+'%';
+      });
+    }
+  }catch(e){}
 }
 function restoreAIOuts(){
   if(!S.aiOuts) return;
