@@ -51,6 +51,23 @@ function coletaTodosCampos(){
   });
   try{ if(window.S && S.pitch && Object.keys(S.pitch).length) campos['_pitch'] = JSON.stringify(S.pitch); }catch(e){}
   try{ if(window.S && S.aiOuts && Object.keys(S.aiOuts).length) campos['_aiouts'] = JSON.stringify(S.aiOuts); }catch(e){}
+  // Salva touchpoints selecionados por fase
+  try{
+    var tpSnap = {};
+    Object.keys(S_TOUCHPOINTS||{}).forEach(function(ph){
+      var arr = Array.from(S_TOUCHPOINTS[ph]||[]);
+      if(arr.length) tpSnap[ph] = arr;
+    });
+    if(Object.keys(tpSnap).length) campos['_tp'] = JSON.stringify(tpSnap);
+  }catch(e){}
+  // Salva pesos por fase
+  try{
+    var wpSnap = {};
+    Object.keys(S_PHASE_WEIGHT||{}).forEach(function(ph){
+      if(S_PHASE_WEIGHT[ph] != null) wpSnap[ph] = S_PHASE_WEIGHT[ph];
+    });
+    if(Object.keys(wpSnap).length) campos['_pw'] = JSON.stringify(wpSnap);
+  }catch(e){}
   return campos;
 }
 
@@ -148,6 +165,30 @@ async function loadFromSupabase(){
           }
           if(kv[0]==='_aiouts'){
             try{ S.aiOuts = JSON.parse(kv[1]); localStorage.setItem(aiOutsKey(), kv[1]); restoreAIOuts(); }catch(e){}
+            return;
+          }
+          if(kv[0]==='_tp'){
+            try{
+              var tpData = JSON.parse(kv[1]);
+              Object.keys(tpData).forEach(function(ph){
+                S_TOUCHPOINTS[ph] = new Set(tpData[ph]);
+              });
+              // Será aplicado visualmente após initCJM
+              window._restoredTP = tpData;
+            }catch(e){}
+            return;
+          }
+          if(kv[0]==='_pw'){
+            try{
+              var pwData = JSON.parse(kv[1]);
+              Object.keys(pwData).forEach(function(ph){
+                S_PHASE_WEIGHT[ph] = pwData[ph];
+                var el = document.getElementById('cjm-w'+ph);
+                if(el) el.value = pwData[ph];
+                var lbl = document.getElementById('cjm-w-v'+ph);
+                if(lbl) lbl.textContent = pwData[ph]+'%';
+              });
+            }catch(e){}
             return;
           }
         });
@@ -3712,7 +3753,14 @@ function initCJM(){
     if(!S_TOUCHPOINTS[i])S_TOUCHPOINTS[i]=new Set();
     if(S_PHASE_WEIGHT[i]==null)S_PHASE_WEIGHT[i]=50;
     var tps=TOUCHPOINTS_BY_PHASE[i]||[];
-    var tpChips=tps.map(t=>'<span class="tp-chip" data-ph="'+i+'" data-tp="'+t+'" onclick="toggleTP('+i+',this)" style="font-size:9px;padding:3px 7px;border-radius:10px;background:var(--surf2);border:1px solid var(--brd);cursor:pointer;display:inline-block;margin:2px 2px 0 0;color:var(--tx3);transition:all .15s">'+t+'</span>').join('');
+    var tpChips=tps.map(t=>{
+      var isActive = S_TOUCHPOINTS[i] && S_TOUCHPOINTS[i].has(t);
+      var bg = isActive ? ph.cor+'33' : 'var(--surf2)';
+      var bc = isActive ? ph.cor : 'var(--brd)';
+      var col = isActive ? ph.cor : 'var(--tx3)';
+      var fw = isActive ? '700' : 'normal';
+      return '<span class="tp-chip" data-ph="'+i+'" data-tp="'+t+'" onclick="toggleTP('+i+',this)" style="font-size:9px;padding:3px 7px;border-radius:10px;background:'+bg+';border:1px solid '+bc+';cursor:pointer;display:inline-block;margin:2px 2px 0 0;color:'+col+';font-weight:'+fw+';transition:all .15s">'+t+'</span>';
+    }).join('');
     var card=document.createElement('div');
     card.className='cjm-card';
     card.innerHTML=
