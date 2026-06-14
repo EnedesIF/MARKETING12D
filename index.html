@@ -2152,10 +2152,10 @@ canvas{border-radius:var(--radius-sm)}
   <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
     <div><div class="stag">Painel do Professor</div><div class="st">Monitor & Configurações Centrais</div>
     <div class="sd">Acompanhe grupos em tempo real e configure as chaves de API para toda a turma.</div></div>
-    <div style="display:flex;gap:8px">
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn bg bsm" onclick="loadProfData()">↻ Atualizar</button>
-      <button class="btn bp bsm" onclick="renderComparativo()" title="Abrir aba Comparativo">⚖ Comparativo</button>
-      <button class="btn bsm" style="background:rgba(255,255,255,.07);border:1px solid var(--brd);color:var(--tx3)" onclick="if(confirm('Sair do painel do professor?'))go(0)" title="Voltar à tela inicial">🚪 Sair</button>
+      <button class="btn bp bsm" onclick="profAbreComparativo()">⚖ Comparativo</button>
+      <button class="btn bsm" style="background:rgba(255,255,255,.06);border:1px solid var(--brd);color:var(--tx3)" onclick="profSair()">🚪 Sair</button>
     </div>
   </div>
 </div>
@@ -5065,7 +5065,6 @@ function genSintese(){
 // PROFESSOR PANEL
 // =====================================================
 async function loadProfData(){
-  // Força reload do Supabase
   var btn = document.querySelector('[onclick="loadProfData()"]');
   if(btn){ btn.textContent='⏳ Atualizando...'; btn.disabled=true; }
   try{
@@ -5075,7 +5074,7 @@ async function loadProfData(){
         renderProfGrupos(r.data);
         loadLBSupabase && loadLBSupabase();
         if(btn){ btn.textContent='↻ Atualizar'; btn.disabled=false; }
-        toast('✅ Dados atualizados de ' + r.data.length + ' grupos');
+        toast('✅ ' + r.data.length + ' grupos carregados');
         return;
       }
     }
@@ -5091,7 +5090,7 @@ function renderProfGrupos(grupos){
     var mods = g.modulos_done ? g.modulos_done.length : 0;
     var updated = g.updated_at ? new Date(g.updated_at).toLocaleTimeString('pt-BR') : '—';
     var pct = Math.round(mods/23*100);
-    var gid = g.id || '';
+    var gid = (g.id||'').replace(/'/g,"\\'");
     var gnome = (g.nome||'grupo').replace(/'/g,"\\'");
     return '<div style="background:var(--surf2);border:1px solid var(--brd);border-radius:9px;padding:12px">'
       + '<div style="font-weight:700;font-size:12px;color:var(--tx);margin-bottom:4px">'+g.nome+'</div>'
@@ -5102,8 +5101,7 @@ function renderProfGrupos(grupos){
       + '<div style="width:'+pct+'%;height:100%;background:linear-gradient(90deg,var(--pk),var(--or));border-radius:2px"></div></div>'
       + '<div style="font-size:9px;color:var(--tx4);margin-top:4px">Atualizado: '+updated+'</div>'
       + '<div style="display:flex;gap:4px;margin-top:8px">'
-      + '<button class="btn bg bsm" style="font-size:9px;padding:3px 7px" onclick="profViewGrupo(\''+gid+'\',\''+gnome+'\')" title="Ver dados do grupo">👁 Ver</button>'
-      + '<button class="btn bp bsm" style="font-size:9px;padding:3px 7px" onclick="profDownloadPDF(\''+gid+'\',\''+gnome+'\')" title="Baixar PDF do grupo">📄 PDF</button>'
+      + '<button class="btn bsm" style="flex:1;font-size:9px;padding:4px;background:rgba(255,255,255,.07);border:1px solid var(--brd);color:var(--tx3)" onclick="profDownloadPDF(\''+gid+'\',\''+gnome+'\')" title="Baixar PDF">📄 PDF</button>'
       + '</div>'
       + '</div>';
   }).join('');
@@ -5111,27 +5109,12 @@ function renderProfGrupos(grupos){
   loadLBSupabase && loadLBSupabase();
 }
 
-async function profViewGrupo(gid, gnome){
-  if(!gid){ toast('ID do grupo não encontrado'); return; }
-  try{
-    var r = await supa.from('grupos').select('*').eq('id',gid).maybeSingle();
-    if(!r.data){ toast('Grupo não encontrado'); return; }
-    var g = r.data;
-    var dc = g.dados_campos || {};
-    var info = [
-      '=== ' + g.nome + ' ===',
-      'Score: ' + g.score + ' pts',
-      'Módulos: ' + (g.modulos_done||[]).join(', '),
-      'Produto: ' + (dc.nome||'—'),
-      'VGV: R$ ' + Number(dc.vgv||0).toLocaleString('pt-BR'),
-      'Cidade: ' + (dc.cidade||'—'),
-      'Tagline: ' + (dc.tagline||'—'),
-      'Persona: ' + (dc['p-nome']||'—'),
-      'NSM: ' + (dc['nsm-m']||'—'),
-      'Ansoff: ' + (dc['a-sel']||'—'),
-    ].join('\n');
-    alert(info);
-  }catch(e){ toast('Erro: ' + e.message); }
+function profAbreComparativo(){
+  var btn = document.querySelector('[data-ptab="pt-comparativo"]');
+  if(btn) btn.click();
+}
+function profSair(){
+  if(window.confirm('Sair do painel do professor?')) go(0);
 }
 
 async function profDownloadPDF(gid, gnome){
@@ -5140,56 +5123,80 @@ async function profDownloadPDF(gid, gnome){
     toast('⏳ Preparando PDF de ' + gnome + '...');
     var r = await supa.from('grupos').select('*').eq('id',gid).maybeSingle();
     if(!r.data){ toast('Grupo não encontrado'); return; }
-    var g = r.data;
-    var dc = g.dados_campos || {};
-    // Build printable HTML
+    var g = r.data; var dc = g.dados_campos || {};
+    var rows = function(label, val){ return val && val!='—' ? '<div class="row"><span class="lbl">'+label+'</span><span class="val">'+String(val).replace(/\n/g,'<br>')+'</span></div>' : ''; };
     var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+g.nome+'</title>'
-      + '<style>body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;color:#222;line-height:1.6}'
-      + 'h1{color:#e91e8c;border-bottom:2px solid #e91e8c;padding-bottom:8px}'
-      + 'h2{color:#555;font-size:14px;margin-top:20px;text-transform:uppercase;letter-spacing:1px}'
-      + '.row{display:flex;justify-content:space-between;margin-bottom:6px;border-bottom:1px solid #eee;padding-bottom:4px}'
-      + '.lbl{font-weight:700;color:#333;min-width:180px}'
-      + '.val{color:#555;flex:1}'
-      + '.score{font-size:48px;color:#e91e8c;font-weight:900}'
-      + '.chip{background:#f0f0f0;padding:2px 8px;border-radius:4px;font-size:11px;margin-right:4px}'
-      + '@media print{body{margin:20px}}'
+      + '<style>*{box-sizing:border-box}body{font-family:"Helvetica Neue",Arial,sans-serif;max-width:820px;margin:0 auto;padding:40px;color:#222;font-size:13px;line-height:1.6}'
+      + 'h1{color:#E91E8C;font-size:28px;margin:0 0 4px}h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#999;margin:24px 0 8px;border-bottom:1px solid #eee;padding-bottom:4px}'
+      + '.score-box{display:inline-block;background:linear-gradient(135deg,#E91E8C,#FF5722);color:#fff;padding:8px 20px;border-radius:8px;font-size:32px;font-weight:900;margin:8px 0 16px}'
+      + '.row{display:flex;gap:12px;padding:5px 0;border-bottom:1px solid #f5f5f5}'
+      + '.lbl{font-weight:600;color:#555;min-width:160px;font-size:12px}'
+      + '.val{color:#333;flex:1;font-size:12px}'
+      + '.mods{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}'
+      + '.mod{background:#f0f0f0;padding:2px 8px;border-radius:4px;font-size:11px;color:#555}'
+      + '.footer{font-size:10px;color:#bbb;margin-top:40px;border-top:1px solid #eee;padding-top:12px;text-align:center}'
+      + '@media print{body{padding:20px}button{display:none}}'
       + '</style></head><body>'
-      + '<h1>📊 ' + g.nome + '</h1>'
-      + '<div class="score">' + g.score + ' pts</div>'
-      + '<p>Módulos concluídos: ' + (g.modulos_done||[]).length + '/12</p>'
+      + '<h1>'+g.nome+'</h1>'
+      + '<div class="score-box">'+g.score+' pts</div>'
+      + '<div style="margin-bottom:16px"><strong>Módulos concluídos:</strong> '+(g.modulos_done||[]).length+'/12'
+      + '<div class="mods">'+(g.modulos_done||[]).map(function(m){return '<span class="mod">M'+m+'</span>';}).join('')+'</div></div>'
       + '<h2>Produto</h2>'
-      + '<div class="row"><span class="lbl">Nome</span><span class="val">'+(dc.nome||'—')+'</span></div>'
-      + '<div class="row"><span class="lbl">Tagline</span><span class="val">'+(dc.tagline||'—')+'</span></div>'
-      + '<div class="row"><span class="lbl">Cidade</span><span class="val">'+(dc.cidade||'—')+'</span></div>'
-      + '<div class="row"><span class="lbl">VGV</span><span class="val">R$ '+Number(dc.vgv||0).toLocaleString('pt-BR')+'</span></div>'
-      + '<div class="row"><span class="lbl">Unidades</span><span class="val">'+(dc.unidades||'—')+'</span></div>'
-      + '<div class="row"><span class="lbl">Área</span><span class="val">'+(dc['t-area']||'—')+'m²</span></div>'
+      + rows('Nome do Empreendimento', dc.nome)
+      + rows('Tagline', dc.tagline)
+      + rows('Proposta de Valor', dc.pv)
+      + rows('Cidade', dc.cidade)
+      + rows('Localização', dc.localizacao)
+      + rows('Área', dc['t-area'] ? dc['t-area']+'m²' : null)
+      + rows('Suítes / Vagas', (dc['t-suits']||'') + ' suítes · ' + (dc['t-vagas']||'') + ' vagas')
+      + rows('Unidades', dc.unidades)
+      + rows('VGV', dc.vgv ? 'R$ '+Number(dc.vgv).toLocaleString('pt-BR') : null)
+      + rows('Amenidades', dc.amenidades)
       + '<h2>Estratégia Ansoff</h2>'
-      + '<div class="row"><span class="lbl">Quadrante</span><span class="val">'+(dc['a-sel']||'—')+'</span></div>'
-      + '<div class="row"><span class="lbl">Objetivo</span><span class="val">'+(dc['a-obj']||'—')+'</span></div>'
-      + '<div class="row"><span class="lbl">Justificativa</span><span class="val">'+(dc['a-just']||'—')+'</span></div>'
+      + rows('Quadrante', dc['a-sel'])
+      + rows('Objetivo', dc['a-obj'])
+      + rows('Justificativa', dc['a-just'])
       + '<h2>Persona</h2>'
-      + '<div class="row"><span class="lbl">Nome</span><span class="val">'+(dc['p-nome']||'—')+'</span></div>'
-      + '<div class="row"><span class="lbl">Profissão</span><span class="val">'+(dc['p-prof']||'—')+'</span></div>'
-      + '<div class="row"><span class="lbl">Idade</span><span class="val">'+(dc['p-idade']||'—')+'</span></div>'
-      + '<div class="row"><span class="lbl">Renda</span><span class="val">'+(dc['p-renda']||'—')+'</span></div>'
-      + '<h2>NSM</h2>'
-      + '<div class="row"><span class="lbl">Métrica</span><span class="val">'+(dc['nsm-m']||'—')+'</span></div>'
-      + '<div class="row"><span class="lbl">Meta</span><span class="val">'+(dc['nsm-meta']||'—')+'</span></div>'
-      + '<h2>Proposta de Valor</h2><p>'+(dc.pv||'—')+'</p>'
-      + '<h2>SWOT — Forças</h2><p>'+(dc['sw-f']||'—').replace(/\n/g,'<br>')+'</p>'
-      + '<h2>SWOT — Oportunidades</h2><p>'+(dc['sw-o']||'—').replace(/\n/g,'<br>')+'</p>'
-      + '<h2>SWOT — Fraquezas</h2><p>'+(dc['sw-fr']||'—').replace(/\n/g,'<br>')+'</p>'
-      + '<h2>SWOT — Ameaças</h2><p>'+(dc['sw-a']||'—').replace(/\n/g,'<br>')+'</p>'
-      + '<p style="font-size:10px;color:#999;margin-top:40px;border-top:1px solid #eee;padding-top:8px">'
-      + 'Gerado em ' + new Date().toLocaleString('pt-BR') + ' · Plataforma MBA Marketing 12D</p>'
+      + rows('Nome', dc['p-nome'])
+      + rows('Profissão', dc['p-prof'])
+      + rows('Idade', dc['p-idade'])
+      + rows('Renda', dc['p-renda'])
+      + rows('Escolaridade', dc['p-escol'])
+      + rows('Hobbies', dc['p-hobbies'])
+      + rows('Marcas', dc['p-marcas'])
+      + rows('Estilo de vida', dc['p-estilo'])
+      + '<h2>Proposta de Valor (Perguntas-Chave)</h2>'
+      + rows('1. Desejo central', dc['pq1'])
+      + rows('2. Gatilhos de persuasão', dc['pq2'])
+      + rows('3. Promessa do produto', dc['pq3'])
+      + rows('4. Valores da persona', dc['pq4'])
+      + rows('5. Influências de decisão', dc['pq5'])
+      + rows('6. Resultado esperado', dc['pq6'])
+      + rows('7. Referências de compra', dc['pq7'])
+      + rows('8. Barreiras de compra', dc['pq8'])
+      + rows('9. Experiência ideal', dc['pq9'])
+      + '<h2>SWOT</h2>'
+      + rows('Forças', dc['sw-f'])
+      + rows('Fraquezas', dc['sw-fr'])
+      + rows('Oportunidades', dc['sw-o'])
+      + rows('Ameaças', dc['sw-a'])
+      + '<h2>NSM — North Star Metric</h2>'
+      + rows('Métrica', dc['nsm-m'])
+      + rows('Meta', dc['nsm-meta'])
+      + rows('Justificativa', dc['nsm-just'])
+      + '<h2>Financeiro</h2>'
+      + rows('VGV', dc.vgv ? 'R$ '+Number(dc.vgv).toLocaleString('pt-BR') : null)
+      + rows('Nº de Unidades', dc['n-unid'])
+      + rows('Budget MKT', dc['bud-pct'] ? dc['bud-pct']+'% do VGV' : null)
+      + rows('Receita MKT', dc['receita-mkt'] ? 'R$ '+Number(dc['receita-mkt']).toLocaleString('pt-BR') : null)
+      + '<div class="footer">Gerado em '+new Date().toLocaleString('pt-BR')+' · MBA Marketing 12D · Framework 6D®</div>'
+      + '<br><button onclick="window.print()" style="padding:10px 24px;background:#E91E8C;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px">🖨 Imprimir / Salvar PDF</button>'
       + '</body></html>';
-    var w = window.open('','_blank');
+    var w = window.open('','_blank','width=900,height=700');
     w.document.write(html);
     w.document.close();
-    w.focus();
-    setTimeout(function(){ w.print(); }, 500);
-  }catch(e){ toast('Erro ao gerar PDF: ' + e.message); }
+    setTimeout(function(){ w.focus(); }, 300);
+  }catch(e){ toast('Erro: ' + e.message); }
 }
 function loadProfDataLocal(){
   var data=loadLBData();
@@ -7660,11 +7667,33 @@ function confirmSetup(){
   }
   // Hide modal
   document.getElementById('setup-modal').classList.add('hidden');
-  toast('Bem-vindos, ' + grpName + '! (' + (S.participants.length||0) + ' participante(s)) 🚀');
-  saveLB();
-  // Wait for Supabase then sync
+  // Tenta carregar dados existentes do Supabase antes de criar novo
   if(!SUPA_READY){ initSupabase(); }
-  setTimeout(function(){ syncSupabase(true); }, 800); // cria novo grupo no banco
+  setTimeout(async function(){
+    // Busca case-insensitive: tenta nome exato, depois ilike
+    var loaded = await loadFromSupabase();
+    if(!loaded && SUPA_READY && supa){
+      try{
+        var ri = await supa.from('grupos').select('*').ilike('nome', grpName).order('updated_at',{ascending:false}).limit(1).maybeSingle();
+        if(ri.data){
+          // Encontrou com nome diferente — normaliza o nome para o do banco
+          S.groupName = ri.data.nome;
+          var el = document.getElementById('grp-nome');
+          if(el) el.value = ri.data.nome;
+          updGrp();
+          loaded = await loadFromSupabase();
+        }
+      }catch(e){}
+    }
+    if(loaded){
+      toast('✅ Bem-vindos de volta, ' + S.groupName + '! Dados restaurados 🚀');
+      calcScore && calcScore();
+    } else {
+      toast('Bem-vindos, ' + grpName + '! (' + (S.participants.length||0) + ' participante(s)) 🚀');
+      syncSupabase(true);
+    }
+    saveLB();
+  }, 800);
 }
 
 function saveKey2(){
