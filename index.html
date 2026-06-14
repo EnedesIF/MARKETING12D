@@ -396,6 +396,13 @@ input[type=range]{width:100%;accent-color:var(--pk);cursor:pointer;height:auto}
 .tab{padding:10px 16px;font-size:11px;font-weight:600;cursor:pointer;background:none;border:none;color:var(--tx4);border-bottom:2px solid transparent;margin-bottom:-1px;transition:var(--transition);white-space:nowrap;font-family:var(--font-b);letter-spacing:.2px}
 .tab:hover{color:var(--tx2)}
 .tab.on{color:var(--pk);border-bottom-color:var(--pk)}
+/* ── Media Hub Tabs ── */
+.media-tab{padding:8px 14px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(255,255,255,.05);border:1px solid var(--brd);border-radius:7px;color:var(--tx3);transition:var(--transition);white-space:nowrap}
+.media-tab:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.media-tab.on{background:linear-gradient(135deg,var(--pk),var(--or));border-color:transparent;color:#fff;font-weight:700;box-shadow:0 2px 8px rgba(241,91,181,.3)}
+.media-tp{display:none}.media-tp.on{display:block}
+.media-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--brd)}
+
 .tp{display:none}
 .tp.on{display:block}
 
@@ -2147,7 +2154,8 @@ canvas{border-radius:var(--radius-sm)}
     <div class="sd">Acompanhe grupos em tempo real e configure as chaves de API para toda a turma.</div></div>
     <div style="display:flex;gap:8px">
       <button class="btn bg bsm" onclick="loadProfData()">↻ Atualizar</button>
-      <button class="btn bp bsm" onclick="go(0)">← Voltar</button>
+      <button class="btn bp bsm" onclick="renderComparativo()" title="Abrir aba Comparativo">⚖ Comparativo</button>
+      <button class="btn bsm" style="background:rgba(255,255,255,.07);border:1px solid var(--brd);color:var(--tx3)" onclick="if(confirm('Sair do painel do professor?'))go(0)" title="Voltar à tela inicial">🚪 Sair</button>
     </div>
   </div>
 </div>
@@ -4585,7 +4593,8 @@ document.addEventListener('click', function(e){
   var t = e.target.closest && e.target.closest('[data-ptab]');
   if(!t) return;
   var tab = t.getAttribute('data-ptab');
-  if(tab==='pt-comparativo') setTimeout(renderComparativo, 100);
+  if(tab==='pt-comparativo'){ setTimeout(renderComparativo, 100); }
+  if(tab==='pt-monitor') setTimeout(loadProfData, 100);
   if(tab==='pt-feedback') setTimeout(initFeedbackTab, 100);
 });
 
@@ -5056,16 +5065,23 @@ function genSintese(){
 // PROFESSOR PANEL
 // =====================================================
 async function loadProfData(){
-  // Tenta carregar do Supabase primeiro
-  if(SUPA_READY && supa){
-    var grupos = await loadGruposSupabase();
-    if(grupos && grupos.length > 0){
-      renderProfGrupos(grupos);
-      return;
+  // Força reload do Supabase
+  var btn = document.querySelector('[onclick="loadProfData()"]');
+  if(btn){ btn.textContent='⏳ Atualizando...'; btn.disabled=true; }
+  try{
+    if(SUPA_READY && supa){
+      var r = await supa.from('grupos').select('*').order('score',{ascending:false});
+      if(r.data && r.data.length > 0){
+        renderProfGrupos(r.data);
+        loadLBSupabase && loadLBSupabase();
+        if(btn){ btn.textContent='↻ Atualizar'; btn.disabled=false; }
+        toast('✅ Dados atualizados de ' + r.data.length + ' grupos');
+        return;
+      }
     }
-  }
-  // Fallback localStorage
+  }catch(e){ console.warn('[Prof]',e); }
   loadProfDataLocal();
+  if(btn){ btn.textContent='↻ Atualizar'; btn.disabled=false; }
 }
 function renderProfGrupos(grupos){
   var el = document.getElementById('prof-grupos');
@@ -5075,6 +5091,8 @@ function renderProfGrupos(grupos){
     var mods = g.modulos_done ? g.modulos_done.length : 0;
     var updated = g.updated_at ? new Date(g.updated_at).toLocaleTimeString('pt-BR') : '—';
     var pct = Math.round(mods/23*100);
+    var gid = g.id || '';
+    var gnome = (g.nome||'grupo').replace(/'/g,"\\'");
     return '<div style="background:var(--surf2);border:1px solid var(--brd);border-radius:9px;padding:12px">'
       + '<div style="font-weight:700;font-size:12px;color:var(--tx);margin-bottom:4px">'+g.nome+'</div>'
       + '<div style="font-size:10px;color:var(--tx4);margin-bottom:6px">'+parts.join(' · ')+'</div>'
@@ -5083,11 +5101,95 @@ function renderProfGrupos(grupos){
       + '<div style="height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden">'
       + '<div style="width:'+pct+'%;height:100%;background:linear-gradient(90deg,var(--pk),var(--or));border-radius:2px"></div></div>'
       + '<div style="font-size:9px;color:var(--tx4);margin-top:4px">Atualizado: '+updated+'</div>'
+      + '<div style="display:flex;gap:4px;margin-top:8px">'
+      + '<button class="btn bg bsm" style="font-size:9px;padding:3px 7px" onclick="profViewGrupo(\''+gid+'\',\''+gnome+'\')" title="Ver dados do grupo">👁 Ver</button>'
+      + '<button class="btn bp bsm" style="font-size:9px;padding:3px 7px" onclick="profDownloadPDF(\''+gid+'\',\''+gnome+'\')" title="Baixar PDF do grupo">📄 PDF</button>'
+      + '</div>'
       + '</div>';
   }).join('');
   el.innerHTML = html || '<div style="color:var(--tx4);font-size:11px">Nenhum grupo encontrado</div>';
-  // Also update leaderboard
-  loadLBSupabase();
+  loadLBSupabase && loadLBSupabase();
+}
+
+async function profViewGrupo(gid, gnome){
+  if(!gid){ toast('ID do grupo não encontrado'); return; }
+  try{
+    var r = await supa.from('grupos').select('*').eq('id',gid).maybeSingle();
+    if(!r.data){ toast('Grupo não encontrado'); return; }
+    var g = r.data;
+    var dc = g.dados_campos || {};
+    var info = [
+      '=== ' + g.nome + ' ===',
+      'Score: ' + g.score + ' pts',
+      'Módulos: ' + (g.modulos_done||[]).join(', '),
+      'Produto: ' + (dc.nome||'—'),
+      'VGV: R$ ' + Number(dc.vgv||0).toLocaleString('pt-BR'),
+      'Cidade: ' + (dc.cidade||'—'),
+      'Tagline: ' + (dc.tagline||'—'),
+      'Persona: ' + (dc['p-nome']||'—'),
+      'NSM: ' + (dc['nsm-m']||'—'),
+      'Ansoff: ' + (dc['a-sel']||'—'),
+    ].join('\n');
+    alert(info);
+  }catch(e){ toast('Erro: ' + e.message); }
+}
+
+async function profDownloadPDF(gid, gnome){
+  if(!gid){ toast('ID do grupo não encontrado'); return; }
+  try{
+    toast('⏳ Preparando PDF de ' + gnome + '...');
+    var r = await supa.from('grupos').select('*').eq('id',gid).maybeSingle();
+    if(!r.data){ toast('Grupo não encontrado'); return; }
+    var g = r.data;
+    var dc = g.dados_campos || {};
+    // Build printable HTML
+    var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+g.nome+'</title>'
+      + '<style>body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;color:#222;line-height:1.6}'
+      + 'h1{color:#e91e8c;border-bottom:2px solid #e91e8c;padding-bottom:8px}'
+      + 'h2{color:#555;font-size:14px;margin-top:20px;text-transform:uppercase;letter-spacing:1px}'
+      + '.row{display:flex;justify-content:space-between;margin-bottom:6px;border-bottom:1px solid #eee;padding-bottom:4px}'
+      + '.lbl{font-weight:700;color:#333;min-width:180px}'
+      + '.val{color:#555;flex:1}'
+      + '.score{font-size:48px;color:#e91e8c;font-weight:900}'
+      + '.chip{background:#f0f0f0;padding:2px 8px;border-radius:4px;font-size:11px;margin-right:4px}'
+      + '@media print{body{margin:20px}}'
+      + '</style></head><body>'
+      + '<h1>📊 ' + g.nome + '</h1>'
+      + '<div class="score">' + g.score + ' pts</div>'
+      + '<p>Módulos concluídos: ' + (g.modulos_done||[]).length + '/12</p>'
+      + '<h2>Produto</h2>'
+      + '<div class="row"><span class="lbl">Nome</span><span class="val">'+(dc.nome||'—')+'</span></div>'
+      + '<div class="row"><span class="lbl">Tagline</span><span class="val">'+(dc.tagline||'—')+'</span></div>'
+      + '<div class="row"><span class="lbl">Cidade</span><span class="val">'+(dc.cidade||'—')+'</span></div>'
+      + '<div class="row"><span class="lbl">VGV</span><span class="val">R$ '+Number(dc.vgv||0).toLocaleString('pt-BR')+'</span></div>'
+      + '<div class="row"><span class="lbl">Unidades</span><span class="val">'+(dc.unidades||'—')+'</span></div>'
+      + '<div class="row"><span class="lbl">Área</span><span class="val">'+(dc['t-area']||'—')+'m²</span></div>'
+      + '<h2>Estratégia Ansoff</h2>'
+      + '<div class="row"><span class="lbl">Quadrante</span><span class="val">'+(dc['a-sel']||'—')+'</span></div>'
+      + '<div class="row"><span class="lbl">Objetivo</span><span class="val">'+(dc['a-obj']||'—')+'</span></div>'
+      + '<div class="row"><span class="lbl">Justificativa</span><span class="val">'+(dc['a-just']||'—')+'</span></div>'
+      + '<h2>Persona</h2>'
+      + '<div class="row"><span class="lbl">Nome</span><span class="val">'+(dc['p-nome']||'—')+'</span></div>'
+      + '<div class="row"><span class="lbl">Profissão</span><span class="val">'+(dc['p-prof']||'—')+'</span></div>'
+      + '<div class="row"><span class="lbl">Idade</span><span class="val">'+(dc['p-idade']||'—')+'</span></div>'
+      + '<div class="row"><span class="lbl">Renda</span><span class="val">'+(dc['p-renda']||'—')+'</span></div>'
+      + '<h2>NSM</h2>'
+      + '<div class="row"><span class="lbl">Métrica</span><span class="val">'+(dc['nsm-m']||'—')+'</span></div>'
+      + '<div class="row"><span class="lbl">Meta</span><span class="val">'+(dc['nsm-meta']||'—')+'</span></div>'
+      + '<h2>Proposta de Valor</h2><p>'+(dc.pv||'—')+'</p>'
+      + '<h2>SWOT — Forças</h2><p>'+(dc['sw-f']||'—').replace(/\n/g,'<br>')+'</p>'
+      + '<h2>SWOT — Oportunidades</h2><p>'+(dc['sw-o']||'—').replace(/\n/g,'<br>')+'</p>'
+      + '<h2>SWOT — Fraquezas</h2><p>'+(dc['sw-fr']||'—').replace(/\n/g,'<br>')+'</p>'
+      + '<h2>SWOT — Ameaças</h2><p>'+(dc['sw-a']||'—').replace(/\n/g,'<br>')+'</p>'
+      + '<p style="font-size:10px;color:#999;margin-top:40px;border-top:1px solid #eee;padding-top:8px">'
+      + 'Gerado em ' + new Date().toLocaleString('pt-BR') + ' · Plataforma MBA Marketing 12D</p>'
+      + '</body></html>';
+    var w = window.open('','_blank');
+    w.document.write(html);
+    w.document.close();
+    w.focus();
+    setTimeout(function(){ w.print(); }, 500);
+  }catch(e){ toast('Erro ao gerar PDF: ' + e.message); }
 }
 function loadProfDataLocal(){
   var data=loadLBData();
